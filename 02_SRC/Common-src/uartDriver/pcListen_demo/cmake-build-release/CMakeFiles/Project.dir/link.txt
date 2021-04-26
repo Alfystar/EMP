@@ -1,0 +1,1 @@
+/usr/bin/c++  -O3 -DNDEBUG  -rdynamic CMakeFiles/Project.dir/main.cpp.o  -o Project  -ldataTransfertPrimitive -luartDriver 
