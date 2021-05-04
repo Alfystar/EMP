@@ -15,6 +15,22 @@ The key feature are the transmission between 2 different machine using UART/USAR
 - [ ] Arduino
 - [ ] Linux
 
+### Clone and build
+
+To clone this repository you need to use:
+
+```bash
+git clone https://github.com/Automatione-Tor-Vergata/EMP.git --recurse-submodules
+```
+
+or, if you just download it, use inside the directory:
+
+```bash
+git submodule update --init --recursive
+```
+
+to clone also the submodule
+
 #### Transmission idea
 The technique used to send the packet without knowing the size, use:
 
