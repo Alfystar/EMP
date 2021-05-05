@@ -2,7 +2,9 @@ get_filename_component(libName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 if (NOT TARGET ${libName})
     add_library(${libName}
             conf.h macro.h includePlatform.h
-            UARTdataTransfert.cpp UARTdataTransfert.h)
+            MP.h MP.cpp
+            cobs-c/cobs.h cobs-c/cobs.c
+            crc8/crc8.h crc8/crc8_inc.h crc8/crc8.cpp)
 
     target_include_directories(${libName} PUBLIC "${CMAKE_INCLUDE_CURRENT_DIR}")
 

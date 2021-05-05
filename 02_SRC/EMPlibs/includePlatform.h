@@ -5,7 +5,6 @@
 #ifndef EMP_LIB_INCLUDEPLATFORM_H
 #define EMP_LIB_INCLUDEPLATFORM_H
 
-
 #ifdef ARDUINO_H
 //#include "Arduino.h"
 #include <stdlib.h>

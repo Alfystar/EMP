@@ -1,6 +1,7 @@
 #ifndef CRC8_H
 #define CRC8_H
-
+#include "crc8_inc.h"
+#include "stdint.h"
 #ifdef CRC_TABLE
 // CRC array from the Maxim appnote
 unsigned char crc_array[256] = {
@@ -56,11 +57,11 @@ unsigned char crc_nibbles(unsigned char);
 #endif /* CRC_NIBBLES */
 
 #ifdef CRC_MATH
-unsigned char crc_math(unsigned char);
+uint8_t crc_math(uint8_t);
 #endif /* CRC_MATH */
 
-void crc8_init(unsigned char);
-unsigned char crc8_byte(unsigned char);
-unsigned char crc8_stream(unsigned char*, unsigned int);
+void crc8_init(uint8_t);
+uint8_t crc8_byte(uint8_t data, uint8_t crc);
+uint8_t crc8_stream(uint8_t *data, uint16_t length);
 
 #endif /* CRC8_H */

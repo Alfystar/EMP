@@ -28,15 +28,11 @@
 // Lets external code initialise the CRC variable, required if 
 // callers use crc8_byte
 
-void crc8_init(unsigned char c) {
-    crc = c;
-}
-
 #ifdef CRC_MATH
 // A basic implementation of CRC8 using only arithmetic
 
-unsigned char crc_math(unsigned char data , unsigned char crc) {
-    int i = (data ^ crc) & 0xff;
+uint8_t crc_math(uint8_t data , uint8_t crc) {
+  uint8_t i = (data ^ crc);
 
     crc = 0;
 
@@ -63,8 +59,8 @@ unsigned char crc_math(unsigned char data , unsigned char crc) {
 
 #ifdef CRC_TABLE
 
-unsigned char crc_table(unsigned char data, unsigned char crc) {
-    int i = (data ^ crc) & 0xff;
+uint8_t crc_table(uint8_t data, uint8_t crc) {
+    int i = (data ^ crc);
 
     crc = crc_array[(data ^ crc)&0xff];
 
@@ -75,8 +71,8 @@ unsigned char crc_table(unsigned char data, unsigned char crc) {
 
 #ifdef CRC_NIBBLES
 
-unsigned char crc_nibbles(unsigned char data, unsigned char crc) {
-    unsigned char i = (data ^ crc) & 0xff;
+uint8_t crc_nibbles(uint8_t data, uint8_t crc) {
+    uint8_t i = (data ^ crc);
 
     crc = r1[i & 0xf] ^ r2[i >> 4];
 
@@ -84,11 +80,12 @@ unsigned char crc_nibbles(unsigned char data, unsigned char crc) {
 }
 #endif
 
-// Calculate the CRC for an individual byte
-// Will use the quickest method depending on what #defines
-// have been chosen
-
-unsigned char crc8_byte(unsigned char data, unsigned char crc) {
+/* Calculate the CRC for an individual byte using the method you have been chosen inside "crc8_inc.h"
+ * data   :=    New byte use to calculate the crc
+ * crc    :=    Previus CRC
+ * return :=    CRC for the [oldCRC|data]
+ */
+uint8_t crc8_byte(uint8_t data, uint8_t crc) {
 #ifdef CRC_TABLE
     crc = crc_table(data);
 #endif
@@ -104,13 +101,12 @@ unsigned char crc8_byte(unsigned char data, unsigned char crc) {
     return crc;
 }
 
-unsigned char crc8_stream(unsigned char *data, unsigned int length) {
+uint8_t crc8_stream(uint8_t *data, uint16_t length) {
     crc8_init(0xff);
-    unsigned char crc = 0;
-    for (int i = 0; i < length; i++) {
+  uint8_t crc = 0;
+    for (uint16_t i = 0; i < length; i++) {
         crc=crc8_byte(data[i],crc);
     }
-
     return crc;
 }
 

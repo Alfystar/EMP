@@ -16,7 +16,7 @@
 //#elif //to add Other architetture
 #else// Default ENV are inside Linux
 #define cbSize 256
-#define binaryBufElement 32
+#define binaryBufElement 32000
 #endif
 
 #endif //EMP_LIB_CONF_H
