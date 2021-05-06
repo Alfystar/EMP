@@ -18,9 +18,7 @@ template <class T, u_int16_t nElem> void CircularBuffer<T, nElem>::memClean() {
   reset();
 }
 
-template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() {
-  head_ = tail_;
-}
+template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() { head_ = tail_; }
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Puts metod
 template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T item) {
@@ -42,7 +40,7 @@ template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T *i
 template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T *item, u_int16_t len) {
   if (isFull())
     return -1;
-  if(len > sizeof(T))
+  if (len > sizeof(T))
     return -2;
   memcpy((void *)&buf_[head_], item, len);
   return headInc(); // old head
@@ -102,9 +100,7 @@ template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readTail(
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Structure operation
 
-template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isEmpty() const {
-  return head_ == tail_;
-}
+template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isEmpty() const { return head_ == tail_; }
 
 template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isFull() const {
   return head_ == modSub(tail_, 1, real_nElem);
@@ -112,26 +108,41 @@ template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isFull
 
 template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::capacity() const { return nElem; }
 
+
+/* This function return how many block are inside the space pointed by localTail e localHead
+ * Local Tail := first unread slot
+ * Local Head := first "Free slot" (slot not neaded)
+ *       #############  "F"
+ * | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+ *       ^               ^
+ *   Local Tail       localHead
+ *   countSlotBetween = 4
+ */
+template <class T, u_int16_t nElem>
+inline u_int16_t CircularBuffer<T, nElem>::countSlotBetween(u_int16_t localTail, u_int16_t localHead) const {
+  return modSub(localHead, localTail, real_nElem); // One Free Slot Logic
+}
+
 template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::usedSpace() const {
   // This 2 block are only to speed-up, formula always function
   if (isFull())
     return nElem;
-  if(isEmpty())
+  if (isEmpty())
     return 0;
 
-  return modSub(head_,tail_,real_nElem); // One Free Slot Logic
+  return modSub(head_, tail_, real_nElem); // One Free Slot Logic
 }
 
 template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::availableSpace() const {
-  return nElem-usedSpace();
+  return nElem - usedSpace();
 }
 
 // return space between Head and last VALID array index position
 // VALID is respect tail and respect one free slot logic
 template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::remaningSpaceLinear() const {
-  if(head_ < tail_) // the end of the buffer are reach before the end of array
+  if (head_ < tail_) // the end of the buffer are reach before the end of array
     return availableSpace();
-  if(tail_ == 0)  // One Slot Free are at the-end of the array
+  if (tail_ == 0)         // One Slot Free are at the-end of the array
     return nElem - head_; // is like the last slot are ouside the buffer
 
   return real_nElem - head_;

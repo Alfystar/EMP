@@ -64,8 +64,9 @@ public:
   // Return the real usable slot information (ONE SLOT OPEN is hiden outside)
   bool isEmpty() const; // true if isEmpty
   bool isFull() const;  // true if full (ONE SLOT OPEN logic hiden inside)
-
   u_int16_t capacity() const;
+
+  u_int16_t countSlotBetween(u_int16_t localHead, u_int16_t localTail) const;
   u_int16_t usedSpace() const;
   u_int16_t availableSpace() const;
   u_int16_t remaningSpaceLinear() const;

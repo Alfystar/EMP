@@ -24,14 +24,25 @@ template <typename pIn, typename pOut> void MP<pIn, pOut>::bufClear() {
 }
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Data Send & Get
+/*    On success return 0
+ *    On fail return -1
+ */
+template <typename pIn, typename pOut> int MP<pIn, pOut>::packSend(pOut *pack, u_int16_t bSize) {
+  /// ######################## Packetize With CRC8  ########################
+  u_int8_t packettize[bSize + 1];  // CRC8 add 1 byte
+  memcpy(packettize,pack,bSize);
+  packettize[bSize] = crc8_stream(pack, bSize); //todo: verify the index
 
-template <typename pIn, typename pOut> void MP<pIn, pOut>::packSend(pOut *pack, u_int16_t size) {
-  // todo: calc CRC8 and flop to COBS format, then send using packSend_Concrete()
+  /// ###################### Encoding pack with COBS  ######################
+  u_int8_t COBSEncoded[bSize + 2]; // Cobs add 1 byte, CRC8 add 1 byte
+  cobs_encode_result res =  cobs_encode(COBSEncoded, bSize + 2, packettize, bSize + 1);
+  if(res.status != COBS_ENCODE_OK)
+    return -1;
+
+  packSend_Concrete(COBSEncoded, bSize);
 }
 
-template <typename pIn, typename pOut> u_int16_t MP<pIn, pOut>::available() {
-  return this->packRecive->usedSpace();
-}
+template <typename pIn, typename pOut> u_int16_t MP<pIn, pOut>::available() { return this->packRecive->usedSpace(); }
 
 // copy pack Logic,
 // if possible, return true and in *pack are copied the data
@@ -59,30 +70,29 @@ template <typename pIn, typename pOut> void MP<pIn, pOut>::byteParsing() {
       continue;
     }
     /// ########################## COBS DECODE ##########################
-    // NB:COBS protocol add 2 byte at the pack, At start and 0 at the END
-    u_int16_t srcSize = modSub(datoId, lastZeroIndex, byteRecive.capacity()) - 2;
-    if (srcSize > MAXPackINsize) {
-      // Someting wrong, no 0 was recived in time, the pack are lost, restart from here
-      lastZeroIndex = datoId;
+    // NB:COBS protocol add 1 byte at the pack, At the start
+    u_int16_t COBSsrcSize = byteRecive.countSlotBetween(lastZeroIndex + 1, datoId);
+    lastZeroIndex = datoId; // From now, in any case, datoId are the new lastZeroIndex
+
+    if (COBSsrcSize - 1 > MAXPackINsize) {
+      // Someting wrong, no 0 was recived in time, the pack are lost
       continue;
     }
     // Fill the buffer for the decoding
-    u_int8_t srcRead[srcSize + 1]; // need space for the PRE-byte
-    byteRecive.memcpyCb(srcSize, lastZeroIndex + 1, srcSize + 1);
-    u_int8_t bufRead[srcSize];
+    u_int8_t COBSEncoded[COBSsrcSize];
+    byteRecive.memcpyCb(COBSEncoded, lastZeroIndex + 1, COBSsrcSize);
+    u_int8_t COBSDecode[MAXPackINsize];
 
-    lastZeroIndex = datoId; // From now, in any case, datoId are teh lastZeroIndex
-
-    cobs_decode_result res = cobs_decode(bufRead, MAXPackINsize, srcRead, srcSize);
+    cobs_decode_result res = cobs_decode(COBSDecode, MAXPackINsize, COBSEncoded, COBSsrcSize);
     if (res.status != COBS_DECODE_OK) {
       continue;
     }
     /// ######################## CRC8 VALIDATION ########################
 
-    u_int8_t calcCRC = crc8_stream(bufRead, srcSize - 1); // Last byte are the CRC
-    if (calcCRC == bufRead[srcSize - 1]) {
+    u_int8_t calcCRC = crc8_stream(COBSDecode, res.out_len - 1); // Last byte are the CRC
+    if (calcCRC == COBSDecode[res.out_len - 1]) {                // todo: verify the index of CRC8
       // CRC8 SUCCESS!!!
-      packRecive.put(bufRead, srcSize - 1);
+      packRecive.put(COBSDecode, COBSsrcSize - 1);
     } else { // CRC8 fail
     }
   } //  while (!byteRecive->isEmpty())

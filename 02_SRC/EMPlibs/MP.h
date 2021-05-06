@@ -5,7 +5,6 @@
 #ifndef EMP_LIB_UARTDATATRANSFERT_H
 #define EMP_LIB_UARTDATATRANSFERT_H
 #include "conf.h"
-//#include "includePlatform.h"
 #include "circularBuffer/CircularBuffer.h"
 #include "cobs-c/cobs.h"
 #include "crc8/crc8.h"
@@ -45,7 +44,7 @@ public:
   void bufClear();
 
   /// Data Send & Get
-  void packSend(pOut *pack, u_int16_t size); // Il pacchetto potrebbe avere una dimensione minore della massima
+  int packSend(pOut *pack, u_int16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
   // Data
   u_int16_t available();
   u_int16_t getData(pIn *pack); // return the available pack after the remotion of the current
