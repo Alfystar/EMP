@@ -1,0 +1,3 @@
+[submodule "02_SRC/EMPlibs/cobs-c"]
+	path = 02_SRC/EMPlibs/cobs-c
+	url = https://github.com/cmcqueen/cobs-c.git
