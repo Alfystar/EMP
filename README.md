@@ -3,7 +3,7 @@
 
 This is a C++ library to perform the  send/receive data between any platform (arduino, unix, ecc...) with any type of data pack using the UART/USART, the user need to chose very small configuration and pass very small data.
 
-The key feature are the transmission between 2 different machine using UART/USART, indipendently form the machine on the other size, for example:
+The key feature are the transmission between 2 different machine using UART/USART, indipendently form the machine on the other usedSpace, for example:
 
 - Arduino <==> Arduino
 - Arduino <==> Linux (Raspberry Pi for example)
@@ -32,13 +32,13 @@ git submodule update --init --recursive
 to clone also the submodule
 
 #### Transmission idea
-The technique used to send the packet without knowing the size, use:
+The technique used to send the packet without knowing the usedSpace, use:
 
 - [CRC8](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) to and minimal security check of the pack transmission
 
 - [COBS codification](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) to transform any pack-data in **self ended pack data**
 
-The system receive a buffer with a size, internally now are calculated the CRC8 and converted all with the  COBS format. Now, **based of the used platform**, the library serialize the pack in to the UART/USART stream and on the other size the library read every byte and when found **2 zero** *(see COBS)* provide a de-serialization and CRC8 check.
+The system receive a buffer with a usedSpace, internally now are calculated the CRC8 and converted all with the  COBS format. Now, **based of the used platform**, the library serialize the pack in to the UART/USART stream and on the other usedSpace the library read every byte and when found **2 zero** *(see COBS)* provide a de-serialization and CRC8 check.
 
 If the pack transmission is success, then the pack are stored until the reading.
 

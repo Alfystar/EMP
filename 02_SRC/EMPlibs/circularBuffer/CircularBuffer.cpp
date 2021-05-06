@@ -6,142 +6,156 @@
  */
 #include "CircularBuffer.h"
 
-
-template <class T, unsigned short nElem> CircularBuffer<T, nElem>::CircularBuffer() : max_size_(nElem) {
+template <class T, u_int16_t nElem> CircularBuffer<T, nElem>::CircularBuffer() {
   this->head_ = 0;
   this->tail_ = 0;
   memClean();
 }
 
-template <class T, unsigned short nElem> void CircularBuffer<T, nElem>::memClean() {
-  for (u_int16_t i = 0; i < max_size_; i++)
+template <class T, u_int16_t nElem> void CircularBuffer<T, nElem>::memClean() {
+  for (u_int16_t i = 0; i < real_nElem; i++)
     this->buf_[i] = 0;
   reset();
 }
 
+template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() {
+  head_ = tail_;
+}
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Puts metod
-template <class T, unsigned short nElem> u_int16_t CircularBuffer<T, nElem>::put(T item) {
+template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T item) {
+  if (isFull())
+    return -1;
   buf_[head_] = item;
-  return this->put_externalWrite(); // old head
+  return headInc(); // old head
 }
 
-template <class T, unsigned short nElem> u_int16_t CircularBuffer<T, nElem>::put(T *item) {
-  memcpy((void *)&buf_[head_], &item, sizeof(T));
-  return this->put_externalWrite(); // old head
+template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T *item) {
+  return put(item, sizeof(T)); // old head of -1 if full
 }
 
-template <class T, unsigned short nElem> u_int16_t CircularBuffer<T, nElem>::put(T *item, unsigned short len) {
-  memcpy((void *)&buf_[head_], &item, len);
-  return this->put_externalWrite(); // old head
+/* copy only len byte of the *item object (to optimize),
+ * On success are return old head
+ * Fail with -1 if the buffer are full
+ * Fail with -2 if len is over the sizeOf(T)
+ */
+template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T *item, u_int16_t len) {
+  if (isFull())
+    return -1;
+  if(len > sizeof(T))
+    return -2;
+  memcpy((void *)&buf_[head_], item, len);
+  return headInc(); // old head
 }
 
-// Operation to progress the head, return the head before increase
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::put_externalWrite() {
-  return put_externalWrite(1); // old head
+template <class T, u_int16_t nElem>
+void CircularBuffer<T, nElem>::memcpyCb(T *memDestArray, u_int16_t localTail, u_int16_t len) {
+  for (u_int16_t i = 0; i < len; i++) {
+    memDestArray[i] = buf_[(localTail + i) % real_nElem];
+  }
 }
-
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::put_externalWrite(u_int16_t len) {
-  int oldHead = this->head_;
-  if (full_)
-    tail_ = (tail_ + len) % max_size_;
-  head_ = (head_ + len) % max_size_;
-  full_ = (head_ == tail_);
-  return oldHead; // old head
-}
-
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Gets metod
 
-template <class T, unsigned short nElem> T CircularBuffer<T, nElem>::get() {
-  if (empty()) {
+template <class T, u_int16_t nElem> T CircularBuffer<T, nElem>::get() {
+  if (isEmpty()) {
     return T();
   }
   // Read data and advance the tail (we now have a free space)
   auto val = readTail();
-  this->get_externalRead();
+  this->tailInc();
   return val;
 }
 
-template <class T, unsigned short nElem> T CircularBuffer<T, nElem>::get(u_int16_t *indexRet) {
+template <class T, u_int16_t nElem> T CircularBuffer<T, nElem>::get(u_int16_t *indexRet) {
   *indexRet = getTail();
   return get();
 }
 
-template <class T, unsigned short nElem> T *CircularBuffer<T, nElem>::getPtr() {
-  if (empty()) {
+template <class T, u_int16_t nElem> T *CircularBuffer<T, nElem>::getPtr() {
+  if (isEmpty()) {
     return nullptr;
   }
   // Read data and advance the tail (we now have a free space)
   auto val = getTailPtr();
-  this->get_externalRead();
+  this->tailInc();
   return val;
 }
 
-template <class T, unsigned short nElem> T *CircularBuffer<T, nElem>::getPtr(u_int16_t *indexRet) {
+template <class T, u_int16_t nElem> T *CircularBuffer<T, nElem>::getPtr(u_int16_t *indexRet) {
   *indexRet = getTail();
   return getPtr();
 }
 
-
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::get_externalRead() {
-  full_ = (head_ == tail_);
-  tail_ = (tail_ + 1) % max_size_;
-  return tail_;
-}
-
-template <class T, unsigned short nElem>
-void CircularBuffer<T, nElem>::writeMemOut(T *mem, u_int16_t localTail, u_int16_t len) {
-  for (u_int16_t i = 0; i < len; i++) {
-    mem[i] = buf_[(localTail + i) % max_size_];
-  }
-}
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Get Head Structure information
 
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::getHead() { return head_; }
-template <class T, unsigned short nElem> inline T *CircularBuffer<T, nElem>::getHeadPtr() { return &buf_[head_]; }
-template <class T, unsigned short nElem> inline T CircularBuffer<T, nElem>::readHead() { return buf_[head_]; }
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::getHead() { return head_; }
+template <class T, u_int16_t nElem> inline T *CircularBuffer<T, nElem>::getHeadPtr() { return &buf_[head_]; }
+template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readHead() { return buf_[head_]; }
 
 // Get Tail Structure information
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::getTail() { return tail_; }
-template <class T, unsigned short nElem> inline T *CircularBuffer<T, nElem>::getTailPtr() { return &buf_[tail_]; }
-template <class T, unsigned short nElem> inline T CircularBuffer<T, nElem>::readTail() { return this->buf_[tail_]; }
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::getTail() { return tail_; }
+template <class T, u_int16_t nElem> inline T *CircularBuffer<T, nElem>::getTailPtr() { return &buf_[tail_]; }
+template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readTail() { return this->buf_[tail_]; }
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Structure operation
 
-template <class T, unsigned short nElem> inline void CircularBuffer<T, nElem>::reset() {
-  this->head_ = this->tail_;
-  this->full_ = false;
+template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isEmpty() const {
+  return head_ == tail_;
 }
 
-template <class T, unsigned short nElem> inline bool CircularBuffer<T, nElem>::empty() const {
-  // if head and tail are equal, we are empty
-  return (!full_ && (head_ == tail_)); // true if empty
+template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isFull() const {
+  return head_ == modSub(tail_, 1, real_nElem);
 }
 
-template <class T, unsigned short nElem> inline bool CircularBuffer<T, nElem>::full() const {
-  // If tail is ahead the head by 1, we are full
-  return full_;
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::capacity() const { return nElem; }
+
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::usedSpace() const {
+  // This 2 block are only to speed-up, formula always function
+  if (isFull())
+    return nElem;
+  if(isEmpty())
+    return 0;
+
+  return modSub(head_,tail_,real_nElem); // One Free Slot Logic
 }
 
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::capacity() const {
-  return max_size_;
+template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::availableSpace() const {
+  return nElem-usedSpace();
 }
 
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::size() const {
-  unsigned short size = max_size_;
-  if (!full_) {
-    if (head_ >= tail_) {
-      size = head_ - tail_;
-    } else {
-      size = max_size_ + head_ - tail_;
-    }
-  }
-  return size;
+// return space between Head and last VALID array index position
+// VALID is respect tail and respect one free slot logic
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::remaningSpaceLinear() const {
+  if(head_ < tail_) // the end of the buffer are reach before the end of array
+    return availableSpace();
+  if(tail_ == 0)  // One Slot Free are at the-end of the array
+    return nElem - head_; // is like the last slot are ouside the buffer
+
+  return real_nElem - head_;
 }
 
-template <class T, unsigned short nElem> inline u_int16_t CircularBuffer<T, nElem>::linearEnd() const {
-  return max_size_ - head_;
+/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Operation to progress the head, return the head before increase
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::headInc() {
+  return headAdd(1); // old head
+}
+
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::headAdd(u_int16_t len) {
+  if (availableSpace() < len)
+    return -1;
+  u_int16_t oldHead = head_;
+  head_ = (head_ + len) % real_nElem;
+  return oldHead; // old head
+}
+
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::tailInc() { return tailAdd(1); }
+
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::tailAdd(u_int16_t len) {
+  if (usedSpace() < len)
+    return -1;
+  tail_ = (tail_ + len) % real_nElem;
+  return tail_;
 }

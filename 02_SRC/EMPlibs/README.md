@@ -23,6 +23,6 @@ il diagramma UML di questa classe spiega meglio come si compongono:
   <i>uartDrive</i>
   <img src="https://github.com/Alfystar/Scorbot-CA/blob/master/1_Doc/ScorBoard%20UML%20Diagrams/diagrams/SerialDrives%20Class%20Diagram.png?raw=true"> 
 </p>
-Le classi template necessitano di sapere il tipo di pIn e pOut, così da poter allocare opportunamente lo spazio di bufferizzazione, nella send però, continua a pretendere di sapere la size da inviare, questo per poter compattare la trasmissione, e permettere al livello superiore di inviare in realtà pacchetti diversi e di dimensione diversa.
+Le classi template necessitano di sapere il tipo di pIn e pOut, così da poter allocare opportunamente lo spazio di bufferizzazione, nella send però, continua a pretendere di sapere la usedSpace da inviare, questo per poter compattare la trasmissione, e permettere al livello superiore di inviare in realtà pacchetti diversi e di dimensione diversa.
 
 Alla classe deve però arrivare una union in questo caso, che avrà la dimensione massima del pacchetto, permettendo di memorizzare opportunamente e in sicurezza nel buffer circolare il pacchetto. 

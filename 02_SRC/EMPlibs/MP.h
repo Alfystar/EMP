@@ -31,7 +31,7 @@ template <typename pIn, typename pOut> class MP {
 #define MAXPackOUTsize (sizeof(pOut) + 1) // pack plus CRC8
 protected:
   // Buffering recived byte
-  u_int16_t lastZeroIndex = -1; // -1 unsigned mean all bit at 1, but the max size are low than this, so ok
+  u_int16_t lastZeroIndex = -1; // -1 unsigned mean all bit at 1, but the max usedSpace are low than this, so ok
   CircularBuffer<u_int8_t, binaryBufElement * MAXPackINsize> byteRecive; // space to save byte read before parsing
 
 private:

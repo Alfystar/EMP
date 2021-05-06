@@ -12,7 +12,6 @@
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 
-#define modAdd(a,b,M) ((a+b)%M)
-#define modSub(a,b,M) (((a-b)+M)%M)
+#include "circularBuffer/modularOperation.h"
 
 #endif //EMP_LIB_MACRO_H

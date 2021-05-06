@@ -14,7 +14,7 @@ template <typename pIn, typename pOut> MP<pIn, pOut>::MP() { bufClear(); }
 template <typename pIn, typename pOut> MP<pIn, pOut>::~MP() {}
 
 template <typename pIn, typename pOut> void MP<pIn, pOut>::bufClear() {
-  // If error are reach, the size of the byteRecive is realy HIGH, should reduce "binaryBufElement" inside conf.h,
+  // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "binaryBufElement" inside conf.h,
   // or comment this line instead if is fine
   BUILD_BUG_ON((binaryBufElement * sizeof(pIn)) >= 4096);
 
@@ -30,14 +30,14 @@ template <typename pIn, typename pOut> void MP<pIn, pOut>::packSend(pOut *pack, 
 }
 
 template <typename pIn, typename pOut> u_int16_t MP<pIn, pOut>::available() {
-  return this->packRecive->size();
+  return this->packRecive->usedSpace();
 }
 
 // copy pack Logic,
 // if possible, return true and in *pack are copied the data
 // otherwise false are return and *pack aren't touch
 template <typename pIn, typename pOut> u_int16_t MP<pIn, pOut>::getData(pIn *pack) {
-  if (packRecive->empty())
+  if (packRecive->isEmpty())
     return 0;
   // If data are available
   *pack = packRecive.getHead();
@@ -49,7 +49,7 @@ template <typename pIn, typename pOut> u_int16_t MP<pIn, pOut>::getData(pIn *pac
 template <typename pIn, typename pOut> void MP<pIn, pOut>::byteParsing() {
   u_int8_t dato;
   u_int16_t datoId;
-  while (!byteRecive->empty()) {
+  while (!byteRecive->isEmpty()) {
     // Get the byte and his position (if is a 0, i need to save)
     dato = byteRecive.get(&datoId);
     if (dato != 0)
@@ -68,7 +68,7 @@ template <typename pIn, typename pOut> void MP<pIn, pOut>::byteParsing() {
     }
     // Fill the buffer for the decoding
     u_int8_t srcRead[srcSize + 1]; // need space for the PRE-byte
-    byteRecive.writeMemOut(srcSize, lastZeroIndex + 1, srcSize + 1);
+    byteRecive.memcpyCb(srcSize, lastZeroIndex + 1, srcSize + 1);
     u_int8_t bufRead[srcSize];
 
     lastZeroIndex = datoId; // From now, in any case, datoId are teh lastZeroIndex
@@ -85,5 +85,5 @@ template <typename pIn, typename pOut> void MP<pIn, pOut>::byteParsing() {
       packRecive.put(bufRead, srcSize - 1);
     } else { // CRC8 fail
     }
-  } //  while (!byteRecive->empty())
+  } //  while (!byteRecive->isEmpty())
 }
