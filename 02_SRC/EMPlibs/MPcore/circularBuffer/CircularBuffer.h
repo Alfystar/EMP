@@ -71,7 +71,6 @@ public:
   u_int16_t availableSpace() const;
   u_int16_t remaningSpaceLinear() const;
 
-private:
   // Operation to progress the head,
   // On SUCCESS: return the head before increase,
   // On Fail: return -1 if with the increase go over the limit, and nothing are do

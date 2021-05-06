@@ -8,7 +8,7 @@
 
 #define sizeofArray(x)  sizeof(x)/sizeof(x[0])
 
-#define _debugCodeLevel(x,level) if(x<=level)
+#define _codeActive(x,level) if(x<=level)
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2*!!(condition)]))
 

@@ -50,7 +50,7 @@ public:
   u_int16_t getData(pIn *pack); // return the available pack after the remotion of the current
 
 protected:
-  virtual void packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0;
+  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0; // return -1 if error occult
   void byteParsing(); // Son have to call after the insertion inside the byteRecive buffer
 };
 

@@ -10,7 +10,7 @@
  * binaryBufElement := Capacity (in term of pIn) of the Circular Buffer use to store the receved byte (in transfert byte)
  */
 
-#ifdef ARDUINO_H
+#if defined(ARDUINO_H)
 #define cbSize 8
 #define binaryBufElement 4
 //#elif //to add Other architetture

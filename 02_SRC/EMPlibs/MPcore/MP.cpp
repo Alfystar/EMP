@@ -39,7 +39,7 @@ template <typename pIn, typename pOut> int MP<pIn, pOut>::packSend(pOut *pack, u
   if(res.status != COBS_ENCODE_OK)
     return -1;
 
-  packSend_Concrete(COBSEncoded, bSize);
+  return packSend_Concrete(COBSEncoded, bSize);
 }
 
 template <typename pIn, typename pOut> u_int16_t MP<pIn, pOut>::available() { return this->packRecive->usedSpace(); }
