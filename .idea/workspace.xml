@@ -15,6 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0776910c-128a-4ee8-b78a-3dc096c50b86" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" afterDir="false" />
     </list>
@@ -34,9 +36,6 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
-  </component>
-  <component name="OCResolveContextSettings">
-    <option name="configuration" value="0-Debug-EMPlibs" />
   </component>
   <component name="ProjectId" id="1s9cW0uJX2xGblf9vvpkCMowHVO" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -119,7 +118,7 @@
       <workItem from="1620288279887" duration="16760000" />
       <workItem from="1620402677087" duration="6297000" />
       <workItem from="1620472963719" duration="3067000" />
-      <workItem from="1620552965551" duration="7196000" />
+      <workItem from="1620552965551" duration="12823000" />
     </task>
     <task id="LOCAL-00001" summary="Circular buffer logic update and math check for One Free Slot logic">
       <created>1620297613815</created>
@@ -156,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620560547615</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="CRC8 enable/disable checked">
+      <created>1620561047152</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1620561047152</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,17 +197,15 @@
     <MESSAGE value="Message Pack, pack send write" />
     <MESSAGE value="start Creating Debug Concrete Class using PIPE in file System" />
     <MESSAGE value="MP fileDescriptor specialization success" />
-    <option name="LAST_COMMIT_MESSAGE" value="MP fileDescriptor specialization success" />
+    <MESSAGE value="CRC8 enable/disable checked" />
+    <option name="LAST_COMMIT_MESSAGE" value="CRC8 enable/disable checked" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h</url>
-          <line>151</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-      </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="CidrExceptionBreakpoint" />
+        <breakpoint enabled="true" type="javascript-exception" />
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

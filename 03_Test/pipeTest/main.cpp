@@ -8,11 +8,14 @@ typedef struct pack_ {
   char buf[20];
 } __attribute__((packed)) pack;
 
+#define crc8En true
+#define varPack 0
+
 #define readEndPipe 0
 #define writeEndPipe 1
 
-// 1 is the Father
-// 2 is the son
+// 1 is the Dad
+// 2 is the Son
 int p1to2[2]; // Father to son
 int p2to1[2]; // Son to father
 
@@ -20,25 +23,17 @@ void *son(void *) {
   std::cout << "Son Start" << std::endl;
   pack dataIncoming;
   //  LinuxMP_ConfDefault(confNameSon);
-  configDeclare(confNameSon, false, 0, 6, 2);
+  configDeclare(confNameSon, crc8En, varPack, 6, 2);
   auto *sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe]);
 
   /// Son first pack test
   std::cout << "Son wait First pack" << std::endl;
-  while (sonSide->dataAvailable() < 1) {
-    sleep(1);
-    std::cout << "Son wait" << std::endl;
-  };
-  sonSide->getData(&dataIncoming);
-  std::cout << "[SON]Test1: {" << dataIncoming.buf << "}" << std::endl;
+  sonSide->getData_wait(&dataIncoming);
+  std::cout << "[SON]Test1: [message size] {" << dataIncoming.buf << "}" << std::endl;
 
   /// Son second pack test
-  while (sonSide->dataAvailable() < 1) {
-    sleep(1);
-    std::cout << "Son wait" << std::endl;
-  };
-  sonSide->getData(&dataIncoming);
-  std::cout << "[SON]Test2: {" << dataIncoming.buf << "}" << std::endl;
+  sonSide->getData_wait(&dataIncoming);
+  std::cout << "[SON]Test2: [pack size] {" << dataIncoming.buf << "}" << std::endl;
 
   /// Son send test
   char text[] = "Son recive";
@@ -50,10 +45,10 @@ void *son(void *) {
 }
 
 void *dad(void *) {
-  sleep(1);
+ // sleep(1);
   std::cout << "dad Start" << std::endl;
   //  LinuxMP_ConfDefault(confNameDad);
-  configDeclare(confNameDad, false, 0, 6, 2);
+  configDeclare(confNameDad, crc8En, varPack, 6, 2);
   auto *dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe]);
   char text[] = "Dad Talk";
   pack data;
@@ -67,11 +62,7 @@ void *dad(void *) {
   pack dataIncoming;
 
   /// Dad reading test
-  while (dadSide->dataAvailable() < 1) {
-    sleep(1);
-    std::cout << "Dad wait" << std::endl;
-  };
-  dadSide->getData(&dataIncoming);
+  dadSide->getData_wait(&dataIncoming);
   std::cout << "[DAD]Test1: {" << dataIncoming.buf << "}" << std::endl;
 
   std::cout << "DAD END" << std::endl;

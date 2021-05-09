@@ -47,15 +47,18 @@ public:
   /// Data Send & Get
   int packSend(pOut *pack, u_int16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
   int packSend(pOut *pack);                  // Il pacchetto potrebbe avere una dimensione minore della massima
-
   // Data
   u_int16_t dataAvailable();
-  u_int16_t getData(pIn *pack); // return the dataAvailable pack after the remotion of the current
+  int16_t getData_try(pIn *pack); // return the residual pack available after the remove
+  virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:
   virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0; // return -1 if error occult
   int packSend_Concrete(u_int8_t byteSend);                           // return -1 if error occult
-  void byteParsing(); // Son have to call after the insertion inside the byteRecive buffer
+
+
+  // Son have to call after the insertion inside the byteParsing buffer
+  u_int16_t byteParsing(); // return How many pack are found
 };
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -127,12 +130,11 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
   return this->packRecive.usedSpace();
 }
 
-// copy pack Logic, inside *pack are saved the tail data
-// if possible, return true and in *pack are copied the data
-// otherwise false are return and *pack aren't touch
-template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf>::getData(pIn *pack) {
+// On success: copy pack Logic, inside *pack are saved the tail data if possible,
+// On fail: return -1 and *pack aren't touch
+template <typename pIn, typename pOut, MPConf conf> int16_t MP<pIn, pOut, conf>::getData_try(pIn *pack) {
   if (packRecive.isEmpty())
-    return 0;
+    return -1;
   // If data are dataAvailable
   memcpy(pack, packRecive.getPtr(), sizeof(pIn));
   return dataAvailable();
@@ -144,9 +146,10 @@ template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::pac
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Byte parsing using CRC8 and COBS to
-template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::byteParsing() {
+template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf>::byteParsing() {
   u_int8_t dato;
   u_int16_t datoId;
+  u_int16_t packFound = 0;
   while (!byteRecive.isEmpty()) {
     // Get the byte and his position (if is a 0, i need to save)
     dato = byteRecive.get(&datoId);
@@ -158,10 +161,7 @@ template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::by
 
     if (dato != 0)
       continue;
-    //    if (lastStartIndex == noLastStartIndex) {
-    //      lastStartIndex = datoId+1;
-    //      continue;
-    //    }
+
     /// ########################## COBS DECODE ##########################
     // NB:COBS protocol add 1 byte at the pack, At the start
     u_int16_t COBSsrcSize = byteRecive.countSlotBetween(lastStartIndex, datoId);
@@ -188,7 +188,9 @@ template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::by
         continue; // CRC8 Fail!!!
     }
     packRecive.put((pIn *)COBSDecode, res.out_len - 1);
+    packFound++;
   } //  while (!byteRecive->isEmpty())
+  return packFound;
 }
 
 } // namespace EMP
