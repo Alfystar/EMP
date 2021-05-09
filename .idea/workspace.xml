@@ -15,26 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0776910c-128a-4ee8-b78a-3dc096c50b86" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/03_Test/pipeTest/.clang-format" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/EMP_Include.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/EMP_Include.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Pipe.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Pipe.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/crc8/crc8.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/crc8/crc8.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/pipeTest/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +119,7 @@
       <workItem from="1620288279887" duration="16760000" />
       <workItem from="1620402677087" duration="6297000" />
       <workItem from="1620472963719" duration="3067000" />
-      <workItem from="1620552965551" duration="6679000" />
+      <workItem from="1620552965551" duration="7196000" />
     </task>
     <task id="LOCAL-00001" summary="Circular buffer logic update and math check for One Free Slot logic">
       <created>1620297613815</created>
@@ -167,7 +149,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620307965341</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="MP fileDescriptor specialization success">
+      <created>1620560547614</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1620560547615</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,6 +190,18 @@
     <MESSAGE value="Circular buffer logic update and math check for One Free Slot logic" />
     <MESSAGE value="Message Pack, pack send write" />
     <MESSAGE value="start Creating Debug Concrete Class using PIPE in file System" />
-    <option name="LAST_COMMIT_MESSAGE" value="start Creating Debug Concrete Class using PIPE in file System" />
+    <MESSAGE value="MP fileDescriptor specialization success" />
+    <option name="LAST_COMMIT_MESSAGE" value="MP fileDescriptor specialization success" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h</url>
+          <line>151</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

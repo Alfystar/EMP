@@ -182,13 +182,12 @@ template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::by
       continue;
     }
     /// ######################## CRC8 VALIDATION ########################
-
-    u_int8_t calcCRC = crc8_stream(COBSDecode, res.out_len - 1); // Last byte are the CRC
-    if (calcCRC == COBSDecode[res.out_len - 1]) {                // todo: verify the index of CRC8
-      // CRC8 SUCCESS!!!
-      packRecive.put((pIn *)COBSDecode, res.out_len - 1);
-    } else { // CRC8 fail
+    if (conf.CRC8_enable) {
+      u_int8_t calcCRC = crc8_stream(COBSDecode, res.out_len - 1); // Last byte are the CRC
+      if (calcCRC != COBSDecode[res.out_len - 1])
+        continue; // CRC8 Fail!!!
     }
+    packRecive.put((pIn *)COBSDecode, res.out_len - 1);
   } //  while (!byteRecive->isEmpty())
 }
 

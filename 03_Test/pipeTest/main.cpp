@@ -20,7 +20,7 @@ void *son(void *) {
   std::cout << "Son Start" << std::endl;
   pack dataIncoming;
   //  LinuxMP_ConfDefault(confNameSon);
-  configDeclare(confNameSon, true, 0, 6, 2);
+  configDeclare(confNameSon, false, 0, 6, 2);
   auto *sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe]);
 
   /// Son first pack test
@@ -53,7 +53,7 @@ void *dad(void *) {
   sleep(1);
   std::cout << "dad Start" << std::endl;
   //  LinuxMP_ConfDefault(confNameDad);
-  configDeclare(confNameDad, true, 0, 6, 2);
+  configDeclare(confNameDad, false, 0, 6, 2);
   auto *dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe]);
   char text[] = "Dad Talk";
   pack data;
