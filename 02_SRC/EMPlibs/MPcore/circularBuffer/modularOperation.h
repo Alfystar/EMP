@@ -5,7 +5,7 @@
 #ifndef EMP_LIB_02_SRC_EMPLIBS_CIRCULARBUFFER_MODULAROPERATION_H
 #define EMP_LIB_02_SRC_EMPLIBS_CIRCULARBUFFER_MODULAROPERATION_H
 
-#define modAdd(a,b,M) ((a+b)%M)
-#define modSub(a,b,M) (((a-b)+M)%M)
+#define modAdd(a, b, M) ((a + b) % M)
+#define modSub(a, b, M) (((a - b) + M) % M)
 
 #endif // EMP_LIB_02_SRC_EMPLIBS_CIRCULARBUFFER_MODULAROPERATION_H

@@ -34,12 +34,11 @@ typedef struct MPConf_ {
   uint16_t binaryBufElement;
 } MPConf;
 
-#define configDeclare(name, CRC8_enable,VarSizePack_enable,cbSize,binaryBufElement) \
-constexpr MPConf name{CRC8_enable, VarSizePack_enable, cbSize, binaryBufElement}
+#define configDeclare(name, CRC8_enable, VarSizePack_enable, cbSize, binaryBufElement)                                 \
+  constexpr MPConf name { CRC8_enable, VarSizePack_enable, cbSize, binaryBufElement }
 
-
-#define ArduinoMP_ConfDefault(name) configDeclare(name ,true, 0, 8, 4)
-#define LinuxMP_ConfDefault(name) configDeclare(name ,true, 0, 256, 32)
+#define ArduinoMP_ConfDefault(name) configDeclare(name, true, 0, 8, 4)
+#define LinuxMP_ConfDefault(name) configDeclare(name, true, 0, 256, 32)
 
 // MPConf test = ArduinoMP_ConfDefault();
 #endif // EMP_LIB_CONF_H

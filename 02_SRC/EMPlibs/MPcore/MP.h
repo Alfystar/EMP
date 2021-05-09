@@ -49,13 +49,12 @@ public:
   int packSend(pOut *pack);                  // Il pacchetto potrebbe avere una dimensione minore della massima
   // Data
   u_int16_t dataAvailable();
-  int16_t getData_try(pIn *pack); // return the residual pack available after the remove
+  int16_t getData_try(pIn *pack);              // return the residual pack available after the remove
   virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:
   virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0; // return -1 if error occult
   int packSend_Concrete(u_int8_t byteSend);                           // return -1 if error occult
-
 
   // Son have to call after the insertion inside the byteParsing buffer
   u_int16_t byteParsing(); // return How many pack are found
@@ -106,7 +105,7 @@ template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::pac
   memcpy(packBuf, pack, bSize);
 
   if (conf.CRC8_enable) {
-    packBuf[packSize - 1] = crc8_stream((u_int8_t *)pack, bSize); // todo: verify the index
+    packBuf[packSize - 1] = crc8_stream((u_int8_t *)pack, bSize);
   }
 
   /// ###################### Encoding pack with COBS  ######################
@@ -117,8 +116,8 @@ template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::pac
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
     return -1;
-  ret = packSend_Concrete(sendBuf, sendSize); // todo verify size
-  ret = packSend_Concrete(0);                 // Delimit code
+  ret = packSend_Concrete(sendBuf, sendSize);
+  ret = packSend_Concrete(0); // Delimit code
   return ret;
 }
 

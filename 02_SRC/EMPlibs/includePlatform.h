@@ -7,23 +7,23 @@
 
 #ifdef ARDUINO_H
 //#include "Arduino.h"
-#include <stdlib.h>
 #include "circularBuffer/CircularBuffer.h"
-#else   // Default code are for linux
 #include <stdlib.h>
-#include <stdio.h>
-#include <iostream>
-#include <termios.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string>
-#include <CircularBuffer.h>
-#include <thread>
-#include <semaphore.h>
-#include <mutex>
+#else // Default code are for linux
 #include "UartException.h"
+#include <CircularBuffer.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <iostream>
+#include <mutex>
+#include <semaphore.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+#include <termios.h>
+#include <thread>
+#include <unistd.h>
 
 #endif
 
-#endif //EMP_LIB_INCLUDEPLATFORM_H
+#endif // EMP_LIB_INCLUDEPLATFORM_H

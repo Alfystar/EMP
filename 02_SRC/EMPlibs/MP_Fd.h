@@ -39,14 +39,15 @@ namespace EMP {
 /* This class, extend the MP to the linux OS, it perform the operation at the File-Descriptor abstraction level,
  * big part of the device have their pseudo-file in /dev/, so this solution should be very general.
  *
- * N.B. This class aren't reentrant !!! Outside only 1 Thread can talk with this, because every getData_try or getData_wait
- * the circular buffer progress and different thread whatch different output.
- * If is important multiply the output, create another layer or use same data-distribution service (dds)
+ * N.B. This class aren't reentrant !!! Outside only 1 Thread can talk with this, because every getData_try or
+ * getData_wait the circular buffer progress and different thread whatch different output. If is important multiply the
+ * output, create another layer or use same data-distribution service (dds)
  */
 template <typename pIn, typename pOut, MPConf conf> class MP_Fd : public MP<pIn, pOut, conf> {
   int fdR, fdW;
   std::thread *readerTh; // Reader Thread, started by the constructor
   sem_t recivedPackToken;
+
 public:
   MP_Fd(int fdReadSide, int fdWriteSide);
   ~MP_Fd();
@@ -71,18 +72,16 @@ MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP<pIn, pOut, c
 
 template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::~MP_Fd() {
   mpPipe_db("[MP_Fd]test Destructor\n");
-  //todo: implement reader thread destruction
-  // semafore clear
+  // todo: implement reader thread destruction
+  //  semafore clear
 
   // readerTh->detach();
 }
 
-template <typename pIn, typename pOut, MPConf conf>
-int16_t MP_Fd<pIn, pOut, conf>::getData_wait(pIn *pack) {
+template <typename pIn, typename pOut, MPConf conf> int16_t MP_Fd<pIn, pOut, conf>::getData_wait(pIn *pack) {
   sem_wait(&recivedPackToken);
   return this->getData_try(pack);
 }
-
 
 template <typename pIn, typename pOut, MPConf conf>
 int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
@@ -115,7 +114,7 @@ void MP_Fd<pIn, pOut, conf>::readerPipe(MP_Fd<pIn, pOut, conf> &mpPipe) {
     mpPipe_db("[MP_Fd::readerPipe] readerPipe read: %ld\n", bRead);
     mpPipe.byteRecive.headAdd(bRead);
     uint16_t packFind = mpPipe.byteParsing();
-    for(;packFind>0;packFind--)
+    for (; packFind > 0; packFind--)
       sem_post(&mpPipe.recivedPackToken);
   }
 }

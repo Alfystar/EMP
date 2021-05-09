@@ -39,7 +39,6 @@ public:
   u_int16_t put(T *item);
   u_int16_t put(T *item, u_int16_t bSize); // copy only bSize byte of the *item object (to optimize)
 
-
   // Gets metod
   T get();
   T get(u_int16_t *indexRet); // save in *indexRet the index of the returned data
@@ -49,8 +48,8 @@ public:
   // save in *memDestArray  the value starting from localTail --> localTail+len (obviously in circular buffer logic)
   void memcpyCb(T *memDestArray, u_int16_t localTail, u_int16_t len);
 
-//private:
-  // Get Head Structure information
+  // private:
+  //  Get Head Structure information
   u_int16_t getHead();
   T *getHeadPtr(); // Return the memory area where are the current head
   T readHead();
@@ -83,7 +82,6 @@ public:
   u_int16_t tailAdd(u_int16_t len);
 };
 
-
 template <class T, u_int16_t nElem> CircularBuffer<T, nElem>::CircularBuffer() {
   this->head_ = 0;
   this->tail_ = 0;
@@ -92,7 +90,7 @@ template <class T, u_int16_t nElem> CircularBuffer<T, nElem>::CircularBuffer() {
 
 template <class T, u_int16_t nElem> void CircularBuffer<T, nElem>::memClean() {
   for (u_int16_t i = 0; i < real_nElem; i++)
-    memset(&this->buf_[i],0,sizeof(T));
+    memset(&this->buf_[i], 0, sizeof(T));
   reset();
 }
 
@@ -185,7 +183,6 @@ template <class T, u_int16_t nElem> inline bool CircularBuffer<T, nElem>::isFull
 }
 
 template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::capacity() const { return nElem; }
-
 
 /* This function return how many block are inside the space pointed by localTail e localHead
  * Local Tail := first unread slot
