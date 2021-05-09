@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(EMP-Lib)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 
 # To simulate the libray use as submodule, teh library are include using
 # Symbolic-Link, in real case, copy or clone the EMPlibs Directory from source

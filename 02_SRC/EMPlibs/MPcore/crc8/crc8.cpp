@@ -87,23 +87,22 @@ uint8_t crc_nibbles(uint8_t data, uint8_t crc) {
  */
 uint8_t crc8_byte(uint8_t data, uint8_t crc) {
 #ifdef CRC_TABLE
-    crc = crc_table(data);
+    crc = crc_table(data,crc);
 #endif
 
 #ifdef CRC_NIBBLES
-    crc = crc_nibbles(data);
+    crc = crc_nibbles(data,crc);
 #endif
 
 #ifdef CRC_MATH
-    crc = crc_math(data);
+    crc = crc_math(data,crc);
 #endif
 
     return crc;
 }
 
 uint8_t crc8_stream(uint8_t *data, uint16_t length) {
-    crc8_init(0xff);
-  uint8_t crc = 0;
+  uint8_t crc = 0xff;
     for (uint16_t i = 0; i < length; i++) {
         crc=crc8_byte(data[i],crc);
     }

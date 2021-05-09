@@ -2,7 +2,7 @@ get_filename_component(libName ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 if (NOT TARGET ${libName})
     add_library(${libName}
             #Specialization class
-            MP_Pipe.h MP_Pipe.cpp
+            MP_Fd.h MP_Fd.cpp
             )
 
     target_include_directories(${libName} PUBLIC "${CMAKE_INCLUDE_CURRENT_DIR}")
