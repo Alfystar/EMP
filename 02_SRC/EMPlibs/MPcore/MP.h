@@ -29,6 +29,7 @@ template <typename pIn, typename pOut, MPConf conf> class MP {
 #define MAXPackINsize (sizeof(pIn) + 1)   // pack plus CRC8
 #define MAXPackOUTsize (sizeof(pOut) + 1) // pack plus CRC8
 #define noLastStartIndex ((u_int16_t)-1)  // Variable is unsigned, so the result will be 65535
+
 protected:
   // Buffering recived byte
   u_int16_t lastStartIndex = 0;
@@ -45,16 +46,19 @@ public:
   void bufClear();
 
   /// Data Send & Get
+  // Data Send
+  // return 0 on success, -1 cobs error,  other wise, the error code from the packSend_Concrete
+  int packSend(pOut *pack);
   int packSend(pOut *pack, u_int16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
-  int packSend(pOut *pack);                  // Il pacchetto potrebbe avere una dimensione minore della massima
-  // Data
+
+  // Data get
   u_int16_t dataAvailable();
   int16_t getData_try(pIn *pack);              // return the residual pack available after the remove
   virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:
-  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0; // return -1 if error occult
-  int packSend_Concrete(u_int8_t byteSend);                           // return -1 if error occult
+  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0;  // 0 on success, other wise, error code (!=-1)
+  int packSend_Concrete(u_int8_t byteSend);
 
   // Son have to call after the insertion inside the byteParsing buffer
   u_int16_t byteParsing(); // return How many pack are found
@@ -71,7 +75,6 @@ template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::bu
   // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "binaryBufElement" inside conf.h,
   // or comment this line instead if is fine
   BUILD_BUG_ON((conf.binaryBufElement * sizeof(pIn)) >= 4096);
-
   byteRecive.memClean();
   packRecive.memClean();
   lastStartIndex = 0;
@@ -81,23 +84,14 @@ template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::bu
 /*    On success return 0
  *    On fail return -1
  */
+
+template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::packSend(pOut *pack) {
+  return packSend(pack, sizeof(pOut));
+}
+
 template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::packSend(pOut *pack, u_int16_t bSize) {
 
   int ret = 0;
-  if (conf.VarSizePack_enable != 0) { // Fixed Size pack
-    // todo: Pensare il protocollo fixed size
-    return -1;
-    //    int zerosLeft = conf.VarSizePack_enable - bSize; // if zerosLeft are negative, not enter in the for
-    //    ret = packSend_Concrete(pack, bSize);
-    //    for (int i = 0; i < zerosLeft; i++) {
-    //      ret = packSend_Concrete(0);
-    //      if (ret)
-    //        return ret;
-    //    }
-    //    if (conf.CRC8_enable)
-    //      ret = packSend_Concrete(crc8_stream((u_int8_t *)pack, bSize));
-    //    return ret;
-  }
 
   /// ######################## Packetize With CRC8  ########################
   u_int16_t packSize = bSize + conf.CRC8_enable;
@@ -116,14 +110,14 @@ template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::pac
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
     return -1;
-  ret = packSend_Concrete(sendBuf, sendSize);
-  ret = packSend_Concrete(0); // Delimit code
-  return ret;
+  if((ret = packSend_Concrete(sendBuf, sendSize))!=0)
+    return ret;
+  if((ret = packSend_Concrete(0))!=0)
+    return ret;
+  return 0;
 }
 
-template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::packSend(pOut *pack) {
-  return packSend(pack, sizeof(pOut));
-}
+
 
 template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf>::dataAvailable() {
   return this->packRecive.usedSpace();
@@ -152,11 +146,6 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
   while (!byteRecive.isEmpty()) {
     // Get the byte and his position (if is a 0, i need to save)
     dato = byteRecive.get(&datoId);
-
-    if (conf.VarSizePack_enable != 0) { // Fixed Size pack
-      // todo: Pensare il protocollo fixed size
-      continue;
-    }
 
     if (dato != 0)
       continue;

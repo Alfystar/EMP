@@ -24,16 +24,16 @@
 // Level 2 := Notice msg
 // Level 3 := Info msg
 // Level 4 := DB msg
-#define MP_PIPE_VervoseLevel 2
-#define MP_PIPE_err _codeActive(1, MP_PIPE_VervoseLevel)
-#define MP_PIPE_notice _codeActive(2, MP_PIPE_VervoseLevel)
-#define MP_PIPE_info _codeActive(3, MP_PIPE_VervoseLevel)
-#define MP_PIPE_Db _codeActive(4, MP_PIPE_VervoseLevel)
+#define MP_FD_VervoseLevel 5
+#define MP_FD_err _codeActive(1, MP_FD_VervoseLevel)
+#define MP_FD_notice _codeActive(2, MP_FD_VervoseLevel)
+#define MP_FD_info _codeActive(3, MP_FD_VervoseLevel)
+#define MP_FD_Db _codeActive(4, MP_FD_VervoseLevel)
 
-#define mpPipe_err(str, ...) printf_STD(MP_PIPE_err, str, ##__VA_ARGS__)
-#define mpPipe_notice(str, ...) printf_STD(MP_PIPE_notice, str, ##__VA_ARGS__)
-#define mpPipe_info(str, ...) printf_STD(MP_PIPE_info, str, ##__VA_ARGS__)
-#define mpPipe_db(str, ...) printf_STD(MP_PIPE_Db, str, ##__VA_ARGS__)
+#define mpFd_err(str, ...) printf_STD(MP_FD_err, str, ##__VA_ARGS__)
+#define mpFd_notice(str, ...) printf_STD(MP_FD_notice, str, ##__VA_ARGS__)
+#define mpFd_info(str, ...) printf_STD(MP_FD_info, str, ##__VA_ARGS__)
+#define mpFd_db(str, ...) printf_STD(MP_FD_Db, str, ##__VA_ARGS__)
 
 namespace EMP {
 /* This class, extend the MP to the linux OS, it perform the operation at the File-Descriptor abstraction level,
@@ -46,7 +46,7 @@ namespace EMP {
 template <typename pIn, typename pOut, MPConf conf> class MP_Fd : public MP<pIn, pOut, conf> {
   int fdR, fdW;
   std::thread *readerTh; // Reader Thread, started by the constructor
-  sem_t recivedPackToken;
+  sem_t receivedPackToken;
 
 public:
   MP_Fd(int fdReadSide, int fdWriteSide);
@@ -58,28 +58,33 @@ protected:
   virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len);
 
 private:
-  static void readerPipe(MP_Fd<pIn, pOut, conf> &mpPipe);
+  static void readerFDTh(MP_Fd<pIn, pOut, conf> &mpPipe);
 };
 
 template <typename pIn, typename pOut, MPConf conf>
 MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP<pIn, pOut, conf>() {
-  mpPipe_db("[MP_Fd]: test Constuctor, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
+  mpFd_db("[MP_Fd]: test Constuctor, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
-  sem_init(&recivedPackToken, 0, 0);
-  readerTh = new std::thread(this->readerPipe, std::ref(*this));
+  sem_init(&receivedPackToken, 0, 0);
+  readerTh = new std::thread(this->readerFDTh, std::ref(*this));
 }
 
 template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::~MP_Fd() {
-  mpPipe_db("[MP_Fd]test Destructor\n");
-  // todo: implement reader thread destruction
-  //  semafore clear
-
+  mpFd_db("[MP_Fd]test Destructor\n");
+  mpFd_db("Getting handler readerTh ...\n");
+  pthread_t tid = readerTh->native_handle();
+  mpFd_db("Cancellation request readerTh ...\n");
+  pthread_cancel(tid);
+  mpFd_db("Waiting the end of readerTh ...\n");
+  readerTh->join();
+  mpFd_db("Deleting semaphore of receivedPackToken ...\n");
+  sem_destroy(&receivedPackToken);
   // readerTh->detach();
 }
 
 template <typename pIn, typename pOut, MPConf conf> int16_t MP_Fd<pIn, pOut, conf>::getData_wait(pIn *pack) {
-  sem_wait(&recivedPackToken);
+  sem_wait(&receivedPackToken);
   return this->getData_try(pack);
 }
 
@@ -99,23 +104,23 @@ int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
   return 0;
 }
 template <typename pIn, typename pOut, MPConf conf>
-void MP_Fd<pIn, pOut, conf>::readerPipe(MP_Fd<pIn, pOut, conf> &mpPipe) {
-  mpPipe_db("[MP_Fd::readerPipe] ReaderPipe Thread start\n");
+void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpPipe) {
+  mpFd_db("[MP_Fd::readerFDTh] ReaderPipe Thread start\n");
   usleep(50 * 1000U);
   long bRead;
   for (;;) {
-    mpPipe_db("[MP_Fd::readerPipe] readerPipe try read\n");
+    mpFd_db("[MP_Fd::readerFDTh] readerFDTh try read\n");
     bRead = read(mpPipe.fdR, mpPipe.byteRecive.getHeadPtr(), mpPipe.byteRecive.remaningSpaceLinear());
     if (bRead < 0) {
-      mpPipe_err(" [MP_Fd::readerPipe] readerPipe fd see: %ld; ", bRead);
-      MP_PIPE_err perror("take error:");
+      mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
+      MP_FD_err perror("take error:");
       exit(-1);
     }
-    mpPipe_db("[MP_Fd::readerPipe] readerPipe read: %ld\n", bRead);
+    mpFd_db("[MP_Fd::readerFDTh] readerFDTh read: %ld\n", bRead);
     mpPipe.byteRecive.headAdd(bRead);
     uint16_t packFind = mpPipe.byteParsing();
     for (; packFind > 0; packFind--)
-      sem_post(&mpPipe.recivedPackToken);
+      sem_post(&mpPipe.receivedPackToken);
   }
 }
 

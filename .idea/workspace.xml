@@ -15,7 +15,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0776910c-128a-4ee8-b78a-3dc096c50b86" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +53,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="TODO_SCOPE" value="All Places" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="cf.advertisement.text.overridden" value="true" />
     <property name="cf.first.check.clang-format" value="false" />
@@ -67,6 +75,11 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.demoMain">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="EMPlibs" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="EMPlibs" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -92,11 +105,6 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
     <list>
       <item itemvalue="CMake Application.demoMain" />
       <item itemvalue="CMake Application.EMPlibs" />
@@ -115,7 +123,9 @@
       <workItem from="1620288279887" duration="16760000" />
       <workItem from="1620402677087" duration="6297000" />
       <workItem from="1620472963719" duration="3067000" />
-      <workItem from="1620552965551" duration="12909000" />
+      <workItem from="1620552965551" duration="13070000" />
+      <workItem from="1620634908059" duration="1425000" />
+      <workItem from="1620736130438" duration="1321000" />
     </task>
     <task id="LOCAL-00001" summary="Circular buffer logic update and math check for One Free Slot logic">
       <created>1620297613815</created>
@@ -166,7 +176,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620603588773</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="code reformat">
+      <created>1620603787263</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1620603787263</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -203,7 +220,8 @@
     <MESSAGE value="MP fileDescriptor specialization success" />
     <MESSAGE value="CRC8 enable/disable checked" />
     <MESSAGE value="getData_wait and try implemented with logic of specialization" />
-    <option name="LAST_COMMIT_MESSAGE" value="getData_wait and try implemented with logic of specialization" />
+    <MESSAGE value="code reformat" />
+    <option name="LAST_COMMIT_MESSAGE" value="code reformat" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

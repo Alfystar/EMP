@@ -94,7 +94,9 @@ template <class T, u_int16_t nElem> void CircularBuffer<T, nElem>::memClean() {
   reset();
 }
 
-template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() { head_ = tail_; }
+template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() {
+  head_ = tail_;
+}
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Puts metod
 template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T item) {

@@ -9,7 +9,6 @@ typedef struct pack_ {
 } __attribute__((packed)) pack;
 
 #define crc8En true
-#define varPack 0
 
 #define readEndPipe 0
 #define writeEndPipe 1
@@ -23,7 +22,7 @@ void *son(void *) {
   std::cout << "Son Start" << std::endl;
   pack dataIncoming;
   //  LinuxMP_ConfDefault(confNameSon);
-  configDeclare(confNameSon, crc8En, varPack, 6, 2);
+  configDeclare(confNameSon, crc8En, 6, 2);
   auto *sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe]);
 
   /// Son first pack test
@@ -41,14 +40,15 @@ void *son(void *) {
   memcpy(data.buf, text, sizeof(text));
   sonSide->packSend(&data, sizeof(text));
   std::cout << "Son END" << std::endl;
+  delete sonSide;
   return nullptr;
 }
 
 void *dad(void *) {
- // sleep(1);
+  // sleep(1);
   std::cout << "dad Start" << std::endl;
   //  LinuxMP_ConfDefault(confNameDad);
-  configDeclare(confNameDad, crc8En, varPack, 6, 2);
+  configDeclare(confNameDad, crc8En, 6, 2);
   auto *dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe]);
   char text[] = "Dad Talk";
   pack data;
@@ -66,6 +66,7 @@ void *dad(void *) {
   std::cout << "[DAD]Test1: {" << dataIncoming.buf << "}" << std::endl;
 
   std::cout << "DAD END" << std::endl;
+  delete dadSide;
   return nullptr;
 }
 

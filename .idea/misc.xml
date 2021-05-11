@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$/03_Test/pipeTest">
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$/02_SRC">
     <contentRoot DIR="$PROJECT_DIR$" />
   </component>
 </project>
