@@ -53,7 +53,10 @@ public:
   ~MP_Fd();
 
   virtual int16_t getData_wait(pIn *pack); // return the residual pack available after the remove
-
+//  pIn *getDataWait () noexcept(false);
+//  pIn *getDataWait_timePack (struct timespec *t) noexcept(false);
+//  pIn *getDataWait (struct timespec *timeOut) noexcept(false);
+//  pIn *getDataWait_timePack (struct timespec *timeOut, struct timespec *t) noexcept(false);
 protected:
   virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len);
 
