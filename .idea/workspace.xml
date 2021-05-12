@@ -16,38 +16,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0776910c-128a-4ee8-b78a-3dc096c50b86" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/01_DOC/.EMP.vpp.lck" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_000f" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_001d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_002d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_003d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_004d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_005d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_006d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_007d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_008d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_009d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_010d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_011d" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Uart.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Uart.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/timeOp/CMakeLists.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/timeOp/timeSpecOp.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/timeOp/timerSpecOp.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/01_Guide/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/00_Guide/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/modularOperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/opDef.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/crc8/crc8.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/crc8/crc8.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/macro.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/02_SRC/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/EMPlibs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_DOC/EMP.vpp" beforeDir="false" afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -161,7 +130,7 @@
       <workItem from="1620552965551" duration="13070000" />
       <workItem from="1620634908059" duration="1425000" />
       <workItem from="1620736130438" duration="2173000" />
-      <workItem from="1620812896826" duration="17225000" />
+      <workItem from="1620812896826" duration="17268000" />
     </task>
     <task id="LOCAL-00001" summary="Circular buffer logic update and math check for One Free Slot logic">
       <created>1620297613815</created>
@@ -233,7 +202,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620754852476</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="UML of the code, start MP_uart work">
+      <created>1620859017778</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1620859017778</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -273,7 +249,8 @@
     <MESSAGE value="getData_wait and try implemented with logic of specialization" />
     <MESSAGE value="code reformat" />
     <MESSAGE value="resource allocated in MP_Fd.h, relase" />
-    <option name="LAST_COMMIT_MESSAGE" value="resource allocated in MP_Fd.h, relase" />
+    <MESSAGE value="UML of the code, start MP_uart work" />
+    <option name="LAST_COMMIT_MESSAGE" value="UML of the code, start MP_uart work" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
