@@ -3,12 +3,15 @@ if (NOT TARGET ${libName})
     add_library(${libName}
             #Specialization class
             MP_Fd.h MP_Fd.cpp
-            )
+            MP_Uart.cpp MP_Uart.h)
 
     target_include_directories(${libName} PUBLIC "${CMAKE_INCLUDE_CURRENT_DIR}")
 
     add_subdirectory(MPcore)
     target_link_libraries(${libName} PUBLIC MPcore)
+
+    add_subdirectory(timeOp)
+    target_link_libraries(${libName} PUBLIC timeOp)
 
     find_package(Threads REQUIRED)
     target_link_libraries(${libName} PUBLIC ${CMAKE_THREAD_LIBS_INIT})

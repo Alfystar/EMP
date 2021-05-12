@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
+      <config projectName="EMP-Lib" targetName="timeOp" />
       <config projectName="EMP-Lib" targetName="demoMain" />
       <config projectName="EMP-Lib" targetName="circularBuffer" />
       <config projectName="EMP-Lib" targetName="EMPlibs" />
@@ -15,8 +16,38 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0776910c-128a-4ee8-b78a-3dc096c50b86" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/01_DOC/.EMP.vpp.lck" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_000f" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_001d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_002d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_003d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_004d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_005d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_006d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_007d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_008d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_009d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_010d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/01_DOC/EMP.vpp.bak_011d" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Uart.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Uart.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/timeOp/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/timeOp/timeSpecOp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/timeOp/timerSpecOp.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/01_Guide/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/00_Guide/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MP_Fd.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/MP.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/CircularBuffer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/modularOperation.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/circularBuffer/opDef.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/crc8/crc8.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/crc8/crc8.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/macro.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore/macro.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/EMPlibs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +67,9 @@
     </file-type-list>
   </component>
   <component name="ProjectId" id="1s9cW0uJX2xGblf9vvpkCMowHVO" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="autoscrollFromSource" value="true" />
     <option name="autoscrollToSource" value="true" />
@@ -44,6 +77,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
@@ -53,7 +87,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/03_Test/pipeTest" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/02_SRC/EMPlibs" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -61,6 +95,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/02_SRC/EMPlibs" />
       <recent name="$PROJECT_DIR$/03_Test/pipeTest" />
       <recent name="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore" />
     </key>
@@ -69,11 +104,6 @@
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.demoMain">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="EMPlibs" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="EMPlibs" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -99,11 +129,22 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="timeOp" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="timeOp" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="CMake Application.demoMain" />
       <item itemvalue="CMake Application.EMPlibs" />
       <item itemvalue="CMake Application.MPcore" />
       <item itemvalue="CMake Application.circularBuffer" />
+      <item itemvalue="CMake Application.timeOp" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -119,7 +160,8 @@
       <workItem from="1620472963719" duration="3067000" />
       <workItem from="1620552965551" duration="13070000" />
       <workItem from="1620634908059" duration="1425000" />
-      <workItem from="1620736130438" duration="2155000" />
+      <workItem from="1620736130438" duration="2173000" />
+      <workItem from="1620812896826" duration="17225000" />
     </task>
     <task id="LOCAL-00001" summary="Circular buffer logic update and math check for One Free Slot logic">
       <created>1620297613815</created>
@@ -184,7 +226,14 @@
       <option name="project" value="LOCAL" />
       <updated>1620749996977</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="resource allocated in MP_Fd.h, relase">
+      <created>1620754852476</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1620754852476</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,6 +264,7 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Circular buffer logic update and math check for One Free Slot logic" />
     <MESSAGE value="Message Pack, pack send write" />
     <MESSAGE value="start Creating Debug Concrete Class using PIPE in file System" />

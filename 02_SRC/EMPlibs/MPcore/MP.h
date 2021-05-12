@@ -12,8 +12,8 @@
 #include <cstdint>
 
 namespace EMP {
-/* The class MP (Message Pack) perform a GENEARAL and PLATFORM AGNOSTIC Data Pack Transfert
- * NB: IS responsibility of the caller undestand what pack are recived, this library only send/recive the pack.
+/* The class MP (Message Pack) perform a GENERAL and PLATFORM AGNOSTIC Data Pack Transfer
+ * NB: IS responsibility of the caller understand what pack are received, this library only send/receive the pack.
  * Anyway, if you need to send different type of message, YOU CAN!!
  * The only thinks to do are create a unions between all of the the possible data , and use one field to tag him.
  *
@@ -22,33 +22,31 @@ namespace EMP {
  * pOut:= One or more than one type of pack (if multiple use union with a tag field at start can help) can be receive
  *
  * Son Classes HAVE TO:
- *  - implement the packSend_Concrete, specific for the architetture
- *  - fill byteRecive when byte are dataAvailable and than parse him with byteParsing() function
+ *  - implement the packSend_Concrete, specific for the architecture
+ *  - fill byteReceive when byte are dataAvailable and than parse him with byteParsing() function
  */
 template <typename pIn, typename pOut, MPConf conf> class MP {
-#define MAXPackINsize (sizeof(pIn) + 1)   // pack plus CRC8
-#define MAXPackOUTsize (sizeof(pOut) + 1) // pack plus CRC8
-#define noLastStartIndex ((u_int16_t)-1)  // Variable is unsigned, so the result will be 65535
+#define MAXPackINsize (sizeof(pIn) + conf.CRC8_enable)   // pack plus CRC8
+#define MAXPackOUTsize (sizeof(pOut) + conf.CRC8_enable) // pack plus CRC8
 
 protected:
   // Buffering recived byte
   u_int16_t lastStartIndex = 0;
-  CircularBuffer<u_int8_t, conf.binaryBufElement * MAXPackINsize> byteRecive; // space to save byte read before parsing
+  CircularBuffer<u_int8_t, conf.cdBinStore * MAXPackINsize> byteRecive; // space to save byte read before parsing
 
 private:
   // Succesfull pack recive
-  CircularBuffer<pIn, conf.cbSize> packRecive;
+  CircularBuffer<pIn, conf.cbPackStore> packRecive;
 
 public:
   // Instance operation
   MP();
-  ~MP();
   void bufClear();
 
   /// Data Send & Get
   // Data Send
   // return 0 on success, -1 cobs error,  other wise, the error code from the packSend_Concrete
-  int packSend(pOut *pack);
+  __always_inline int packSend(pOut *pack);
   int packSend(pOut *pack, u_int16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
 
   // Data get
@@ -57,11 +55,15 @@ public:
   virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:
-  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0;  // 0 on success, other wise, error code (!=-1)
-  int packSend_Concrete(u_int8_t byteSend);
+  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0; // 0 on success, other wise, error code (!=-1)
+  __always_inline int packSend_Concrete(u_int8_t byteSend);
 
   // Son have to call after the insertion inside the byteParsing buffer
   u_int16_t byteParsing(); // return How many pack are found
+  virtual void packTimeRefresh() = 0;   //Call by byteParsing when new pack are recived, used to measure the time
+public:
+  virtual unsigned long lastPackElapsed() = 0;   //retur micro second (10^-6 sec) elapsed since last pack recived
+
 };
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,12 +71,10 @@ protected:
 
 template <typename pIn, typename pOut, MPConf conf> MP<pIn, pOut, conf>::MP() { bufClear(); }
 
-template <typename pIn, typename pOut, MPConf conf> MP<pIn, pOut, conf>::~MP() {}
-
 template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::bufClear() {
-  // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "binaryBufElement" inside conf.h,
+  // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "cdBinStore" inside conf.h,
   // or comment this line instead if is fine
-  BUILD_BUG_ON((conf.binaryBufElement * sizeof(pIn)) >= 4096);
+  BUILD_BUG_ON((conf.cdBinStore * sizeof(pIn)) >= 4096);
   byteRecive.memClean();
   packRecive.memClean();
   lastStartIndex = 0;
@@ -110,14 +110,12 @@ template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::pac
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
     return -1;
-  if((ret = packSend_Concrete(sendBuf, sendSize))!=0)
+  if ((ret = packSend_Concrete(sendBuf, sendSize)) != 0)
     return ret;
-  if((ret = packSend_Concrete(0))!=0)
+  if ((ret = packSend_Concrete(0)) != 0)
     return ret;
   return 0;
 }
-
-
 
 template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf>::dataAvailable() {
   return this->packRecive.usedSpace();
@@ -144,7 +142,7 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
   u_int16_t datoId;
   u_int16_t packFound = 0;
   while (!byteRecive.isEmpty()) {
-    // Get the byte and his position (if is a 0, i need to save)
+    // Get the byte and his position (if is a 0, need to be saved)
     dato = byteRecive.get(&datoId);
 
     if (dato != 0)
@@ -154,8 +152,10 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
     // NB:COBS protocol add 1 byte at the pack, At the start
     u_int16_t COBSsrcSize = byteRecive.countSlotBetween(lastStartIndex, datoId);
 
-    if (COBSsrcSize - 1 > MAXPackINsize) {
-      // Someting wrong, no 0 was recived in time, the pack are lost
+    if (COBSsrcSize - 1 > MAXPackINsize || COBSsrcSize < 2 ) {
+      // Someting wrong, no 0 was recived in time, or too many zero are received
+      // Anyway the pack are lost
+      lastStartIndex = datoId + 1; // restart the logic from the next byte
       continue;
     }
     // Fill the buffer for the decoding
@@ -176,6 +176,7 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
         continue; // CRC8 Fail!!!
     }
     packRecive.put((pIn *)COBSDecode, res.out_len - 1);
+    packTimeRefresh();  // from now, the pack are available to the system
     packFound++;
   } //  while (!byteRecive->isEmpty())
   return packFound;

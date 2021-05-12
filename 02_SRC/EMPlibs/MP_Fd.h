@@ -6,7 +6,7 @@
 #define EMP_LIB_02_SRC_EMPLIBS_MP_FD_H
 
 #include <MP.h>
-
+#include <timeSpecOp.h>
 // Specific include for the class
 #include <cerrno>
 #include <mutex>
@@ -47,21 +47,23 @@ template <typename pIn, typename pOut, MPConf conf> class MP_Fd : public MP<pIn,
   int fdR, fdW;
   std::thread *readerTh; // Reader Thread, started by the constructor
   sem_t receivedPackToken;
+  struct timespec lastPackTime;
 
 public:
   MP_Fd(int fdReadSide, int fdWriteSide);
   ~MP_Fd();
 
-  virtual int16_t getData_wait(pIn *pack); // return the residual pack available after the remove
-//  pIn *getDataWait () noexcept(false);
-//  pIn *getDataWait_timePack (struct timespec *t) noexcept(false);
-//  pIn *getDataWait (struct timespec *timeOut) noexcept(false);
-//  pIn *getDataWait_timePack (struct timespec *timeOut, struct timespec *t) noexcept(false);
+  int16_t getData_wait(pIn *pack); // return the residual pack available after the remove
+
 protected:
-  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len);
+  int packSend_Concrete(u_int8_t *stream, u_int16_t len) override;
+  __always_inline void packTimeRefresh() override;
+
+public:
+  unsigned long lastPackElapsed() override;
 
 private:
-  static void readerFDTh(MP_Fd<pIn, pOut, conf> &mpPipe);
+  static void readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd);
 };
 
 template <typename pIn, typename pOut, MPConf conf>
@@ -69,8 +71,20 @@ MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP<pIn, pOut, c
   mpFd_db("[MP_Fd]: test Constuctor, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
+  packTimeRefresh();
   sem_init(&receivedPackToken, 0, 0);
   readerTh = new std::thread(this->readerFDTh, std::ref(*this));
+  if (conf.RT_THREAD) {
+    // encrease priority
+    sched_param sch{};
+    int policy;
+    pthread_getschedparam(this->readerTh->native_handle(), &policy, &sch);
+    sch.sched_priority = sched_get_priority_max(SCHED_FIFO);
+    if (pthread_setschedparam(this->readerTh->native_handle(), SCHED_FIFO, &sch)) {
+      // todo: Gestire la comunicazione dell'errore
+      //            throw UartException("Failed to setschedparam: ", errno);
+    }
+  }
 }
 
 template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::~MP_Fd() {
@@ -83,7 +97,6 @@ template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::~MP_
   readerTh->join();
   mpFd_db("Deleting semaphore of receivedPackToken ...\n");
   sem_destroy(&receivedPackToken);
-  // readerTh->detach();
 }
 
 template <typename pIn, typename pOut, MPConf conf> int16_t MP_Fd<pIn, pOut, conf>::getData_wait(pIn *pack) {
@@ -107,24 +120,34 @@ int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
   return 0;
 }
 template <typename pIn, typename pOut, MPConf conf>
-void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpPipe) {
+void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
   mpFd_db("[MP_Fd::readerFDTh] ReaderPipe Thread start\n");
   usleep(50 * 1000U);
   long bRead;
   for (;;) {
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh try read\n");
-    bRead = read(mpPipe.fdR, mpPipe.byteRecive.getHeadPtr(), mpPipe.byteRecive.remaningSpaceLinear());
+    bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.remaningSpaceLinear());
     if (bRead < 0) {
       mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
       MP_FD_err perror("take error:");
       exit(-1);
     }
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh read: %ld\n", bRead);
-    mpPipe.byteRecive.headAdd(bRead);
-    uint16_t packFind = mpPipe.byteParsing();
+    if (mpFd.byteRecive.headAdd(bRead) == errorRet)
+      mpFd_err("[MP_Fd::readerFDTh] byteRecive circular buffer end space!!!");
+    uint16_t packFind = mpFd.byteParsing();
     for (; packFind > 0; packFind--)
-      sem_post(&mpPipe.receivedPackToken);
+      sem_post(&mpFd.receivedPackToken);
   }
+}
+template <typename pIn, typename pOut, MPConf conf> void MP_Fd<pIn, pOut, conf>::packTimeRefresh() {
+  clock_gettime(CLOCK_MONOTONIC_RAW, &lastPackTime);
+}
+template <typename pIn, typename pOut, MPConf conf> unsigned long MP_Fd<pIn, pOut, conf>::lastPackElapsed() {
+  struct timespec now, res;
+  clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+  timersubSpec(now, lastPackTime, res);
+  return res.tv_sec * 1000000UL + res.tv_nsec / 1000UL;
 }
 
 } // namespace EMP

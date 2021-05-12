@@ -38,7 +38,6 @@ unsigned char crc_nibbles(unsigned char);
 uint8_t crc_math(uint8_t);
 #endif /* CRC_MATH */
 
-void crc8_init(uint8_t);
 uint8_t crc8_byte(uint8_t data, uint8_t crc);
 uint8_t crc8_stream(uint8_t *data, uint16_t length);
 

@@ -8,7 +8,7 @@
 #ifndef PROJECT_LIB_CIRCULARBUFFER_CIRCULARBUFFER_H_
 #define PROJECT_LIB_CIRCULARBUFFER_CIRCULARBUFFER_H_
 
-#include "modularOperation.h"
+#include "opDef.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -16,15 +16,15 @@
 
 #define real_nElem (nElem + 1) // +1 are the ONE SLOT OPEN
 
+/* In this implementation of the Circular Buffer, to perform the operation correctly, we use the
+ * "ONE SLOT OPEN" TECHNICS inside the class, outside the buffer are watch like full buffer.
+ * "ONE SLOT OPEN" TECHNICS use the element before the tail as end, and so it are always unreached,
+ * but data consistency are safe.
+ *
+ * ATTENTION: This implementation not override data if the buffer are FULL
+ */
 template <class T, u_int16_t nElem> class CircularBuffer {
 private:
-  /* In this implementation fo the Circular Buffer, to perform the operation correctly, we use the
-   * "ONE SLOT OPEN" TECHNICS inside the class, outside the buffer are watch like full buffer.
-   * "ONE SLOT OPEN" TECHNICS use the element before the tail as end, and so it are always unreached,
-   * but data consistency are safe.
-   *
-   * ATTENTION: This implementation not override data if the buffer are FULL
-   */
   T buf_[real_nElem];
   u_int16_t head_; // Contain next "free" cell
   u_int16_t tail_; // Contain last unread cell, exept if (head == tail) in this case buffer are emtpy
@@ -48,16 +48,15 @@ public:
   // save in *memDestArray  the value starting from localTail --> localTail+len (obviously in circular buffer logic)
   void memcpyCb(T *memDestArray, u_int16_t localTail, u_int16_t len);
 
-  // private:
-  //  Get Head Structure information
-  u_int16_t getHead();
+  //  Get Head Structure information and contenent without change notting
+  u_int16_t getHead() const;
   T *getHeadPtr(); // Return the memory area where are the current head
-  T readHead();
+  T readHead() const;
 
   // Get Tail Structure information
-  u_int16_t getTail();
+  u_int16_t getTail() const;
   T *getTailPtr(); // Return the memory area where are the current head
-  T readTail();
+  T readTail() const;
 
 public:
   // Structure operation
@@ -66,18 +65,18 @@ public:
   bool isFull() const;  // true if full (ONE SLOT OPEN logic hiden inside)
   u_int16_t capacity() const;
 
-  u_int16_t countSlotBetween(u_int16_t localHead, u_int16_t localTail) const;
+  u_int16_t countSlotBetween(u_int16_t localTail, u_int16_t localHead) const;
   u_int16_t usedSpace() const;
   u_int16_t availableSpace() const;
   u_int16_t remaningSpaceLinear() const;
 
   // Operation to progress the head,
   // On SUCCESS: return the head before increase,
-  // On Fail: return -1 if with the increase go over the limit, and nothing are do
+  // On Fail: return "errorRet" if with the increase go over the limit, and nothing are do
   u_int16_t headInc();
   u_int16_t headAdd(u_int16_t len);
 
-  // Operation to progress the tail, return tail after increase, -1 if tail jump over the head
+  // Operation to progress the tail, return tail after increase, "errorRet" if tail jump over the head
   u_int16_t tailInc();
   u_int16_t tailAdd(u_int16_t len);
 };
@@ -94,9 +93,7 @@ template <class T, u_int16_t nElem> void CircularBuffer<T, nElem>::memClean() {
   reset();
 }
 
-template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() {
-  head_ = tail_;
-}
+template <class T, u_int16_t nElem> inline void CircularBuffer<T, nElem>::reset() { head_ = tail_; }
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Puts metod
 template <class T, u_int16_t nElem> u_int16_t CircularBuffer<T, nElem>::put(T item) {
@@ -166,14 +163,14 @@ void CircularBuffer<T, nElem>::memcpyCb(T *memDestArray, u_int16_t localTail, u_
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Get Head Structure information
 
-template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::getHead() { return head_; }
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::getHead() const { return head_; }
 template <class T, u_int16_t nElem> inline T *CircularBuffer<T, nElem>::getHeadPtr() { return &buf_[head_]; }
-template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readHead() { return buf_[head_]; }
+template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readHead() const { return buf_[head_]; }
 
 // Get Tail Structure information
-template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::getTail() { return tail_; }
+template <class T, u_int16_t nElem> inline u_int16_t CircularBuffer<T, nElem>::getTail() const { return tail_; }
 template <class T, u_int16_t nElem> inline T *CircularBuffer<T, nElem>::getTailPtr() { return &buf_[tail_]; }
-template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readTail() { return this->buf_[tail_]; }
+template <class T, u_int16_t nElem> inline T CircularBuffer<T, nElem>::readTail() const { return this->buf_[tail_]; }
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Structure operation

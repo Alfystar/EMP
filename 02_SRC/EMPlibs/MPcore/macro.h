@@ -11,6 +11,6 @@
 
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2 * !!(condition)]))
 
-#include "circularBuffer/modularOperation.h"
+#include "circularBuffer/opDef.h"
 
 #endif // EMP_LIB_MACRO_H
