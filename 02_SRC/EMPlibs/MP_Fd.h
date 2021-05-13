@@ -54,7 +54,7 @@ protected:
 private:
   std::thread *readerTh; // Reader Thread, started by the constructor
   sem_t receivedPackToken;
-  struct timespec lastPackTime;
+  struct timespec lastDecodeTime;
 
 public:
   MP_Fd(int fdReadSide, int fdWriteSide);
@@ -156,12 +156,12 @@ void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
   }
 }
 template <typename pIn, typename pOut, MPConf conf> void MP_Fd<pIn, pOut, conf>::packTimeRefresh() {
-  clock_gettime(CLOCK_MONOTONIC_RAW, &lastPackTime);
+  clock_gettime(CLOCK_MONOTONIC_RAW, &lastDecodeTime);
 }
 template <typename pIn, typename pOut, MPConf conf> unsigned long MP_Fd<pIn, pOut, conf>::lastPackElapsed() {
   struct timespec now, res;
   clock_gettime(CLOCK_MONOTONIC_RAW, &now);
-  timersubSpec(now, lastPackTime, res);
+  timersubSpec(now, lastDecodeTime, res);
   return res.tv_sec * 1000000UL + res.tv_nsec / 1000UL;
 }
 

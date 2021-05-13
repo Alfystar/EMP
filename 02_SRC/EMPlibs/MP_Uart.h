@@ -38,14 +38,14 @@ template <typename pIn, typename pOut, MPConf conf> class MP_Uart : public MP_Fd
   struct termios uartConf;
 
 public:
-  MP_Uart(string device);
+  MP_Uart(string device, unsigned long vel);
   ~MP_Uart();
 
 
 };
 
 template <typename pIn, typename pOut, MPConf conf>
-MP_Uart<pIn, pOut, conf>::MP_Uart(string device) : MP_Fd<pIn, pOut, conf>() {
+MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn, pOut, conf>() {
 
   int fd = open(device.c_str(), O_RDWR | O_NOCTTY); //| O_NDELAY
 
@@ -76,7 +76,7 @@ MP_Uart<pIn, pOut, conf>::MP_Uart(string device) : MP_Fd<pIn, pOut, conf>() {
   uartConf.c_cc[VMIN] = 1;
   uartConf.c_cc[VTIME] = 0;
   // Communication speed (simple version, using the predefined constants)
-  if (cfsetispeed(&uartConf, B115200) || cfsetospeed(&uartConf, B115200)) {
+  if (cfsetispeed(&uartConf, vel) || cfsetospeed(&uartConf, vel)) {
     // todo gestire la comunicazione dell'errore
     // throw UartException("Impossibile Impostare velocità di cominicazione", errno);
   }

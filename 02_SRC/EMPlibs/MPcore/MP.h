@@ -51,11 +51,11 @@ namespace EMP {
 templatePar() class MP {
 #define MAXPackINsize (sizeof(pIn) + CRC8_enable())   // pack plus CRC8
 #define MAXPackOUTsize (sizeof(pOut) + CRC8_enable()) // pack plus CRC8
-
+#define cbBinSize cdBinStore() * MAXPackINsize
 protected:
   // Buffering recived byte
   uint16_t lastStartIndex = 0;
-  CircularBuffer<uint8_t, cdBinStore() * MAXPackINsize> byteRecive; // space to save byte read before parsing
+  CircularBuffer<uint8_t, cbBinSize> byteRecive; // space to save byte read before parsing
 
 private:
   // Succesfull pack recive

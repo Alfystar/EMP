@@ -3,7 +3,8 @@ if (NOT TARGET ${libName})
     add_library(${libName}
             #Specialization class
             MP_Fd.h MP_Fd.cpp
-            MP_Uart.cpp MP_Uart.h)
+            MP_Uart.h MP_Uart.cpp
+            )
 
     target_include_directories(${libName} PUBLIC "${CMAKE_INCLUDE_CURRENT_DIR}")
 
