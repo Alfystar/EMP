@@ -16,17 +16,18 @@ void loop() {
   digitalWrite(13, 1);
   packArd2Linux pWrite {5, "Hi linux"};
   mpSerial.packSend(&pWrite);
-  mpSerial.updateState();
-  delay(1000);
-  mpSerial.updateState();
-//  Serial.print("Num = ");
-//  Serial.println(pRead.num);
-//  Serial.print("buf = ");
-//  Serial.println(pRead.buf);
 
+  delay(1000);
+
+  mpSerial.updateState();
   digitalWrite(13, 0);
   packLinux2Ard pRead;
   mpSerial.getData_wait(&pRead);
+
+  //  Serial.print("Num = ");
+  //  Serial.println(pRead.num);
+  //  Serial.print("buf = ");
+  //  Serial.println(pRead.buf);
 
   delay(1000);
 

@@ -46,21 +46,24 @@ public:
 
 template <typename pIn, typename pOut, MPConf conf>
 MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn, pOut, conf>() {
-
+  mpUart_db("[MP_Uart] Opening pipe...\n");
   int fd = open(device.c_str(), O_RDWR | O_NOCTTY); //| O_NDELAY
 
   if (fd == -1) {
     // todo gestire la comunicazione dell'errore
     // system("ls /dev/ttyACM* -l");
     //    throw UartException("Failed to open port and get FD", errno);
+    exit(-1);
   }
   if (!isatty(fd)) {
     // todo gestire la comunicazione dell'errore
     //    throw UartException("Not Uart", errno);
+    exit(-1);
   }
   if (tcgetattr(fd, &uartConf)) {
     // todo gestire la comunicazione dell'errore
     //    throw UartException("Impossibile leggere la configurazione", errno);
+    exit(-1);
   }
   // Input flags - Turn off input processing
   uartConf.c_iflag &= ~(IGNBRK | BRKINT | ICRNL | INLCR | PARMRK | INPCK | ISTRIP | IXON);
@@ -79,11 +82,13 @@ MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn,
   if (cfsetispeed(&uartConf, vel) || cfsetospeed(&uartConf, vel)) {
     // todo gestire la comunicazione dell'errore
     // throw UartException("Impossibile Impostare velocità di cominicazione", errno);
+    exit(-1);
   }
   // Finally, apply the configuration
   if (tcsetattr(fd, TCSANOW, &uartConf)) {
     // todo gestire la comunicazione dell'errore
     //    throw UartException("Impossibile Impostare i parametri selezionati", errno);
+    exit(-1);
   }
 
   // Exclusive Access
@@ -92,6 +97,7 @@ MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn,
   if (ioctl(fd, TIOCEXCL, NULL) < 0) {
     // todo gestire la comunicazione dell'errore
     //    throw UartException("Impossibile Ottenere l'uso esclusivo", errno);
+    exit(-1);
   }
 
   // Ripulisco la memoria del driver

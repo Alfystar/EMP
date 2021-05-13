@@ -11,9 +11,9 @@ This UML diagram explain HOW the class are related:
   <i>uartDrive</i>
   <img src="https://github.com/Automatione-Tor-Vergata/EMP/blob/main/01_DOC/img/EMP-Hierarchy.png?raw=true"> 
 </p>
-Two concrete class are ALWAYS able to comunicate (with his O/I system).
-This task are perform equals thanks MPcore packege, all the logic work are do there, and the concrete class have the responsability only to implement the I/O fot that metod.
+Two concrete class are ALWAYS able to communicate (with his O/I system).
+This task are perform equals thanks MPcore package, all the logic work are do there, and the concrete class have the responsibility only to implement the I/O fot that method.
 Obiviusly The pIn and pOut need to be equal and swappet form the 2 side.
 
 Attention!!
-Linux side need to be compiled using C++20, to enable the compiling time optimization, unfortunaly, for now, arduino framework work with C++14, and for this reason in MPcore, are used some define to mantain the compatibility
+Linux side need to be compiled using C++20, to enable the compiling time optimization, unfortunately, for now, arduino framework work with C++14, and for this reason in MPcore, are used some define to maintain the compatibility

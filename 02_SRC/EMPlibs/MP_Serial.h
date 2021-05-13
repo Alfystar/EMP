@@ -56,11 +56,15 @@ private:
 
 public:
   int16_t getData_wait(pIn *pack) override;
-  unsigned long lastPackElapsed() override;
 
 protected:
+  // return -2  :=  Not enough space
   int packSend_Concrete(uint8_t *stream, uint16_t len) override;
   void packTimeRefresh() override;
+
+public:
+  unsigned long lastPackElapsed() override;
+
 };
 
 templatePar() MP_Serial<templateParCall()>::MP_Serial(HardwareSerial &serial)
@@ -98,7 +102,9 @@ templatePar() void MP_Serial<templateParCall()>::poolRead() {
 }
 
 templatePar() int16_t MP_Serial<templateParCall()>::getData_wait(pIn *pack) {
-  while (this->dataAvailable()<1){}
+  while (this->dataAvailable()<1){
+    updateState();
+  }
   return this->getData_try(pack);
 }
 
@@ -106,7 +112,23 @@ templatePar() unsigned long MP_Serial<templateParCall()>::lastPackElapsed() {
   return micros() - lastDecodeTime;   // Over Flow proof thanks the Unsigned Long type
 }
 
-templatePar() int MP_Serial<templateParCall()>::packSend_Concrete(uint8_t *stream, uint16_t len) { return 0; }
+templatePar() int MP_Serial<templateParCall()>::packSend_Concrete(uint8_t *stream, uint16_t len) {
+  if(com.availableForWrite() + byteSend.availableSpace() < len)
+    return -2;
+  trySend();  // Push out the buffered byte
+  uint16_t i = 0;
+  while (com.availableForWrite()>0 && len > 0){
+    com.write(stream[i++]);
+    len--;
+  }
+
+  while (len > 0){
+    byteSend.put(stream[i++]);
+    len--;
+  }
+
+  return 0;
+}
 
 templatePar() void MP_Serial<templateParCall()>::packTimeRefresh() {
   lastDecodeTime = micros();

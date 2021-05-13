@@ -99,7 +99,7 @@ templatePar() MP<templateParCall()>::MP() {
 templatePar() void MP<templateParCall()>::bufClear() {
   // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "cdBinStore" inside conf.h,
   // or comment this line instead if is fine
-  BUILD_BUG_ON((cbPackStore() * sizeof(pIn)) >= 4*Kib); // Waring, buffer use Too memory, use less config size
+  BUILD_BUG_ON((cbPackStore() * sizeof(pIn)) >= 4*Kib); // Warning, buffer use Too memory, use less config size
   byteRecive.memClean();
   packRecive.memClean();
   lastStartIndex = 0;

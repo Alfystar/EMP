@@ -27,8 +27,7 @@ int main(int argc, char *argv[]) {
     cin >> chose;
   }
   LinuxMP_ConfMed(uartConf, true);
-  auto *uart =
-      new EMP::MP_Uart<packArd2Linux, packLinux2Ard, uartConf>(list[chose],B9600);
+  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, uartConf>(list[chose], B9600);
 
   packArd2Linux pRead;
   uart->getData_wait(&pRead);
