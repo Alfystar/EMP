@@ -9,19 +9,22 @@ EMP::MP_Serial<packLinux2Ard, packArd2Linux, ArduinoMP_template(true)> mpSerial(
 void setup() {
   // write your initialization code here
   pinMode(13,OUTPUT);
-  mpSerial.begin(9600);
+  mpSerial.begin(115200);
 }
 
+packArd2Linux pWrite {100, "Hi linux"};
+packLinux2Ard pRead;
+
 void loop() {
-  digitalWrite(13, 1);
-  packArd2Linux pWrite {5, "Hi linux"};
+  //  mpSerial.updateState(); //
+
+  pWrite.num = pRead.num * 2;
   mpSerial.packSend(&pWrite);
 
-  delay(1000);
+  //delay(1000);
 
-  mpSerial.updateState();
-  digitalWrite(13, 0);
-  packLinux2Ard pRead;
+
+
   mpSerial.getData_wait(&pRead);
 
   //  Serial.print("Num = ");
@@ -29,7 +32,7 @@ void loop() {
   //  Serial.print("buf = ");
   //  Serial.println(pRead.buf);
 
-  delay(1000);
+  //delay(1000);
 
 
 }

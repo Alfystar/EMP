@@ -74,7 +74,7 @@ public:
 
   // Data get
   uint16_t dataAvailable();
-  int16_t getData_try(pIn *pack);              // return the residual pack available after the remove
+  virtual int16_t getData_try(pIn *pack);              // return the residual pack available after the remove
   virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:

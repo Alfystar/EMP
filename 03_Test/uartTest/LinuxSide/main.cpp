@@ -17,7 +17,6 @@ int main(int argc, char *argv[]) {
   if (list.size() == 1)
     chose = 0;
   else {
-
     cout << "Possible device detected:" << endl;
     for (int i = 0; i < list.size(); i++) {
       cout << "[" << i << "] = " << list[i] << endl;
@@ -27,13 +26,27 @@ int main(int argc, char *argv[]) {
     cin >> chose;
   }
   LinuxMP_ConfMed(uartConf, true);
-  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, uartConf>(list[chose], B9600);
+  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, uartConf>(list[chose], B115200);
 
   packArd2Linux pRead;
-  uart->getData_wait(&pRead);
-  std::cout << "Num = " << pRead.num << "buf = " << pRead.buf << std::endl;
+  packLinux2Ard pWrite {0, "Hoy Arduino"};
+  struct timespec now, old, diff;
 
-  packLinux2Ard pWrite{5, "Hoy Arduino"};
-  uart->packSend(&pWrite);
+  clock_gettime(CLOCK_MONOTONIC_RAW, &old);
+  while (true) {
+    //std::cout << "Waiting pack..." << endl;
+    uart->getData_wait(&pRead);
+
+    clock_gettime(CLOCK_MONOTONIC_RAW, &now);
+    timeSpecSub(now,old,diff);
+    old = now;
+    std::cout << "Pack recive: {Num = " << pRead.num << "\tbuf = " << pRead.buf << "}|\t|";
+    timeSpecPrint(diff,"diff");
+
+    //std::cout << "Sending response pack..." << endl;
+    pWrite.num++;
+    uart->packSend(&pWrite);
+  }
+  delete uart;
   return 0;
 }

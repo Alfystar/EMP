@@ -11,14 +11,14 @@
 ///###################################################################################################
 ///################################# Macro for Time Operation ########################################
 ///###################################################################################################
-#define timerissetSpec(tv) (tv.tv_sec || (tv.tv_nsec)
+#define timeSpecIsSset(tv) (tv.tv_sec || (tv.tv_nsec)
 
-#define timerclearSpec(tv) (tv.tv_sec = (tv.tv_nsec = 0)
+#define timeSpecClear(tv) (tv.tv_sec = (tv.tv_nsec = 0)
 
-#define timercmpSpec(a, b, CMP)                                                                                        \
+#define timeSpecCmp(a, b, CMP)                                                                                        \
   ((a.tv_sec == (b.tv_sec) ? (a.tv_nsec CMP(b.tv_nsec) : (a.tv_sec CMP(b.tv_sec))
 
-#define timeraddSpec(a, b, result)                                                                                     \
+#define timeSpecAdd(a, b, result)                                                                                     \
   do {                                                                                                                 \
     result.tv_sec = a.tv_sec + b.tv_sec;                                                                               \
     result.tv_nsec = a.tv_nsec + b.tv_nsec;                                                                            \
@@ -28,7 +28,7 @@
     }                                                                                                                  \
   } while (0)
 
-#define timersubSpec(a, b, result)                                                                                     \
+#define timeSpecSub(a, b, result)                                                                                     \
   do {                                                                                                                 \
     result.tv_sec = a.tv_sec - b.tv_sec;                                                                               \
     result.tv_nsec = a.tv_nsec - b.tv_nsec;                                                                            \
@@ -38,13 +38,13 @@
     }                                                                                                                  \
   } while (0)
 
-#define timeWriteSpec(ts, sec, nanoSec)                                                                                \
+#define timeSpecSet(ts, sec, nanoSec)                                                                                \
   do {                                                                                                                 \
     ts.tv_sec = (long)sec + (long)nanoSec / (1000UL * 1000UL * 1000UL);                                                \
     ts.tv_nsec = (long)nanoSec % (1000UL * 1000UL * 1000UL);                                                           \
   } while (0)
 
-#define timeStampSpec(ts, name)                                                                                        \
+#define timeSpecPrint(ts, name)                                                                                        \
   std::cout << name << ".tv_sec=" << ts.tv_sec << "\t" << name << ".tv_nsec=" << ts.tv_nsec << " ("                    \
             << (ts.tv_nsec + (500UL * 1000UL)) / (1000UL * 1000UL) << "ms)\n"
 ///###################################################################################################

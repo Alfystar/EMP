@@ -55,6 +55,7 @@ private:
   void poolRead();
 
 public:
+  int16_t getData_try(pIn *pack) override;              // return the residual pack available after the remove
   int16_t getData_wait(pIn *pack) override;
 
 protected:
@@ -101,11 +102,17 @@ templatePar() void MP_Serial<templateParCall()>::poolRead() {
   this->byteParsing();
 }
 
+templatePar() int16_t MP_Serial<templateParCall()>::getData_try(pIn *pack) {
+  updateState();
+  return MP<templateParCall()>::getData_try(pack);
+}
+
+
 templatePar() int16_t MP_Serial<templateParCall()>::getData_wait(pIn *pack) {
   while (this->dataAvailable()<1){
     updateState();
   }
-  return this->getData_try(pack);
+  return getData_try(pack);
 }
 
 templatePar() unsigned long MP_Serial<templateParCall()>::lastPackElapsed() {

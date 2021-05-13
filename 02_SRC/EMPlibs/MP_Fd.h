@@ -28,7 +28,7 @@
 // Level 2 := Notice msg
 // Level 3 := Info msg
 // Level 4 := DB msg
-#define MP_FD_VervoseLevel 5
+#define MP_FD_VervoseLevel 2
 #define MP_FD_err _codeActive(1, MP_FD_VervoseLevel)
 #define MP_FD_notice _codeActive(2, MP_FD_VervoseLevel)
 #define MP_FD_info _codeActive(3, MP_FD_VervoseLevel)
@@ -136,16 +136,20 @@ int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
 }
 template <typename pIn, typename pOut, MPConf conf>
 void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
+  usleep(500 * 1000U); // Grace time to end the configuration
   mpFd_db("[MP_Fd::readerFDTh] ReaderPipe Thread start\n");
-  usleep(50 * 1000U);
   long bRead;
   for (;;) {
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh try read\n");
     bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.remaningSpaceLinear());
     if (bRead < 0) {
+      //      switch (errno) {
+      //        case EBADF:
+      //      }
       mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
       MP_FD_err perror("take error:");
-      exit(-1);
+      sleep(1);
+      continue;
     }
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh read: %ld\n", bRead);
     if (mpFd.byteRecive.headAdd(bRead) == errorRet)
@@ -161,7 +165,7 @@ template <typename pIn, typename pOut, MPConf conf> void MP_Fd<pIn, pOut, conf>:
 template <typename pIn, typename pOut, MPConf conf> unsigned long MP_Fd<pIn, pOut, conf>::lastPackElapsed() {
   struct timespec now, res;
   clock_gettime(CLOCK_MONOTONIC_RAW, &now);
-  timersubSpec(now, lastDecodeTime, res);
+  timeSpecSub(now, lastDecodeTime, res);
   return res.tv_sec * 1000000UL + res.tv_nsec / 1000UL;
 }
 

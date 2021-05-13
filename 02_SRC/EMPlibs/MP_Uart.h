@@ -65,19 +65,17 @@ MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn,
     //    throw UartException("Impossibile leggere la configurazione", errno);
     exit(-1);
   }
-  // Input flags - Turn off input processing
+  /// *Input* flags - Turn off input processing
   uartConf.c_iflag &= ~(IGNBRK | BRKINT | ICRNL | INLCR | PARMRK | INPCK | ISTRIP | IXON);
-  // Output flags - Turn off output processing
+  /// *Output* flags - Turn off output processing
   uartConf.c_oflag = 0;
   // Output flags - Turn off output processing
   uartConf.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
   // Turn off character processing
   uartConf.c_cflag &= ~(CSIZE | PARENB);
   uartConf.c_cflag |= CS8;
-  // One input byte is enough to return from read()
-  // Inter-character timer off
-  uartConf.c_cc[VMIN] = 1;
-  uartConf.c_cc[VTIME] = 0;
+  uartConf.c_cc[VMIN] = 1;   // One input byte is enough to return from read()
+  uartConf.c_cc[VTIME] = 0;  // Inter-character timer off
   // Communication speed (simple version, using the predefined constants)
   if (cfsetispeed(&uartConf, vel) || cfsetospeed(&uartConf, vel)) {
     // todo gestire la comunicazione dell'errore
