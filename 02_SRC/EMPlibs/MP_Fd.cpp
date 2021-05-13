@@ -3,5 +3,3 @@
 //
 
 #include "MP_Fd.h"
-
-using namespace EMP;

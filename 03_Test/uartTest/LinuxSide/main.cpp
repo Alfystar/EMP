@@ -3,14 +3,12 @@
 //
 #include <MP_Uart.h>
 #include <unistd.h>
-#include <iostream>
 
 typedef struct pack_ {
   char buf[20];
 } __attribute__((packed)) pack;
 
 int main(int argc, char *argv[]) {
-  std::cout << __cplusplus << std::endl;
   std::cout << "Uart Start" << std::endl;
   auto list = EMP::UartDeviceList();
   if(list.empty()){
@@ -24,7 +22,7 @@ int main(int argc, char *argv[]) {
   int chose;
   cout << "Please chose the index: ";
   cin >> chose;
-  LinuxMP_ConfMed(uartConf, true);
+  LinuxMP_ConfDefault(uartConf);
   auto *uart = new EMP::MP_Uart<pack, pack, uartConf>(list[chose]);
 
   return 0;

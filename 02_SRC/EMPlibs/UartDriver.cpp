@@ -3,6 +3,7 @@
 //
 
 #include "UartDriver.h"
+#ifdef used
 
 namespace Uart {
     #ifdef LinuxSide
@@ -546,3 +547,4 @@ namespace Uart {
     }
 #endif
 }
+#endif //#ifdef used

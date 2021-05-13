@@ -4,7 +4,7 @@
 
 #ifndef PCLISTENUART_UARTDRIVER_H
 #define PCLISTENUART_UARTDRIVER_H
-
+#ifdef used
 #include "MPcore/macro.h"
 #include "includePlatform.h"
 
@@ -123,4 +123,5 @@ namespace Uart {
 }
 
 #undef dataSize
+#endif //#ifdef used
 #endif //PCLISTENUART_UARTDRIVER_H

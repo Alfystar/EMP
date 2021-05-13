@@ -9,7 +9,30 @@
 #include "conf.h"
 #include "crc8/crc8.h"
 #include "macro.h"
-#include <cstdint>
+//#include <cstdint>
+#include <stdint.h>
+
+#define Kib (1024)
+
+#if __cplusplus > 201703L // superiore al C++17
+#define templatePar() template <typename pIn, typename pOut, MPConf conf>
+#define templateParCall() pIn, pOut, conf
+
+
+#define CRC8_enable() conf.CRC8_enable
+#define cdBinStore() conf.cdBinStore
+#define cbPackStore() conf.cbPackStore
+
+#else
+#define templatePar() template <typename pIn, typename pOut, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
+#define templateParCall() pIn, pOut, CRC8_enable, cdBinStore, cbPackStore
+
+
+#define CRC8_enable() CRC8_enable
+#define cdBinStore() cdBinStore
+#define cbPackStore() cbPackStore
+
+#endif
 
 namespace EMP {
 /* The class MP (Message Pack) perform a GENERAL and PLATFORM AGNOSTIC Data Pack Transfer
@@ -25,18 +48,18 @@ namespace EMP {
  *  - implement the packSend_Concrete, specific for the architecture
  *  - fill byteReceive when byte are dataAvailable and than parse him with byteParsing() function
  */
-template <typename pIn, typename pOut, MPConf conf> class MP {
-#define MAXPackINsize (sizeof(pIn) + conf.CRC8_enable)   // pack plus CRC8
-#define MAXPackOUTsize (sizeof(pOut) + conf.CRC8_enable) // pack plus CRC8
+templatePar() class MP {
+#define MAXPackINsize (sizeof(pIn) + CRC8_enable())   // pack plus CRC8
+#define MAXPackOUTsize (sizeof(pOut) + CRC8_enable()) // pack plus CRC8
 
 protected:
   // Buffering recived byte
-  u_int16_t lastStartIndex = 0;
-  CircularBuffer<u_int8_t, conf.cdBinStore * MAXPackINsize> byteRecive; // space to save byte read before parsing
+  uint16_t lastStartIndex = 0;
+  CircularBuffer<uint8_t, cdBinStore() * MAXPackINsize> byteRecive; // space to save byte read before parsing
 
 private:
   // Succesfull pack recive
-  CircularBuffer<pIn, conf.cbPackStore> packRecive;
+  CircularBuffer<pIn, cbPackStore()> packRecive;
 
 public:
   // Instance operation
@@ -46,20 +69,20 @@ public:
   /// Data Send & Get
   // Data Send
   // return 0 on success, -1 cobs error,  other wise, the error code from the packSend_Concrete
-  __always_inline int packSend(pOut *pack);
-  int packSend(pOut *pack, u_int16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
+  __attribute__((always_inline)) int packSend(pOut *pack);
+  int packSend(pOut *pack, uint16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
 
   // Data get
-  u_int16_t dataAvailable();
+  uint16_t dataAvailable();
   int16_t getData_try(pIn *pack);              // return the residual pack available after the remove
   virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:
-  virtual int packSend_Concrete(u_int8_t *stream, u_int16_t len) = 0; // 0 on success, other wise, error code (!=-1)
-  __always_inline int packSend_Concrete(u_int8_t byteSend);
+  virtual int packSend_Concrete(uint8_t *stream, uint16_t len) = 0; // 0 on success, other wise, error code (!=-1)
+  __attribute__((always_inline)) int packSend_Concrete(uint8_t byteSend);
 
   // Son have to call after the insertion inside the byteParsing buffer
-  u_int16_t byteParsing(); // return How many pack are found
+  uint16_t byteParsing(); // return How many pack are found
   virtual void packTimeRefresh() = 0;   //Call by byteParsing when new pack are recived, used to measure the time
 public:
   virtual unsigned long lastPackElapsed() = 0;   //retur micro second (10^-6 sec) elapsed since last pack recived
@@ -69,12 +92,14 @@ public:
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Instance operation
 
-template <typename pIn, typename pOut, MPConf conf> MP<pIn, pOut, conf>::MP() { bufClear(); }
+templatePar() MP<templateParCall()>::MP() {
+  bufClear();
+}
 
-template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::bufClear() {
+templatePar() void MP<templateParCall()>::bufClear() {
   // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "cdBinStore" inside conf.h,
   // or comment this line instead if is fine
-  BUILD_BUG_ON((conf.cdBinStore * sizeof(pIn)) >= 4096);
+  BUILD_BUG_ON((cbPackStore() * sizeof(pIn)) >= 4*Kib); // Waring, buffer use Too memory, use less config size
   byteRecive.memClean();
   packRecive.memClean();
   lastStartIndex = 0;
@@ -85,27 +110,27 @@ template <typename pIn, typename pOut, MPConf conf> void MP<pIn, pOut, conf>::bu
  *    On fail return -1
  */
 
-template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::packSend(pOut *pack) {
+templatePar() int MP<templateParCall()>::packSend(pOut *pack) {
   return packSend(pack, sizeof(pOut));
 }
 
-template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::packSend(pOut *pack, u_int16_t bSize) {
+templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
 
   int ret = 0;
 
   /// ######################## Packetize With CRC8  ########################
-  u_int16_t packSize = bSize + conf.CRC8_enable;
-  u_int8_t packBuf[packSize]; // CRC8 may add 1 byte
+  uint16_t packSize = bSize + CRC8_enable();
+  uint8_t packBuf[packSize]; // CRC8 may add 1 byte
   memcpy(packBuf, pack, bSize);
 
-  if (conf.CRC8_enable) {
-    packBuf[packSize - 1] = crc8_stream((u_int8_t *)pack, bSize);
+  if (CRC8_enable()) {
+    packBuf[packSize - 1] = crc8_stream((uint8_t *)pack, bSize);
   }
 
   /// ###################### Encoding pack with COBS  ######################
-  u_int16_t sendSize = packSize + 1; // Cobs add 1 byte
+  uint16_t sendSize = packSize + 1; // Cobs add 1 byte
 
-  u_int8_t sendBuf[sendSize];
+  uint8_t sendBuf[sendSize];
 
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
@@ -117,13 +142,13 @@ template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::pac
   return 0;
 }
 
-template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf>::dataAvailable() {
+templatePar() uint16_t MP<templateParCall()>::dataAvailable() {
   return this->packRecive.usedSpace();
 }
 
 // On success: copy pack Logic, inside *pack are saved the tail data if possible,
 // On fail: return -1 and *pack aren't touch
-template <typename pIn, typename pOut, MPConf conf> int16_t MP<pIn, pOut, conf>::getData_try(pIn *pack) {
+templatePar() int16_t MP<templateParCall()>::getData_try(pIn *pack) {
   if (packRecive.isEmpty())
     return -1;
   // If data are dataAvailable
@@ -131,16 +156,16 @@ template <typename pIn, typename pOut, MPConf conf> int16_t MP<pIn, pOut, conf>:
   return dataAvailable();
 }
 
-template <typename pIn, typename pOut, MPConf conf> int MP<pIn, pOut, conf>::packSend_Concrete(u_int8_t byteSend) {
+templatePar() int MP<templateParCall()>::packSend_Concrete(uint8_t byteSend) {
   return packSend_Concrete(&byteSend, 1);
 }
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Byte parsing using CRC8 and COBS to
-template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf>::byteParsing() {
-  u_int8_t dato;
-  u_int16_t datoId;
-  u_int16_t packFound = 0;
+templatePar() uint16_t MP<templateParCall()>::byteParsing() {
+  uint8_t dato;
+  uint16_t datoId;
+  uint16_t packFound = 0;
   while (!byteRecive.isEmpty()) {
     // Get the byte and his position (if is a 0, need to be saved)
     dato = byteRecive.get(&datoId);
@@ -150,7 +175,7 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
 
     /// ########################## COBS DECODE ##########################
     // NB:COBS protocol add 1 byte at the pack, At the start
-    u_int16_t COBSsrcSize = byteRecive.countSlotBetween(lastStartIndex, datoId);
+    uint16_t COBSsrcSize = byteRecive.countSlotBetween(lastStartIndex, datoId);
 
     if (COBSsrcSize - 1 > MAXPackINsize || COBSsrcSize < 2 ) {
       // Someting wrong, no 0 was recived in time, or too many zero are received
@@ -159,9 +184,9 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
       continue;
     }
     // Fill the buffer for the decoding
-    u_int8_t COBSEncoded[COBSsrcSize];
+    uint8_t COBSEncoded[COBSsrcSize];
     byteRecive.memcpyCb(COBSEncoded, lastStartIndex, COBSsrcSize);
-    u_int8_t COBSDecode[MAXPackINsize];
+    uint8_t COBSDecode[MAXPackINsize];
 
     cobs_decode_result res = cobs_decode(COBSDecode, MAXPackINsize, COBSEncoded, COBSsrcSize);
     lastStartIndex = datoId + 1; // From now, in any case, datoId are the new lastStartIndex
@@ -170,8 +195,8 @@ template <typename pIn, typename pOut, MPConf conf> u_int16_t MP<pIn, pOut, conf
       continue;
     }
     /// ######################## CRC8 VALIDATION ########################
-    if (conf.CRC8_enable) {
-      u_int8_t calcCRC = crc8_stream(COBSDecode, res.out_len - 1); // Last byte are the CRC
+    if (CRC8_enable()) {
+      uint8_t calcCRC = crc8_stream(COBSDecode, res.out_len - 1); // Last byte are the CRC
       if (calcCRC != COBSDecode[res.out_len - 1])
         continue; // CRC8 Fail!!!
     }

@@ -16,5 +16,8 @@ if (NOT TARGET ${libName})
     find_package(Threads REQUIRED)
     target_link_libraries(${libName} PUBLIC ${CMAKE_THREAD_LIBS_INIT})
 
+    # Define to distining the compiler from Embedded Compiler
+    target_compile_definitions(${libName} PUBLIC CMAKE_COMPILING=1)
+
     message("[${libName}] subsystem included")
 endif ()

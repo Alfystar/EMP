@@ -4,7 +4,7 @@
 
 #ifndef PCLISTENUART_UARTEXCEPTION_H
 #define PCLISTENUART_UARTEXCEPTION_H
-
+#ifdef CMAKE_COMPILING
 #include <exception>
 #include <string>
 #include <cstring>
@@ -28,4 +28,5 @@ namespace Uart {
 }
 #undef excType
 #undef excType
+#endif //#ifdef CMAKE_COMPILING
 #endif //PCLISTENUART_UARTEXCEPTION_H

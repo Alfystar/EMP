@@ -4,13 +4,14 @@
 
 #ifndef EMP_LIB_02_SRC_EMPLIBS_MP_UART_H
 #define EMP_LIB_02_SRC_EMPLIBS_MP_UART_H
-
+#ifdef CMAKE_COMPILING
 #include <MP_Fd.h>
 #include <string>
 #include <vector>
 
 // Include for the serial
 #include <fcntl.h>
+#include <sys/ioctl.h>
 #include <termios.h>
 
 // Level 0 := No Message
@@ -31,6 +32,8 @@
 using namespace std;
 namespace EMP {
 
+vector<string> UartDeviceList();
+
 template <typename pIn, typename pOut, MPConf conf> class MP_Uart : public MP_Fd<pIn, pOut, conf> {
   struct termios uartConf;
 
@@ -38,7 +41,7 @@ public:
   MP_Uart(string device);
   ~MP_Uart();
 
-  static vector<string> deviceList();
+
 };
 
 template <typename pIn, typename pOut, MPConf conf>
@@ -78,24 +81,28 @@ MP_Uart<pIn, pOut, conf>::MP_Uart(string device) : MP_Fd<pIn, pOut, conf>() {
     // throw UartException("Impossibile Impostare velocità di cominicazione", errno);
   }
   // Finally, apply the configuration
-  if (tcsetattr(this->fd, TCSANOW, &uartConf)) {
+  if (tcsetattr(fd, TCSANOW, &uartConf)) {
     // todo gestire la comunicazione dell'errore
     //    throw UartException("Impossibile Impostare i parametri selezionati", errno);
   }
+
+  // Exclusive Access
+  // If you wish ensure exclusive access to the serial device then use ioctl to set TIOCEXCL.
+  // If your system includes programs like ModemManager then you should set this attribute.
+  if (ioctl(fd, TIOCEXCL, NULL) < 0) {
+    // todo gestire la comunicazione dell'errore
+    //    throw UartException("Impossibile Ottenere l'uso esclusivo", errno);
+  }
+
   // Ripulisco la memoria del driver
   tcflush(fd, TCIOFLUSH);
   this->fdR = fd;
   this->fdW = fd;
 }
 
-template <typename pIn, typename pOut, MPConf conf> MP_Uart<pIn, pOut, conf>::~MP_Uart() {
-  close(this->fdR);
-}
-
-template <typename pIn, typename pOut, MPConf conf> vector<string> MP_Uart<pIn, pOut, conf>::deviceList() {
-  //todo: ottenere la lista dei device
-  return vector<string>();
-}
+template <typename pIn, typename pOut, MPConf conf> MP_Uart<pIn, pOut, conf>::~MP_Uart() { close(this->fdR); }
 
 } // namespace EMP
+
+#endif // CMAKE_COMPILING
 #endif // EMP_LIB_02_SRC_EMPLIBS_MP_UART_H

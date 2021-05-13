@@ -4,7 +4,7 @@
 
 #ifndef EMP_LIB_02_SRC_EMPLIBS_MP_FD_H
 #define EMP_LIB_02_SRC_EMPLIBS_MP_FD_H
-
+#ifdef CMAKE_COMPILING
 #include <MP.h>
 #include <timeSpecOp.h>
 // Specific include for the class
@@ -13,6 +13,10 @@
 #include <semaphore.h>
 #include <thread>
 #include <unistd.h>
+
+#if __cplusplus <= 201703L // superiore al C++17
+#error Please use C++20, your version is too old
+#endif
 
 #define printf_STD(Level, str, ...)                                                                                    \
   do {                                                                                                                 \
@@ -44,13 +48,21 @@ namespace EMP {
  * output, create another layer or use same data-distribution service (dds)
  */
 template <typename pIn, typename pOut, MPConf conf> class MP_Fd : public MP<pIn, pOut, conf> {
+protected:
   int fdR, fdW;
+
+private:
   std::thread *readerTh; // Reader Thread, started by the constructor
   sem_t receivedPackToken;
   struct timespec lastPackTime;
 
 public:
   MP_Fd(int fdReadSide, int fdWriteSide);
+
+protected:
+  MP_Fd();
+
+public:
   ~MP_Fd();
 
   int16_t getData_wait(pIn *pack); // return the residual pack available after the remove
@@ -67,10 +79,13 @@ private:
 };
 
 template <typename pIn, typename pOut, MPConf conf>
-MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP<pIn, pOut, conf>() {
-  mpFd_db("[MP_Fd]: test Constuctor, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
+MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP_Fd<pIn, pOut, conf>() {
+  mpFd_db("[MP_Fd]: Creating MP_Fd object with, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
+}
+
+template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::MP_Fd() : MP<pIn, pOut, conf>() {
   packTimeRefresh();
   sem_init(&receivedPackToken, 0, 0);
   readerTh = new std::thread(this->readerFDTh, std::ref(*this));
@@ -152,4 +167,5 @@ template <typename pIn, typename pOut, MPConf conf> unsigned long MP_Fd<pIn, pOu
 
 } // namespace EMP
 
+#endif // CMAKE_COMPILING
 #endif // EMP_LIB_02_SRC_EMPLIBS_MP_FD_H

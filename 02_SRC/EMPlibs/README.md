@@ -1,28 +1,19 @@
-![](https://img.shields.io/github/stars/Alfystar/Scorbot-CA) ![](https://img.shields.io/github/forks/Alfystar/Scorbot-CA) ![](https://img.shields.io/github/tag/Alfystar/Scorbot-CA) ![](https://img.shields.io/github/release/Alfystar/Scorbot-CA) ![](https://img.shields.io/github/issues/Alfystar/Scorbot-CA) ![](https://img.shields.io/bower/v/editor.md.svg)
+# EMPLibs Structure
 
-------------
+The library are written to be compiled directly from the linux companion and the arduino compiler.
 
-# Common_src Arduino uart <--> Linux uart
+The linux side have his CmakeFile.txt, and inside him are defined `CMAKE_COMPILING`, if you using something else, be carrefour to define this define, are used to avoi error form arduino builder.
 
-Sono qui presenti 
-
-    .
-    ├── circularBuffer              // Libreria template per il buffer circolare dei pacchetti
-    ├── DataTransfertPackge         // typeDef dei pacchetti scambiabili tra i sistemi
-    ├── timeOp                      // Raccolta di macro per gestire comodamente il tempo in Linux
-    ├── uarDriver                  // Classi sia per linux che per arduino che realizzano la cominicazione tra le schede
-    ├── CMakeLists.txt
-    └── README.md
-
-## uartDriver
-Vale la pena approfondire la cartella "uartDriver":
-Essa al suo interno contiene l'implementazioni delle classi che realizzano il "Transport Layer" di questa applicazione:
-il diagramma UML di questa classe spiega meglio come si compongono:
+## Message Pack system
+This UML diagram explain HOW the class are related:
 
 <p align="center">
   <i>uartDrive</i>
-  <img src="https://github.com/Alfystar/Scorbot-CA/blob/master/1_Doc/ScorBoard%20UML%20Diagrams/diagrams/SerialDrives%20Class%20Diagram.png?raw=true"> 
+  <img src="https://github.com/Automatione-Tor-Vergata/EMP/blob/main/01_DOC/img/EMP-Hierarchy.png?raw=true"> 
 </p>
-Le classi template necessitano di sapere il tipo di pIn e pOut, così da poter allocare opportunamente lo spazio di bufferizzazione, nella send però, continua a pretendere di sapere la usedSpace da inviare, questo per poter compattare la trasmissione, e permettere al livello superiore di inviare in realtà pacchetti diversi e di dimensione diversa.
+Two concrete class are ALWAYS able to comunicate (with his O/I system).
+This task are perform equals thanks MPcore packege, all the logic work are do there, and the concrete class have the responsability only to implement the I/O fot that metod.
+Obiviusly The pIn and pOut need to be equal and swappet form the 2 side.
 
-Alla classe deve però arrivare una union in questo caso, che avrà la dimensione massima del pacchetto, permettendo di memorizzare opportunamente e in sicurezza nel buffer circolare il pacchetto. 
+Attention!!
+Linux side need to be compiled using C++20, to enable the compiling time optimization, unfortunaly, for now, arduino framework work with C++14, and for this reason in MPcore, are used some define to mantain the compatibility
