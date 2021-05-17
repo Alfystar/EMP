@@ -25,7 +25,8 @@ int main(int argc, char *argv[]) {
   cout << "Please chose the index: ";
   cin >> chose;
   LinuxMP_ConfMed(uartConf, true);
-  auto *uart = new EMP::MP_Uart<pack, pack, uartConf>(list[chose]);
+  auto *uart = new EMP::MP_Uart<pack, pack, uartConf>(list[chose],9600);
+
 
   return 0;
 }

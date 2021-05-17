@@ -4,6 +4,7 @@ if (NOT TARGET ${libName})
             #Specialization class
             MP_Fd.h MP_Fd.cpp
             MP_Uart.h MP_Uart.cpp
+            exeptionMPLinux.h
             )
 
     target_include_directories(${libName} PUBLIC "${CMAKE_INCLUDE_CURRENT_DIR}")

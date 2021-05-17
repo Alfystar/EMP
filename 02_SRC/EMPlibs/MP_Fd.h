@@ -6,6 +6,7 @@
 #define EMP_LIB_02_SRC_EMPLIBS_MP_FD_H
 #ifdef CMAKE_COMPILING
 #include <MP.h>
+#include <exeptionMPLinux.h>
 #include <timeSpecOp.h>
 // Specific include for the class
 #include <cerrno>
@@ -46,10 +47,13 @@ namespace EMP {
  * N.B. This class aren't reentrant !!! Outside only 1 Thread can talk with this, because every getData_try or
  * getData_wait the circular buffer progress and different thread whatch different output. If is important multiply the
  * output, create another layer or use same data-distribution service (dds)
+ *
+ * Concrete son have to readyReader.unlock(), to signal the finish of the constructor
  */
 template <typename pIn, typename pOut, MPConf conf> class MP_Fd : public MP<pIn, pOut, conf> {
 protected:
   int fdR, fdW;
+  std::mutex readyReader;
 
 private:
   std::thread *readerTh; // Reader Thread, started by the constructor
@@ -88,6 +92,7 @@ MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP_Fd<pIn, pOut
 template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::MP_Fd() : MP<pIn, pOut, conf>() {
   packTimeRefresh();
   sem_init(&receivedPackToken, 0, 0);
+  readyReader.try_lock();
   readerTh = new std::thread(this->readerFDTh, std::ref(*this));
   if (conf.RT_THREAD) {
     // encrease priority
@@ -96,8 +101,7 @@ template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::MP_F
     pthread_getschedparam(this->readerTh->native_handle(), &policy, &sch);
     sch.sched_priority = sched_get_priority_max(SCHED_FIFO);
     if (pthread_setschedparam(this->readerTh->native_handle(), SCHED_FIFO, &sch)) {
-      // todo: Gestire la comunicazione dell'errore
-      //            throw UartException("Failed to setschedparam: ", errno);
+      throw MP_FDexept("Failed to pthread_setschedparam", errno);
     }
   }
 }
@@ -136,6 +140,7 @@ int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
 }
 template <typename pIn, typename pOut, MPConf conf>
 void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
+  mpFd.readyReader.lock();
   usleep(500 * 1000U); // Grace time to end the configuration
   mpFd_db("[MP_Fd::readerFDTh] ReaderPipe Thread start\n");
   long bRead;
@@ -143,11 +148,14 @@ void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh try read\n");
     bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.remaningSpaceLinear());
     if (bRead < 0) {
-      //      switch (errno) {
-      //        case EBADF:
-      //      }
-      mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
-      MP_FD_err perror("take error:");
+      switch (errno) {
+        //case EBADF:
+        //break;
+      default:
+        mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
+        MP_FD_err perror("take error:");
+        break;
+      }
       sleep(1);
       continue;
     }

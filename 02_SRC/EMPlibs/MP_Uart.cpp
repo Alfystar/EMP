@@ -43,7 +43,6 @@ vector<string> EMP::UartDeviceList() {
   /* close */
   pclose(fp);
 
-  // todo: ottenere la lista dei device
   return devList;
 }
 
