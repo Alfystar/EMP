@@ -32,6 +32,13 @@
 using namespace std;
 namespace EMP {
 
+class MP_UartExept : public MP_FDexept {
+public:
+  MP_UartExept(const string &msg, int errCode) : MP_FDexept(msg, errCode){};
+  MP_UartExept(const string &msg) : MP_UartExept(msg, 0){};
+
+}; // class MP_UartExept
+
 vector<string> UartDeviceList();
 
 template <typename pIn, typename pOut, MPConf conf> class MP_Uart : public MP_Fd<pIn, pOut, conf> {

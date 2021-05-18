@@ -5,9 +5,16 @@
 #ifndef EMP_LIB_02_SRC_EMPLIBS_MP_FD_H
 #define EMP_LIB_02_SRC_EMPLIBS_MP_FD_H
 #ifdef CMAKE_COMPILING
+
+// Exeption include
+#include <cstring>
+#include <exception>
+#include <string>
+using namespace std;
+// System include
 #include <MP.h>
-#include <exeptionMPLinux.h>
 #include <timeSpecOp.h>
+
 // Specific include for the class
 #include <cerrno>
 #include <mutex>
@@ -41,6 +48,30 @@
 #define mpFd_db(str, ...) printf_STD(MP_FD_Db, str, ##__VA_ARGS__)
 
 namespace EMP {
+
+/*
+ * The exeption are used to signal a terminal error, not catch him, the system will crash in any case, but so are
+ * possible watch on the terminal the error, if you need to send back an error, the error code in the return value
+ * might be better solution for this library
+ */
+class MP_FDexept : public exception {
+  const string _msg;
+  const int _errCode = 0;
+  string ret;
+
+public:
+  MP_FDexept(const string &msg, int errCode) : _msg(msg), _errCode(errCode) {
+    ret = "|" + _msg + "|";
+    ret += "\terror code: ";
+    ret += to_string(_errCode);
+  };
+
+  MP_FDexept(const string &msg) : MP_FDexept(msg, 0){};
+
+  virtual const char *what() const noexcept override { return ret.c_str(); }
+  virtual const int errNum() const noexcept { return _errCode; }
+}; // class MP_exept
+
 /* This class, extend the MP to the linux OS, it perform the operation at the File-Descriptor abstraction level,
  * big part of the device have their pseudo-file in /dev/, so this solution should be very general.
  *
@@ -149,8 +180,8 @@ void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
     bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.remaningSpaceLinear());
     if (bRead < 0) {
       switch (errno) {
-        //case EBADF:
-        //break;
+        // case EBADF:
+        // break;
       default:
         mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
         MP_FD_err perror("take error:");
