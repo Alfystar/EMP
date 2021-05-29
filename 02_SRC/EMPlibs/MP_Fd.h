@@ -177,7 +177,7 @@ void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
   long bRead;
   for (;;) {
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh try read\n");
-    bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.remaningSpaceLinear());
+    bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.availableSpaceLinear());
     if (bRead < 0) {
       switch (errno) {
         // case EBADF:

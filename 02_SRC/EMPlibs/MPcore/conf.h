@@ -29,17 +29,18 @@ typedef struct MPConf_ {
 #if __cplusplus > 201703L // superiore al C++17
 #define configDeclare(name, CRC8_enable, cbPackStore, cdBinStore, RT_THREAD)                                           \
   constexpr MPConf name { CRC8_enable, cbPackStore, cdBinStore, RT_THREAD }
+
+#define LinuxMP_ConfBig(name, crcEn, RT_Thread) configDeclare(name, crcEn, 256, 32, RT_Thread)
+#define LinuxMP_ConfMed(name, crcEn, RT_Thread) configDeclare(name, crcEn, 64, 16, RT_Thread)
+#define LinuxMP_ConfSmall(name, crcEn, RT_Thread) configDeclare(name, crcEn, 16, 8, RT_Thread)
+
 #else
 #define configDeclare(CRC8_enable, cbPackStore, cdBinStore) CRC8_enable, cbPackStore, cdBinStore
 
 #define ArduinoMP_template(crcEn) configDeclare(crcEn, 8, 4)
 #define ArduinoMP_templateDefault() configDeclare(true, 8, 4)
 
-#endif
-
-#define LinuxMP_ConfBig(name, crcEn) configDeclare(name, crcEn, 256, 32, true)
-#define LinuxMP_ConfMed(name, crcEn) configDeclare(name, crcEn, 64, 16, true)
-#define LinuxMP_ConfSmall(name, crcEn) configDeclare(name, crcEn, 16, 8, true)
+#endif //#if __cplusplus > 201703L // superiore al C++17
 
 // MPConf test = ArduinoMP_ConfDefault();
 #endif // EMP_LIB_CONF_H

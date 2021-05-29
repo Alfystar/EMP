@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     cout << "Please chose the index: ";
     cin >> chose;
   }
-  LinuxMP_ConfMed(uartConf, true);
+  LinuxMP_ConfMed(uartConf, true, false);
   auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, uartConf>(list[chose], B115200);
 
   packArd2Linux pRead;
@@ -34,18 +34,18 @@ int main(int argc, char *argv[]) {
 
   clock_gettime(CLOCK_MONOTONIC_RAW, &old);
   while (true) {
-    //std::cout << "Waiting pack..." << endl;
+  /*  std::cout << "Sending response pack..." << endl;
+    pWrite.num++;
+    uart->packSend(&pWrite);
+*/
+    std::cout << "Waiting pack..." << endl;
     uart->getData_wait(&pRead);
-
     clock_gettime(CLOCK_MONOTONIC_RAW, &now);
     timeSpecSub(now,old,diff);
     old = now;
     std::cout << "Pack recive: {Num = " << pRead.num << "\tbuf = " << pRead.buf << "}|\t|";
     timeSpecPrint(diff,"diff");
 
-    //std::cout << "Sending response pack..." << endl;
-    pWrite.num++;
-    uart->packSend(&pWrite);
   }
   delete uart;
   return 0;

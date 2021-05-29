@@ -18,21 +18,12 @@ packLinux2Ard pRead;
 void loop() {
   //  mpSerial.updateState(); //
 
+  mpSerial.getData_wait(&pRead);
+
+  //delay(1000);
+
   pWrite.num = pRead.num * 2;
   mpSerial.packSend(&pWrite);
 
   //delay(1000);
-
-
-
-  mpSerial.getData_wait(&pRead);
-
-  //  Serial.print("Num = ");
-  //  Serial.println(pRead.num);
-  //  Serial.print("buf = ");
-  //  Serial.println(pRead.buf);
-
-  //delay(1000);
-
-
 }

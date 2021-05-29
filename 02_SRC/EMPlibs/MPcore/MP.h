@@ -18,15 +18,14 @@
 #define templatePar() template <typename pIn, typename pOut, MPConf conf>
 #define templateParCall() pIn, pOut, conf
 
-
 #define CRC8_enable() conf.CRC8_enable
 #define cdBinStore() conf.cdBinStore
 #define cbPackStore() conf.cbPackStore
 
 #else
-#define templatePar() template <typename pIn, typename pOut, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
+#define templatePar()                                                                                                  \
+  template <typename pIn, typename pOut, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
 #define templateParCall() pIn, pOut, CRC8_enable, cdBinStore, cbPackStore
-
 
 #define CRC8_enable() CRC8_enable
 #define cdBinStore() cdBinStore
@@ -82,24 +81,21 @@ protected:
   __attribute__((always_inline)) int packSend_Concrete(uint8_t byteSend);
 
   // Son have to call after the insertion inside the byteParsing buffer
-  uint16_t byteParsing(); // return How many pack are found
-  virtual void packTimeRefresh() = 0;   //Call by byteParsing when new pack are recived, used to measure the time
+  uint16_t byteParsing();             // return How many pack are found
+  virtual void packTimeRefresh() = 0; // Call by byteParsing when new pack are recived, used to measure the time
 public:
-  virtual unsigned long lastPackElapsed() = 0;   //retur micro second (10^-6 sec) elapsed since last pack recived
-
+  virtual unsigned long lastPackElapsed() = 0; // retur micro second (10^-6 sec) elapsed since last pack recived
 };
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Instance operation
 
-templatePar() MP<templateParCall()>::MP() {
-  bufClear();
-}
+templatePar() MP<templateParCall()>::MP() { bufClear(); }
 
 templatePar() void MP<templateParCall()>::bufClear() {
   // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "cdBinStore" inside conf.h,
   // or comment this line instead if is fine
-  BUILD_BUG_ON((cbPackStore() * sizeof(pIn)) >= 4*Kib); // Warning, buffer use Too memory, use less config size
+  BUILD_BUG_ON((cbPackStore() * sizeof(pIn)) >= 4 * Kib); // Warning, buffer use Too memory, use less config size
   byteRecive.memClean();
   packRecive.memClean();
   lastStartIndex = 0;
@@ -110,9 +106,7 @@ templatePar() void MP<templateParCall()>::bufClear() {
  *    On fail return -1
  */
 
-templatePar() int MP<templateParCall()>::packSend(pOut *pack) {
-  return packSend(pack, sizeof(pOut));
-}
+templatePar() int MP<templateParCall()>::packSend(pOut *pack) { return packSend(pack, sizeof(pOut)); }
 
 templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
 
@@ -142,9 +136,7 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
   return 0;
 }
 
-templatePar() uint16_t MP<templateParCall()>::dataAvailable() {
-  return this->packRecive.usedSpace();
-}
+templatePar() uint16_t MP<templateParCall()>::dataAvailable() { return this->packRecive.usedSpace(); }
 
 // On success: copy pack Logic, inside *pack are saved the tail data if possible,
 // On fail: return -1 and *pack aren't touch
@@ -156,9 +148,7 @@ templatePar() int16_t MP<templateParCall()>::getData_try(pIn *pack) {
   return dataAvailable();
 }
 
-templatePar() int MP<templateParCall()>::packSend_Concrete(uint8_t byteSend) {
-  return packSend_Concrete(&byteSend, 1);
-}
+templatePar() int MP<templateParCall()>::packSend_Concrete(uint8_t byteSend) { return packSend_Concrete(&byteSend, 1); }
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Byte parsing using CRC8 and COBS to
@@ -177,7 +167,7 @@ templatePar() uint16_t MP<templateParCall()>::byteParsing() {
     // NB:COBS protocol add 1 byte at the pack, At the start
     uint16_t COBSsrcSize = byteRecive.countSlotBetween(lastStartIndex, datoId);
 
-    if (COBSsrcSize - 1 > MAXPackINsize || COBSsrcSize < 2 ) {
+    if (COBSsrcSize - 1 > MAXPackINsize || COBSsrcSize < 2) {
       // Someting wrong, no 0 was recived in time, or too many zero are received
       // Anyway the pack are lost
       lastStartIndex = datoId + 1; // restart the logic from the next byte
@@ -201,7 +191,7 @@ templatePar() uint16_t MP<templateParCall()>::byteParsing() {
         continue; // CRC8 Fail!!!
     }
     packRecive.put((pIn *)COBSDecode, res.out_len - 1);
-    packTimeRefresh();  // from now, the pack are available to the system
+    packTimeRefresh(); // from now, the pack are available to the system
     packFound++;
   } //  while (!byteRecive->isEmpty())
   return packFound;

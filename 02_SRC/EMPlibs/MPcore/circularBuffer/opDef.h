@@ -5,8 +5,7 @@
 #ifndef EMP_LIB_02_SRC_EMPLIBS_CIRCULARBUFFER_MODULAROPERATION_H
 #define EMP_LIB_02_SRC_EMPLIBS_CIRCULARBUFFER_MODULAROPERATION_H
 
-#define errorRet ((u_int16_t)-1)  // Variable is unsigned, so the result will be 65535
-
+#define errorRet ((u_int16_t)-1) // Variable is unsigned, so the result will be 65535
 
 #define modAdd(a, b, M) ((a + b) % M)
 #define modSub(a, b, M) (((a - b) + M) % M)

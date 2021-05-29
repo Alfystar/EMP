@@ -46,7 +46,7 @@
 
 #define timeSpecPrint(ts, name)                                                                                        \
   std::cout << name << ".tv_sec=" << ts.tv_sec << "\t" << name << ".tv_nsec=" << ts.tv_nsec << " ("                    \
-            << (ts.tv_nsec + (500UL * 1000UL)) / (1000UL * 1000UL) << "ms)\n"
+            << ts.tv_sec*1000UL + (ts.tv_nsec + (500UL * 1000UL)) / (1000UL * 1000UL) << "ms)\n"
 ///###################################################################################################
 
 #endif // PIDCTRLDEMO_TIMESPECOP_H
