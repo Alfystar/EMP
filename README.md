@@ -54,7 +54,7 @@ The system not need any specific format for the message, but our teems suggest:
 
 -  [Nanopb - Protocol Buffers for Embedded Systems](https://github.com/nanopb/nanopb)
 - ROS/ROS2 Msg pack compiled
-- Custom solution
+- Custom solution (used on the Test directory)
 
 In any case is responsibility of the user write the right code to understand what data was revived and how use him, this suggestion are user-full to standardize the code and to simplify the work load.
 
