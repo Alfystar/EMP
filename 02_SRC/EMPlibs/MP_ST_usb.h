@@ -52,8 +52,7 @@ templatePar() MP_ST_usb<templateParCall()> * MP_ST_usb<templateParCall()>::insta
 
 
 templatePar()
-MP_ST_usb<templateParCall()>::MP_ST_usb() :
-		MP<templateParCall()>() {
+MP_ST_usb<templateParCall()>::MP_ST_usb() : MP<templateParCall()>() {
 	byteSend.memClean();
 	instance = this;
 	USBD_Interface_fops_FS.Receive = MP_ST_usb<templateParCall()>::isrRead;
@@ -89,8 +88,14 @@ templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf,
 	if (inst->byteSend.usedSpace()) {
 		uint16_t len;
 		len = inst->byteSend.usedSpaceLinear();
-		if (CDC_Transmit_FS(inst->byteSend.getTailPtr(), len) == 0) {
-			inst->byteSend.tailAdd(len);
+
+		uint8_t* tailPtr = inst->byteSend.getTailPtr();
+		uint16_t tailBackUp = 	inst->byteSend.getTail();
+		inst->byteSend.tailAdd(len);
+		if (CDC_Transmit_FS(tailPtr, len) == USBD_BUSY) {
+			//todo: se fallisco sottraggo la coda
+			inst->byteSend.tailSet(tailBackUp);
+			return USBD_FAIL;
 		}
 	}
 	return USBD_OK;
@@ -111,7 +116,7 @@ templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf,
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-templatePar()int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf,
+templatePar() int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf,
 		uint32_t *Len) {
 	MP_ST_usb<templateParCall()> *inst = MP_ST_usb<templateParCall()>::instance;
 	inst->byteRecive.putArray(Buf, *Len);
@@ -126,15 +131,23 @@ templatePar()int MP_ST_usb<templateParCall()>::packSend_Concrete(
 	if (byteSend.availableSpace() < len){
 		return -2;
 	}
-
 	byteSend.putArray(stream, len);
+	if (isrSendNotify(nullptr, nullptr, 0) == USBD_FAIL)
+		return -3;
+	return 0;
+
 	len = byteSend.usedSpaceLinear();
-	if (CDC_Transmit_FS(byteSend.getTailPtr(), len) == 0) {
-		byteSend.tailAdd(len);
-		return 0;
-	} else{
+
+	uint8_t* tailPtr = byteSend.getTailPtr();
+	uint16_t tailBackUp = 	byteSend.getTail();
+	byteSend.tailAdd(len);
+	if (CDC_Transmit_FS(tailPtr, len) == 0) {
+		byteSend.tailSet(tailBackUp);
 		return -3;
 	}
+
+	return 0;
+
 }
 
 templatePar()void MP_ST_usb<templateParCall()>::packTimeRefresh() {

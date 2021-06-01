@@ -38,7 +38,10 @@ typedef struct MPConf_ {
 #define configDeclare(CRC8_enable, cbPackStore, cdBinStore) CRC8_enable, cbPackStore, cdBinStore
 
 #define ArduinoMP_template(crcEn) configDeclare(crcEn, 8, 4)
-#define ArduinoMP_templateDefault() configDeclare(true, 8, 4)
+#define ArduinoMP_templateDefault() ArduinoMP_template(true)
+
+#define STM32MP_template(crcEn) configDeclare(crcEn, 16, 4)
+#define STM32MP_templateDefault() STM32MP_template(true)
 
 #endif //#if __cplusplus > 201703L // superiore al C++17
 

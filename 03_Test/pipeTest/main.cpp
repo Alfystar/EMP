@@ -3,6 +3,7 @@
 //
 #include <MP_Fd.h>
 #include <unistd.h>
+#include <iostream>
 
 typedef struct pack_ {
   char buf[20];
@@ -21,8 +22,7 @@ int p2to1[2]; // Son to father
 void *son(void *) {
   std::cout << "Son Start" << std::endl;
   pack dataIncoming;
-  LinuxMP_ConfDefault(confNameSon);
-  //  configDeclare(confNameSon, crc8En, 6, 2);
+  LinuxMP_ConfMed(confNameSon,true,false);
 
   auto *sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe]);
 
@@ -46,10 +46,9 @@ void *son(void *) {
 }
 
 void *dad(void *) {
-  // sleep(1);
+  sleep(1);
   std::cout << "dad Start" << std::endl;
-  LinuxMP_ConfDefault(confNameDad);
-  //  configDeclare(confNameDad, crc8En, 6, 2);
+  LinuxMP_ConfMed(confNameDad,true,false);
   auto *dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe]);
   char text[] = "Dad Talk";
   pack data;

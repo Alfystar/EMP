@@ -83,10 +83,12 @@ public:
   // On Fail: return "errorRet" if with the increase go over the limit, and nothing are do
   uint16_t headInc();
   uint16_t headAdd(uint16_t len);
+  uint16_t headSet(uint16_t pos); // in case of error can go back
 
   // Operation to progress the tail, return tail after increase, "errorRet" if tail jump over the head
   uint16_t tailInc();
   uint16_t tailAdd(uint16_t len);
+  uint16_t tailSet(uint16_t pos); // in case of error can go back
 };
 
 template <class T, uint16_t nElem> CircularBuffer<T, nElem>::CircularBuffer() {
@@ -131,8 +133,8 @@ template <class T, uint16_t nElem> uint16_t CircularBuffer<T, nElem>::put(T *ite
 
 template <class T, uint16_t nElem> uint16_t CircularBuffer<T, nElem>::putArray(T *item, uint16_t nItem) {
 
-	return putArray(item, nItem, sizeof(T));
-	if (availableSpace() < nItem)
+  return putArray(item, nItem, sizeof(T));
+  if (availableSpace() < nItem)
     return -1;
   int ret = head_; // old head
   int linLen = availableSpaceLinear();
@@ -142,7 +144,7 @@ template <class T, uint16_t nElem> uint16_t CircularBuffer<T, nElem>::putArray(T
   } else {
     memcpy((void *)&buf_[head_], &item[0], linLen * sizeof(T));
     headAdd(linLen);
-    memcpy((void *)&buf_[head_], &item[linLen+1], (nItem - linLen) * sizeof(T));
+    memcpy((void *)&buf_[head_], &item[linLen + 1], (nItem - linLen) * sizeof(T));
     headAdd(nItem - linLen);
   }
 
@@ -251,14 +253,15 @@ template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::use
   if (isEmpty())
     return 0;
 
-  return modSub(head_, tail_, real_nElem); // One Free Slot Logic
+  return countSlotBetween(tail_, head_);
+  // return modSub(head_, tail_, real_nElem); // One Free Slot Logic
 }
 
 template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::usedSpaceLinear() const {
-  if (head_ < tail_) // the end of the buffer are reach before the end of buffered array
-    return real_nElem - tail_ + 1;
-  else
-    return head_ - tail_; // include empty case
+	if(tail_ <= head_)
+	    return head_ - tail_; // include empty case
+
+    return real_nElem - tail_; // the end of the array are reach before the end of buffered
 }
 
 template <class T, uint16_t nElem> uint16_t CircularBuffer<T, nElem>::availableSpace() const {
@@ -290,6 +293,12 @@ template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::hea
   return oldHead; // old head
 }
 
+template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::headSet(uint16_t pos) {
+  uint16_t posOld = head_;
+  head_ = pos;
+  return posOld;
+}
+
 template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::tailInc() { return tailAdd(1); }
 
 template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::tailAdd(uint16_t len) {
@@ -297,6 +306,12 @@ template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::tai
     return -1;
   tail_ = (tail_ + len) % real_nElem;
   return tail_;
+}
+
+template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::tailSet(uint16_t pos) {
+  uint16_t posOld = tail_;
+  tail_ = pos;
+  return posOld;
 }
 
 #endif /* PROJECT_LIB_CIRCULARBUFFER_CIRCULARBUFFER_H_ */

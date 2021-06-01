@@ -74,7 +74,7 @@ static void MX_SPI1_Init(void);
  * @retval int
  */
 
-MP_ST_usb<packLinux2Ard, packArd2Linux, ArduinoMP_templateDefault()> MP_St;
+MP_ST_usb<packLinux2Ard, packArd2Linux, STM32MP_templateDefault()> MP_St;
 
 int main(void) {
 	/* USER CODE BEGIN 1 */
@@ -109,20 +109,14 @@ int main(void) {
 
 	/* Infinite loop */
 
-	packArd2Linux pWrite { 100, "Hi sys" };
+	packArd2Linux pWrite { 0, "Hi sys" };
 	packLinux2Ard pRead;
-	//HAL_Delay(4000);
-	//  mpSerial.updateState(); //
+	HAL_Delay(1000);
+
 	while (1) {
-		//MP_St.getData_wait(&pRead);
-
-		HAL_Delay(40);
-
-		//pWrite.num = pRead.num * 2;
-		pWrite.num++;
+		MP_St.getData_wait(&pRead);
+		pWrite.num = pRead.num+1;
 		MP_St.packSend(&pWrite);
-
-		//delay(1000);
 	}
 }
 

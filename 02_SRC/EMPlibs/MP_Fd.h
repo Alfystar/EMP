@@ -118,6 +118,7 @@ MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP_Fd<pIn, pOut
   mpFd_db("[MP_Fd]: Creating MP_Fd object with, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
+  readyReader.unlock();
 }
 
 template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::MP_Fd() : MP<pIn, pOut, conf>() {

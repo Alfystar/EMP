@@ -48,8 +48,8 @@ namespace EMP {
  *  - fill byteReceive when byte are dataAvailable and than parse him with byteParsing() function
  */
 templatePar() class MP {
-#define MAXPackINsize (sizeof(pIn) + CRC8_enable())   // pack plus CRC8
-#define MAXPackOUTsize (sizeof(pOut) + CRC8_enable()) // pack plus CRC8
+#define MAXPackINsize (uint16_t)(sizeof(pIn) + CRC8_enable())   // pack plus CRC8
+#define MAXPackOUTsize (uint16_t)(sizeof(pOut) + CRC8_enable()) // pack plus CRC8
 #define cbBinSize cdBinStore() * MAXPackINsize
 protected:
   // Buffering recived byte
@@ -73,11 +73,12 @@ public:
 
   // Data get
   uint16_t dataAvailable();
-  int16_t getData_try(pIn *pack);              // return the residual pack available after the remove
+  virtual int16_t getData_try(pIn *pack);      // return the residual pack available after the remove
   virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
 protected:
-  virtual int packSend_Concrete(uint8_t *stream, uint16_t len) = 0; // 0 on success, other wise, error code (!=-1)
+  // 0 on success, other wise, error code (!=-1) and data are discard
+  virtual int packSend_Concrete(uint8_t *stream, uint16_t len) = 0;
   __attribute__((always_inline)) int packSend_Concrete(uint8_t byteSend);
 
   // Son have to call after the insertion inside the byteParsing buffer
@@ -124,15 +125,17 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
   /// ###################### Encoding pack with COBS  ######################
   uint16_t sendSize = packSize + 1; // Cobs add 1 byte
 
-  uint8_t sendBuf[sendSize];
+  uint8_t sendBuf[sendSize + 1]; // +1 for the final 0
 
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
     return -1;
-  if ((ret = packSend_Concrete(sendBuf, sendSize)) != 0)
+
+  sendBuf[sendSize] = '\0';
+  // Send complete pack anyway, the concrete sub-system have to bufferize the pack
+  if ((ret = packSend_Concrete(sendBuf, sendSize + 1)) != 0)
     return ret;
-  if ((ret = packSend_Concrete(0)) != 0)
-    return ret;
+
   return 0;
 }
 
