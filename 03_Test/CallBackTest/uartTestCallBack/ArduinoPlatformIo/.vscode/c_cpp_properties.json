@@ -1,0 +1,58 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/ArduinoPlatformIo/include",
+                "/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/ArduinoPlatformIo/src",
+                "/home/alfy/Documents/uniGitHub/EMP/02_SRC/EMPlibs",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/variants/mega",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/ArduinoPlatformIo/include",
+                    "/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/ArduinoPlatformIo/src",
+                    "/home/alfy/Documents/uniGitHub/EMP/02_SRC/EMPlibs",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/variants/mega",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    "/home/alfy/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=50101",
+                "ARDUINO_AVR_MEGA2560",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "__AVR_ATmega2560__",
+                ""
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "/home/alfy/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega2560",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}

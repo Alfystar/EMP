@@ -64,6 +64,9 @@ public:
     ret = "|" + _msg + "|";
     ret += "\terror code: ";
     ret += to_string(_errCode);
+    char buf[4096];
+    ret += "|\t|errno description:";
+    ret += strerror_r(_errCode, buf, sizeof(buf));
   };
 
   MP_FDexept(const string &msg) : MP_FDexept(msg, 0){};
@@ -109,6 +112,7 @@ protected:
 public:
   ~MP_Fd();
 
+  int16_t getData_try(pIn *pack);  // return the residual pack available after the remove
   int16_t getData_wait(pIn *pack); // return the residual pack available after the remove
 
 protected:
@@ -169,9 +173,31 @@ templatePar() MP_Fd<templateParCall()>::~MP_Fd() {
   sem_destroy(&receivedPackToken);
 }
 
+templatePar() int16_t MP_Fd<templateParCall()>::getData_try(pIn *pack) {
+retry:
+  if (sem_trywait(&receivedPackToken) == -1) {
+    switch (errno) {
+    case EAGAIN:
+      return -1;
+    case EINTR:
+      goto retry;
+    default:
+      throw MP_FDexept("[getData_try] sem_trywait FAIL", errno);
+    }
+  }
+  return MP<templateParCall()>::getData_try(pack);
+}
 templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack) {
-  sem_wait(&receivedPackToken);
-  return this->getData_try(pack);
+retry:
+  if (sem_wait(&receivedPackToken) == -1) {
+    switch (errno) {
+    case EINTR:
+      goto retry;
+    default:
+      throw MP_FDexept("[getData_try] getData_wait FAIL", errno);
+    }
+  }
+  return MP<templateParCall()>::getData_try(pack);
 }
 
 templatePar() int MP_Fd<templateParCall()>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
@@ -180,8 +206,7 @@ templatePar() int MP_Fd<templateParCall()>::packSend_Concrete(u_int8_t *stream, 
   while (len > 0) {
     bWrite = write(fdW, &stream[i], len);
     if (bWrite < 0) {
-      perror("[MP_Fd::packSend_Concrete]Reading take error:");
-      return -1;
+      throw MP_FDexept("[MP_Fd::packSend_Concrete]Reading take error", errno);
     }
     i += bWrite;
     len -= bWrite;
@@ -195,14 +220,17 @@ templatePar() void MP_Fd<templateParCall()>::readerFDTh(MP_Fd<templateParCall()>
   long bRead;
   for (;;) {
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh try read\n");
+  retry:
     bRead = read(mpFd.fdR, mpFd.byteRecive.getHeadPtr(), mpFd.byteRecive.availableSpaceLinear());
     if (bRead < 0) {
       switch (errno) {
-        // case EBADF:
-        // break;
+      case EINTR:
+        goto retry;
       default:
-        mpFd_err("[MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
-        MP_FD_err perror("take error:");
+        MP_FD_err {
+          mpFd_err("[MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
+          perror("take error:");
+        }
         break;
       }
       sleep(1);
@@ -212,10 +240,6 @@ templatePar() void MP_Fd<templateParCall()>::readerFDTh(MP_Fd<templateParCall()>
     if (mpFd.byteRecive.headAdd(bRead) == errorRet)
       mpFd_err("[MP_Fd::readerFDTh] byteRecive circular buffer end space!!!");
     mpFd.byteParsing();
-    //
-    //    uint16_t packFind = mpFd.byteParsing();
-    //    for (; packFind > 0; packFind--)
-    //      sem_post(&mpFd.receivedPackToken);
   }
 }
 

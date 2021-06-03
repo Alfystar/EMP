@@ -18,8 +18,8 @@ vector<string> EMP::UartDeviceList() {
   FILE *fp;
 
   // Open the command for reading.
-  // fp = popen("realpath /dev/ttyUSB* /dev/ttyACM* -q -e   2>/dev/null", "r");  //todo: discover witch is more general
-  fp = popen("realpath /dev/serial/by-id/* -q -e   2>/dev/null", "r");
+  // fp = popen("realpath /dev/ttyUSB* /dev/ttyACM* -q -e   2>/dev/null", "r");
+  fp = popen("realpath /dev/serial/by-id/* -q -e   2>/dev/null", "r"); // shoul be more general
 
   if (fp == NULL) {
     printf("Failed to run command\n");
