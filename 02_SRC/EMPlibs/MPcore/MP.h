@@ -51,18 +51,37 @@ templatePar() class MP {
 #define MAXPackINsize (uint16_t)(sizeof(pIn) + CRC8_enable())   // pack plus CRC8
 #define MAXPackOUTsize (uint16_t)(sizeof(pOut) + CRC8_enable()) // pack plus CRC8
 #define cbBinSize cdBinStore() * MAXPackINsize
+
 protected:
-  // Buffering recived byte
+  //#################################################################################################################//
+  // All the Call-back will be execute from the thread who calls the function.
+  // - In a multi-thread context (like linux) this can be a problem if the call-back are slow, so is method aren't
+  //   recommended, if possible, put some thread in polling waiting could be more efficient solution.
+  // - In mono-thread context, like embedded system bare metal, this technic is probably the most appropriate method to
+  //   respond promptly at the system request.
+
+  /// Call back function define ## FOR the specific template Class##
+  /// (Pay attention here!!! Differente template class need different callback function with a DIFFERENT object pointer)
+  typedef void (*packDetectCallBack)(MP<templateParCall()> *myInstance);  // Call every times a pack are detected
+
+  typedef struct _callBacks {
+    packDetectCallBack pkDetect = nullptr;
+  } callBacksMP;
+  //#################################################################################################################//
+protected:
+  callBacksMP clback;
+  // Buffering received byte
   uint16_t lastStartIndex = 0;
   CircularBuffer<uint8_t, cbBinSize> byteRecive; // space to save byte read before parsing
 
 private:
-  // Succesfull pack recive
+  // Successfully pack received
   CircularBuffer<pIn, cbPackStore()> packRecive;
 
 public:
   // Instance operation
   MP();
+  MP(callBacksMP clback_);
   void bufClear();
 
   /// Data Send & Get
@@ -91,7 +110,9 @@ public:
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Instance operation
 
-templatePar() MP<templateParCall()>::MP() { bufClear(); }
+templatePar() MP<templateParCall()>::MP() : MP(nullptr) {}
+
+templatePar() MP<templateParCall()>::MP(callBacksMP clback_) : clback(clback_) { bufClear(); }
 
 templatePar() void MP<templateParCall()>::bufClear() {
   // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "cdBinStore" inside conf.h,
@@ -196,6 +217,8 @@ templatePar() uint16_t MP<templateParCall()>::byteParsing() {
     packRecive.put((pIn *)COBSDecode, res.out_len - 1);
     packTimeRefresh(); // from now, the pack are available to the system
     packFound++;
+    if (clback.pkDetect)
+      clback.pkDetect(this);
   } //  while (!byteRecive->isEmpty())
   return packFound;
 }

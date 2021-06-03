@@ -41,7 +41,7 @@ public:
 
 vector<string> UartDeviceList();
 
-template <typename pIn, typename pOut, MPConf conf> class MP_Uart : public MP_Fd<pIn, pOut, conf> {
+templatePar() class MP_Uart : public MP_Fd<templateParCall()> {
   struct termios uartConf;
 
 public:
@@ -49,8 +49,8 @@ public:
   ~MP_Uart();
 };
 
-template <typename pIn, typename pOut, MPConf conf>
-MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn, pOut, conf>() {
+templatePar()
+MP_Uart<templateParCall()>::MP_Uart(string device, unsigned long vel) : MP_Fd<templateParCall()>() {
   mpUart_db("[MP_Uart] Opening pipe...\n");
   int fd = open(device.c_str(), O_RDWR | O_NOCTTY);
 
@@ -97,7 +97,7 @@ MP_Uart<pIn, pOut, conf>::MP_Uart(string device, unsigned long vel) : MP_Fd<pIn,
   this->readyReader.unlock();
 }
 
-template <typename pIn, typename pOut, MPConf conf> MP_Uart<pIn, pOut, conf>::~MP_Uart() { close(this->fdR); }
+templatePar() MP_Uart<templateParCall()>::~MP_Uart() { close(this->fdR); }
 
 } // namespace EMP
 

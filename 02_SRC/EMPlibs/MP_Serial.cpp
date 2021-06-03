@@ -3,3 +3,8 @@
 //
 
 #include "MP_Serial.h"
+
+#ifdef ARDUINO
+
+
+#endif //ARDUINO

@@ -81,7 +81,11 @@ public:
  *
  * Concrete son have to readyReader.unlock(), to signal the finish of the constructor
  */
-template <typename pIn, typename pOut, MPConf conf> class MP_Fd : public MP<pIn, pOut, conf> {
+
+templatePar() class MP_Fd : public MP<templateParCall()> {
+public:
+  typedef typename MP<templateParCall()>::callBacksMP callBacksMP;
+
 protected:
   int fdR, fdW;
   std::mutex readyReader;
@@ -89,13 +93,18 @@ protected:
 private:
   std::thread *readerTh; // Reader Thread, started by the constructor
   sem_t receivedPackToken;
+
+  callBacksMP userCallback;
+
   struct timespec lastDecodeTime;
 
 public:
   MP_Fd(int fdReadSide, int fdWriteSide);
+  MP_Fd(int fdReadSide, int fdWriteSide, callBacksMP clback);
 
 protected:
   MP_Fd();
+  MP_Fd(callBacksMP clback);
 
 public:
   ~MP_Fd();
@@ -110,18 +119,28 @@ public:
   unsigned long lastPackElapsed() override;
 
 private:
-  static void readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd);
+  static void readerFDTh(MP_Fd<templateParCall()> &mpFd);
+  static void packReciveAdd(MP<templateParCall()> *mpFd);
 };
 
-template <typename pIn, typename pOut, MPConf conf>
-MP_Fd<pIn, pOut, conf>::MP_Fd(int fdReadSide, int fdWriteSide) : MP_Fd<pIn, pOut, conf>() {
+templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide)
+    : MP_Fd<templateParCall()>(fdReadSide, fdWriteSide, callBacksMP()) {}
+
+templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide, callBacksMP clback)
+    : MP_Fd<templateParCall()>(clback) {
   mpFd_db("[MP_Fd]: Creating MP_Fd object with, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
   readyReader.unlock();
 }
 
-template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::MP_Fd() : MP<pIn, pOut, conf>() {
+templatePar() MP_Fd<templateParCall()>::MP_Fd() : MP_Fd<templateParCall()>(callBacksMP()) {}
+
+templatePar() MP_Fd<templateParCall()>::MP_Fd(callBacksMP clback) : MP<templateParCall()>(clback) {
+  // User callback override:
+  userCallback = clback;
+  this->clback.pkDetect = packReciveAdd;
+
   packTimeRefresh();
   sem_init(&receivedPackToken, 0, 0);
   readyReader.try_lock();
@@ -138,7 +157,7 @@ template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::MP_F
   }
 }
 
-template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::~MP_Fd() {
+templatePar() MP_Fd<templateParCall()>::~MP_Fd() {
   mpFd_db("[MP_Fd]test Destructor\n");
   mpFd_db("Getting handler readerTh ...\n");
   pthread_t tid = readerTh->native_handle();
@@ -150,13 +169,12 @@ template <typename pIn, typename pOut, MPConf conf> MP_Fd<pIn, pOut, conf>::~MP_
   sem_destroy(&receivedPackToken);
 }
 
-template <typename pIn, typename pOut, MPConf conf> int16_t MP_Fd<pIn, pOut, conf>::getData_wait(pIn *pack) {
+templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack) {
   sem_wait(&receivedPackToken);
   return this->getData_try(pack);
 }
 
-template <typename pIn, typename pOut, MPConf conf>
-int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
+templatePar() int MP_Fd<templateParCall()>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
   size_t i = 0;
   size_t bWrite;
   while (len > 0) {
@@ -170,8 +188,7 @@ int MP_Fd<pIn, pOut, conf>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
   }
   return 0;
 }
-template <typename pIn, typename pOut, MPConf conf>
-void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
+templatePar() void MP_Fd<templateParCall()>::readerFDTh(MP_Fd<templateParCall()> &mpFd) {
   mpFd.readyReader.lock();
   usleep(500 * 1000U); // Grace time to end the configuration
   mpFd_db("[MP_Fd::readerFDTh] ReaderPipe Thread start\n");
@@ -184,7 +201,7 @@ void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
         // case EBADF:
         // break;
       default:
-        mpFd_err(" [MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
+        mpFd_err("[MP_Fd::readerFDTh] readerFDTh fd see: %ld; ", bRead);
         MP_FD_err perror("take error:");
         break;
       }
@@ -194,15 +211,24 @@ void MP_Fd<pIn, pOut, conf>::readerFDTh(MP_Fd<pIn, pOut, conf> &mpFd) {
     mpFd_db("[MP_Fd::readerFDTh] readerFDTh read: %ld\n", bRead);
     if (mpFd.byteRecive.headAdd(bRead) == errorRet)
       mpFd_err("[MP_Fd::readerFDTh] byteRecive circular buffer end space!!!");
-    uint16_t packFind = mpFd.byteParsing();
-    for (; packFind > 0; packFind--)
-      sem_post(&mpFd.receivedPackToken);
+    mpFd.byteParsing();
+    //
+    //    uint16_t packFind = mpFd.byteParsing();
+    //    for (; packFind > 0; packFind--)
+    //      sem_post(&mpFd.receivedPackToken);
   }
 }
-template <typename pIn, typename pOut, MPConf conf> void MP_Fd<pIn, pOut, conf>::packTimeRefresh() {
-  clock_gettime(CLOCK_MONOTONIC_RAW, &lastDecodeTime);
+
+templatePar() void MP_Fd<templateParCall()>::packReciveAdd(MP<templateParCall()> *mp) {
+  mpFd_db("[MP_Fd::packReciveAdd] callBack inside class start\n");
+  MP_Fd<templateParCall()> *mpFd = (MP_Fd<templateParCall()> *)(mp); // is for sure my-self, see constructor
+  sem_post(&mpFd->receivedPackToken);
+  if (mpFd->userCallback.pkDetect)
+    mpFd->userCallback.pkDetect(mp);
 }
-template <typename pIn, typename pOut, MPConf conf> unsigned long MP_Fd<pIn, pOut, conf>::lastPackElapsed() {
+
+templatePar() void MP_Fd<templateParCall()>::packTimeRefresh() { clock_gettime(CLOCK_MONOTONIC_RAW, &lastDecodeTime); }
+templatePar() unsigned long MP_Fd<templateParCall()>::lastPackElapsed() {
   struct timespec now, res;
   clock_gettime(CLOCK_MONOTONIC_RAW, &now);
   timeSpecSub(now, lastDecodeTime, res);

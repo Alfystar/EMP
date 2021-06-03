@@ -4,8 +4,7 @@
 
 #ifndef EMP_LIB_CONF_H
 #define EMP_LIB_CONF_H
-//#include <cstdint>
-#include <stdint.h>
+#include <stdint.h> // More general than <cstdint>
 
 /* This structure are use to describe the behaviour of EMP classes, not have to be use in the Concrete Class
  * CRC8_enable  := True to enable CRC8 Calculation and Verification, add 1 byte to all pack
@@ -27,6 +26,8 @@ typedef struct MPConf_ {
 } MPConf;
 
 #if __cplusplus > 201703L // superiore al C++17
+// The "configDeclare(...)" is std macro to declare the MPConf variable correctly for the compiler
+// Instantiate it before the call of the Class
 #define configDeclare(name, CRC8_enable, cbPackStore, cdBinStore, RT_THREAD)                                           \
   constexpr MPConf name { CRC8_enable, cbPackStore, cdBinStore, RT_THREAD }
 
@@ -34,7 +35,9 @@ typedef struct MPConf_ {
 #define LinuxMP_ConfMed(name, crcEn, RT_Thread) configDeclare(name, crcEn, 64, 16, RT_Thread)
 #define LinuxMP_ConfSmall(name, crcEn, RT_Thread) configDeclare(name, crcEn, 16, 8, RT_Thread)
 
-#else
+#else // ############################################################# //
+// For "Old" compiler, no-type template are impossible, so the most important parameter are "explose" to paramatrize
+// the class, use the "configDeclare(...)" macro after pIn and pOut pack in template
 #define configDeclare(CRC8_enable, cbPackStore, cdBinStore) CRC8_enable, cbPackStore, cdBinStore
 
 #define ArduinoMP_template(crcEn) configDeclare(crcEn, 8, 4)
@@ -45,5 +48,4 @@ typedef struct MPConf_ {
 
 #endif //#if __cplusplus > 201703L // superiore al C++17
 
-// MPConf test = ArduinoMP_ConfDefault();
 #endif // EMP_LIB_CONF_H

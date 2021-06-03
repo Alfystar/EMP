@@ -33,12 +33,6 @@
 #define mpSerial_info(text) print_STD(MP_SERIAL_info, text)
 #define mpSerial_db(text) print_STD(MP_SERIAL_Db, text)
 
-/*
-#define templatePar()                                                                                                  \
-  template <typename pIn, typename pOut, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
-#define templateParCall() pIn, pOut, CRC8_enable, cdBinStore, cbPackStore
-*/
-
 namespace EMP {
 templatePar() class MP_Serial : public MP<templateParCall()> {
 
