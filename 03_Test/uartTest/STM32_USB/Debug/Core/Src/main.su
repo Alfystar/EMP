@@ -1,4 +1,4 @@
-main.cpp:80:6:void readMPcallBack(EMP::MP<_packLinux2Ard, _packArd2Linux, true, 16, 4>*)	24	static
+main.cpp:80:6:void readMPcallBack(EMP::MP<_packLinux2Ard, _packArd2Linux, true, 16, 4>*)	16	static
 main.cpp:89:5:int main()	888	static
 main.cpp:136:6:void SystemClock_Config()	104	static
 main.cpp:184:13:void MX_I2C1_Init()	8	static
@@ -6,53 +6,54 @@ main.cpp:216:13:void MX_I2S3_Init()	8	static
 main.cpp:248:13:void MX_SPI1_Init()	8	static
 main.cpp:284:13:void MX_GPIO_Init()	56	static
 main.cpp:378:6:void Error_Handler()	4	static,ignoring_inline_asm
+MP.h:131:19:int EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::packSend(pOut*) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
 MP_ST_usb.h:62:1:EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::MP_ST_usb(EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::callBacksMP) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
-MP.h:132:19:int EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::packSend(pOut*, uint16_t) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	80	dynamic
-MP.h:114:15:EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::MP(EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::callBacksMP) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
-CircularBuffer.h:94:36:CircularBuffer<T, nElem>::CircularBuffer() [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:100:41:void CircularBuffer<T, nElem>::memClean() [with T = unsigned char; short unsigned int nElem = 368]	24	static
+MP.h:133:19:int EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::packSend(pOut*, uint16_t) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	80	dynamic
+MP.h:115:15:EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::MP(EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::callBacksMP) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
+CircularBuffer.h:93:36:CircularBuffer<T, nElem>::CircularBuffer() [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:99:41:void CircularBuffer<T, nElem>::memClean() [with T = unsigned char; short unsigned int nElem = 368]	24	static
 MP_ST_usb.h:125:21:static int8_t EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::isrRead(uint8_t*, uint32_t*) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	24	static
 MP_ST_usb.h:91:21:static int8_t EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::isrSendNotify(uint8_t*, uint32_t*, uint8_t) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	40	static
-CircularBuffer.h:94:36:CircularBuffer<T, nElem>::CircularBuffer() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-MP.h:116:20:void EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::bufClear() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
-CircularBuffer.h:106:48:void CircularBuffer<T, nElem>::reset() [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:134:45:uint16_t CircularBuffer<T, nElem>::putArray(T*, uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	24	static
-MP.h:178:24:uint16_t EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::byteParsing() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	88	dynamic
-CircularBuffer.h:249:52:uint16_t CircularBuffer<T, nElem>::usedSpace() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:260:52:uint16_t CircularBuffer<T, nElem>::usedSpaceLinear() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:221:46:T* CircularBuffer<T, nElem>::getTailPtr() [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:220:52:uint16_t CircularBuffer<T, nElem>::getTail() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:304:52:uint16_t CircularBuffer<T, nElem>::tailAdd(uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:311:52:uint16_t CircularBuffer<T, nElem>::tailSet(uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	24	static
-CircularBuffer.h:100:41:void CircularBuffer<T, nElem>::memClean() [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
-CircularBuffer.h:159:10:uint16_t CircularBuffer<T, nElem>::putArray(T*, uint16_t, uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	32	static
-CircularBuffer.h:267:45:uint16_t CircularBuffer<T, nElem>::availableSpace() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:288:52:uint16_t CircularBuffer<T, nElem>::headAdd(uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	24	static
-CircularBuffer.h:227:48:bool CircularBuffer<T, nElem>::isEmpty() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:186:38:T CircularBuffer<T, nElem>::get(uint16_t*) [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:245:17:uint16_t CircularBuffer<T, nElem>::countSlotBetween(uint16_t, uint16_t) const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:207:6:void CircularBuffer<T, nElem>::memcpyCb(T*, uint16_t, uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	32	static
-CircularBuffer.h:125:45:uint16_t CircularBuffer<T, nElem>::put(T*, uint16_t) [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
-CircularBuffer.h:229:48:bool CircularBuffer<T, nElem>::isFull() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:106:48:void CircularBuffer<T, nElem>::reset() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:284:52:uint16_t CircularBuffer<T, nElem>::headInc() [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:176:38:T CircularBuffer<T, nElem>::get() [with T = unsigned char; short unsigned int nElem = 368]	24	static
-CircularBuffer.h:229:48:bool CircularBuffer<T, nElem>::isFull() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:284:52:uint16_t CircularBuffer<T, nElem>::headInc() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:222:45:T CircularBuffer<T, nElem>::readTail() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:302:52:uint16_t CircularBuffer<T, nElem>::tailInc() [with T = unsigned char; short unsigned int nElem = 368]	16	static
-CircularBuffer.h:288:52:uint16_t CircularBuffer<T, nElem>::headAdd(uint16_t) [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
-CircularBuffer.h:267:45:uint16_t CircularBuffer<T, nElem>::availableSpace() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:249:52:uint16_t CircularBuffer<T, nElem>::usedSpace() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:227:48:bool CircularBuffer<T, nElem>::isEmpty() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:245:17:uint16_t CircularBuffer<T, nElem>::countSlotBetween(uint16_t, uint16_t) const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-MP.h:166:23:int16_t EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::getData_try(pIn*) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
+CircularBuffer.h:93:36:CircularBuffer<T, nElem>::CircularBuffer() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+MP.h:117:20:void EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::bufClear() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
+CircularBuffer.h:105:48:void CircularBuffer<T, nElem>::reset() [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:133:45:uint16_t CircularBuffer<T, nElem>::putArray(T*, uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	24	static
+MP.h:179:24:uint16_t EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::byteParsing() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	88	dynamic
+CircularBuffer.h:248:52:uint16_t CircularBuffer<T, nElem>::usedSpace() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:259:52:uint16_t CircularBuffer<T, nElem>::usedSpaceLinear() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:220:46:T* CircularBuffer<T, nElem>::getTailPtr() [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:219:52:uint16_t CircularBuffer<T, nElem>::getTail() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:303:52:uint16_t CircularBuffer<T, nElem>::tailAdd(uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:310:52:uint16_t CircularBuffer<T, nElem>::tailSet(uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	24	static
+CircularBuffer.h:99:41:void CircularBuffer<T, nElem>::memClean() [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
+CircularBuffer.h:158:10:uint16_t CircularBuffer<T, nElem>::putArray(T*, uint16_t, uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	32	static
+CircularBuffer.h:266:45:uint16_t CircularBuffer<T, nElem>::availableSpace() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:287:52:uint16_t CircularBuffer<T, nElem>::headAdd(uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	24	static
+CircularBuffer.h:226:48:bool CircularBuffer<T, nElem>::isEmpty() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:185:38:T CircularBuffer<T, nElem>::get(uint16_t*) [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:244:17:uint16_t CircularBuffer<T, nElem>::countSlotBetween(uint16_t, uint16_t) const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:206:6:void CircularBuffer<T, nElem>::memcpyCb(T*, uint16_t, uint16_t) [with T = unsigned char; short unsigned int nElem = 368]	32	static
+CircularBuffer.h:124:45:uint16_t CircularBuffer<T, nElem>::put(T*, uint16_t) [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
+CircularBuffer.h:228:48:bool CircularBuffer<T, nElem>::isFull() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:105:48:void CircularBuffer<T, nElem>::reset() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:283:52:uint16_t CircularBuffer<T, nElem>::headInc() [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:175:38:T CircularBuffer<T, nElem>::get() [with T = unsigned char; short unsigned int nElem = 368]	24	static
+CircularBuffer.h:228:48:bool CircularBuffer<T, nElem>::isFull() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:283:52:uint16_t CircularBuffer<T, nElem>::headInc() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:221:45:T CircularBuffer<T, nElem>::readTail() const [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:301:52:uint16_t CircularBuffer<T, nElem>::tailInc() [with T = unsigned char; short unsigned int nElem = 368]	16	static
+CircularBuffer.h:287:52:uint16_t CircularBuffer<T, nElem>::headAdd(uint16_t) [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
+CircularBuffer.h:266:45:uint16_t CircularBuffer<T, nElem>::availableSpace() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:248:52:uint16_t CircularBuffer<T, nElem>::usedSpace() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:226:48:bool CircularBuffer<T, nElem>::isEmpty() const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:244:17:uint16_t CircularBuffer<T, nElem>::countSlotBetween(uint16_t, uint16_t) const [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+MP.h:167:23:int16_t EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::getData_try(pIn*) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
 MP_ST_usb.h:73:22:int16_t EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::getData_wait(pIn*) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
 MP_ST_usb.h:133:18:int EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::packSend_Concrete(uint8_t*, uint16_t) [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	24	static
 MP_ST_usb.h:157:19:void EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::packTimeRefresh() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
 MP_ST_usb.h:161:28:long unsigned int EMP::MP_ST_usb<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::lastPackElapsed() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
-CircularBuffer.h:191:39:T* CircularBuffer<T, nElem>::getPtr() [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
-MP.h:162:24:uint16_t EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::dataAvailable() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
-CircularBuffer.h:221:46:T* CircularBuffer<T, nElem>::getTailPtr() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:302:52:uint16_t CircularBuffer<T, nElem>::tailInc() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
-CircularBuffer.h:304:52:uint16_t CircularBuffer<T, nElem>::tailAdd(uint16_t) [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:190:39:T* CircularBuffer<T, nElem>::getPtr() [with T = _packLinux2Ard; short unsigned int nElem = 4]	24	static
+MP.h:163:24:uint16_t EMP::MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::dataAvailable() [with pIn = _packLinux2Ard; pOut = _packArd2Linux; bool CRC8_enable = true; short unsigned int cdBinStore = 16; short unsigned int cbPackStore = 4]	16	static
+CircularBuffer.h:220:46:T* CircularBuffer<T, nElem>::getTailPtr() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:301:52:uint16_t CircularBuffer<T, nElem>::tailInc() [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static
+CircularBuffer.h:303:52:uint16_t CircularBuffer<T, nElem>::tailAdd(uint16_t) [with T = _packLinux2Ard; short unsigned int nElem = 4]	16	static

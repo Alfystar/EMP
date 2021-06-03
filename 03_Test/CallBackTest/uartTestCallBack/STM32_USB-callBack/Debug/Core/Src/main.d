@@ -35,16 +35,16 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
  ../USB_DEVICE/App/usb_device.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
  ../USB_DEVICE/Target/usbd_conf.h ../Core/Src/../../../pack.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MP_ST_usb.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/MP.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/circularBuffer/CircularBuffer.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/circularBuffer/opDef.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/cobs-c/cobs.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/conf.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/crc8/crc8.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/crc8/crc8_inc.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/macro.h \
- /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/circularBuffer/opDef.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MP_ST_usb.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/MP.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/circularBuffer/CircularBuffer.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/circularBuffer/opDef.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/cobs-c/cobs.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/conf.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/crc8/crc8.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/crc8/crc8_inc.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/macro.h \
+ /home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/circularBuffer/opDef.h \
  ../USB_DEVICE/App/usbd_cdc_if.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
@@ -129,25 +129,25 @@ Core/Src/main.o: ../Core/Src/main.cpp ../Core/Inc/main.h \
 
 ../Core/Src/../../../pack.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MP_ST_usb.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MP_ST_usb.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/MP.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/MP.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/circularBuffer/CircularBuffer.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/circularBuffer/CircularBuffer.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/circularBuffer/opDef.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/circularBuffer/opDef.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/cobs-c/cobs.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/cobs-c/cobs.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/conf.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/conf.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/crc8/crc8.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/crc8/crc8.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/crc8/crc8_inc.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/crc8/crc8_inc.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/macro.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/macro.h:
 
-/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/MPcore/circularBuffer/opDef.h:
+/home/alfy/Documents/uniGitHub/EMP/03_Test/uartTest/STM32_USB/EMPlibs/src/MPcore/circularBuffer/opDef.h:
 
 ../USB_DEVICE/App/usbd_cdc_if.h:
 
