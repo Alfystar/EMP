@@ -75,8 +75,7 @@ public:
   uint16_t usedSpace() const;
   uint16_t usedSpaceLinear() const; // Return number of used slot, with linear end
   uint16_t availableSpace() const;
-  uint16_t availableSpaceLinear()
-      const; // Return number of un-used slot, with linear end and OFS logic //todo: rename to availableSpaceLinear
+  uint16_t availableSpaceLinear() const; // Return number of un-used slot, with linear end and OFS logic
 
   // Operation to progress the head,
   // On SUCCESS: return the head before increase,
@@ -258,10 +257,10 @@ template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::use
 }
 
 template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::usedSpaceLinear() const {
-	if(tail_ <= head_)
-	    return head_ - tail_; // include empty case
+  if (tail_ <= head_)
+    return head_ - tail_; // include empty case
 
-    return real_nElem - tail_; // the end of the array are reach before the end of buffered
+  return real_nElem - tail_; // the end of the array are reach before the end of buffered
 }
 
 template <class T, uint16_t nElem> uint16_t CircularBuffer<T, nElem>::availableSpace() const {

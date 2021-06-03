@@ -9,7 +9,6 @@
 #include "conf.h"
 #include "crc8/crc8.h"
 #include "macro.h"
-//#include <cstdint>
 #include <stdint.h>
 
 #define Kib (1024)
@@ -110,7 +109,7 @@ public:
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Instance operation
 
-templatePar() MP<templateParCall()>::MP() : MP(nullptr) {}
+templatePar() MP<templateParCall()>::MP() : MP(callBacksMP()) {}
 
 templatePar() MP<templateParCall()>::MP(callBacksMP clback_) : clback(clback_) { bufClear(); }
 

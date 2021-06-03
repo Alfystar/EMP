@@ -22,15 +22,18 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 
 namespace EMP {
 
-
 templatePar()
 class MP_ST_usb: public MP<templateParCall()> {
-	//HAL_send send;
+public:
+	typedef typename MP<templateParCall()>::callBacksMP callBacksMP;
+
+private:
 	static MP_ST_usb<templateParCall()> *instance;
 	CircularBuffer<uint8_t, cbBinSize> byteSend;
 	unsigned long lastDecodeTime;
 public:
 	MP_ST_usb();
+	MP_ST_usb(callBacksMP callBack);
 	~MP_ST_usb();
 
 	int16_t getData_wait(pIn *pack) override; // return the residual pack available after the remove
@@ -48,17 +51,21 @@ public:
 
 };
 
-templatePar() MP_ST_usb<templateParCall()> * MP_ST_usb<templateParCall()>::instance = nullptr;	//Istanza statica dinamica in base alla classe compilata
-
+// Parametric instantiation based on the compiled template class
+templatePar()MP_ST_usb<templateParCall()> *MP_ST_usb<templateParCall()>::instance = nullptr;
 
 templatePar()
-MP_ST_usb<templateParCall()>::MP_ST_usb() : MP<templateParCall()>() {
+MP_ST_usb<templateParCall()>::MP_ST_usb() : MP_ST_usb<templateParCall()>(callBacksMP()) {
+}
+
+templatePar()
+MP_ST_usb<templateParCall()>::MP_ST_usb(callBacksMP callBack) : MP<templateParCall()>(callBack) {
 	byteSend.memClean();
 	instance = this;
 	USBD_Interface_fops_FS.Receive = MP_ST_usb<templateParCall()>::isrRead;
-	USBD_Interface_fops_FS.TransmitCplt =
-			MP_ST_usb<templateParCall()>::isrSendNotify;
+	USBD_Interface_fops_FS.TransmitCplt = MP_ST_usb<templateParCall()>::isrSendNotify;
 }
+
 
 templatePar() MP_ST_usb<templateParCall()>::~MP_ST_usb() {
 }
@@ -81,16 +88,15 @@ templatePar()int16_t MP_ST_usb<templateParCall()>::getData_wait(pIn *pack) {
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf,
-		uint32_t *Len, uint8_t epnum) {
+templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf, uint32_t *Len, uint8_t epnum) {
 	MP_ST_usb<templateParCall()> *inst = MP_ST_usb<templateParCall()>::instance;
 
 	if (inst->byteSend.usedSpace()) {
 		uint16_t len;
 		len = inst->byteSend.usedSpaceLinear();
 
-		uint8_t* tailPtr = inst->byteSend.getTailPtr();
-		uint16_t tailBackUp = 	inst->byteSend.getTail();
+		uint8_t *tailPtr = inst->byteSend.getTailPtr();
+		uint16_t tailBackUp = inst->byteSend.getTail();
 		inst->byteSend.tailAdd(len);
 		if (CDC_Transmit_FS(tailPtr, len) == USBD_BUSY) {
 			//todo: se fallisco sottraggo la coda
@@ -116,8 +122,7 @@ templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf,
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-templatePar() int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf,
-		uint32_t *Len) {
+templatePar()int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf, uint32_t *Len) {
 	MP_ST_usb<templateParCall()> *inst = MP_ST_usb<templateParCall()>::instance;
 	inst->byteRecive.putArray(Buf, *Len);
 	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
@@ -125,10 +130,9 @@ templatePar() int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf,
 	return USBD_OK;
 }
 
-templatePar()int MP_ST_usb<templateParCall()>::packSend_Concrete(
-		uint8_t *stream, uint16_t len) {
+templatePar()int MP_ST_usb<templateParCall()>::packSend_Concrete(uint8_t *stream, uint16_t len) {
 	//return 0;
-	if (byteSend.availableSpace() < len){
+	if (byteSend.availableSpace() < len) {
 		return -2;
 	}
 	byteSend.putArray(stream, len);
@@ -138,8 +142,8 @@ templatePar()int MP_ST_usb<templateParCall()>::packSend_Concrete(
 
 	len = byteSend.usedSpaceLinear();
 
-	uint8_t* tailPtr = byteSend.getTailPtr();
-	uint16_t tailBackUp = 	byteSend.getTail();
+	uint8_t *tailPtr = byteSend.getTailPtr();
+	uint16_t tailBackUp = byteSend.getTail();
 	byteSend.tailAdd(len);
 	if (CDC_Transmit_FS(tailPtr, len) == 0) {
 		byteSend.tailSet(tailBackUp);
