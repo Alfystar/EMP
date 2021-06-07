@@ -1,3 +1,7 @@
 # Build direcotory
 **/cmake-build-*/
 **/build/
+
+# SRM32CubeIDE build
+**/Debug/
+**/Relase/
