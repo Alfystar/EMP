@@ -74,17 +74,7 @@ static void MX_SPI1_Init(void);
  * @retval int
  */
 
-
-packArd2Linux pWrite { 0, "Hi sys" };
-packLinux2Ard pRead;
-void readMPcallBack(
-		MP<packLinux2Ard, packArd2Linux, STM32MP_templateDefault()> *instance) {
-	instance->getData_wait(&pRead);
-	pWrite.num = pRead.num + 1;
-	instance->packSend(&pWrite);
-}
-
-
+MP_ST_usb<packLinux2Ard, packArd2Linux, STM32MP_templateDefault()> MP_St;
 
 int main(void) {
 	/* USER CODE BEGIN 1 */
@@ -115,17 +105,18 @@ int main(void) {
 	MX_USB_DEVICE_Init();
 	/* USER CODE BEGIN 2 */
 
-	MP_ST_usb<packLinux2Ard, packArd2Linux, STM32MP_templateDefault()>::callBacksMP callBack;
-	callBack.pkDetect= readMPcallBack;
-
-	MP_ST_usb<packLinux2Ard, packArd2Linux, STM32MP_templateDefault()> MP_ST_class(callBack);
-
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 
+	packArd2Linux pWrite { 0, "Hi sys" };
+	packLinux2Ard pRead;
+	HAL_Delay(1000);
+
 	while (1) {
-		HAL_Delay(1000);
+		MP_St.getData_wait(&pRead);
+		pWrite.num = pRead.num+1;
+		MP_St.packSend(&pWrite);
 	}
 }
 

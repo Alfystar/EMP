@@ -73,7 +73,7 @@ After this phase, you need only to include the final class you need (MP_FD, MP_U
 
 The source can be included in your project and use as you wish, the only thinks you need are copy `EMP/02_SRC/EMPlibs` directory in your project lib directory.
 
-For more example see the `03_Test` directory, all lthe example are like the (2) point, obviously without the git submodule.
+For more example see the `03_Test` directory, all the example are like the (2) point, obviously without the git submodule.
 
 #### Linux Include
 
@@ -122,7 +122,7 @@ C++ main include:
 
 #### STM32_Cube Include
 
-**The project have to be C++ !!!** Change *main.c* to *main.cpp*
+**The project have to be C++ !!!** Recreate your project, in case of the old was c, and change *main.c* to *main.cpp*, more in general, every source file (*.c or *.cpp) that uses EMP objs or objs in general **MUST BE** *.cpp
 
 First configure your **USB device** in the *.ioc file. 
 
@@ -131,7 +131,8 @@ After linked, or copied the library in the correct position to correctly include
 1. click right on the project in the `Project Explorer`
 2. Go to: `Propeties --> Paths and Sybmols`
 3. In `Includes tab`, select `GNU C++` as languages and `Add` the `EMPlibs/src` directory
-4. In the `Source Location tab`, add ` EMPlibs` directory
+4. In `Includes tab`, select `GNU C` as languages and `Add` the `EMPlibs/src` directory
+5. In the `Source Location tab`, add ` EMPlibs/src` directory
 
 C++ main include:
 

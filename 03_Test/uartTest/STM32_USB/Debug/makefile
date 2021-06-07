@@ -19,6 +19,7 @@ RM := rm -rf
 -include EMPlibs/src/MPcore/circularBuffer/subdir.mk
 -include EMPlibs/src/MPcore/subdir.mk
 -include EMPlibs/src/subdir.mk
+-include EMPlibs/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk

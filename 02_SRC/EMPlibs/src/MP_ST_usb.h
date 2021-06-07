@@ -9,7 +9,7 @@
 #ifndef MP_ST_USB_H_
 #define MP_ST_USB_H_
 #ifdef STM32F407xx		//todo: Found more general define for STM32 family
-#include <MPcore/MP.h>
+#include "MPcore/MP.h"
 #include <stm32f4xx_hal.h>
 
 // STM32 USB include
