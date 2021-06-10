@@ -57,6 +57,7 @@ private:
 public:
   int16_t getData_try(pIn *pack) override; // return the residual pack available after the remove
   int16_t getData_wait(pIn *pack) override;
+  int16_t getData_wait(pIn *pack, unsigned long ms);
 
 protected:
   // return -2  :=  Not enough space
@@ -108,13 +109,23 @@ templatePar() int16_t MP_Serial<templateParCall()>::getData_wait(pIn *pack) {
   return getData_try(pack);
 }
 
+templatePar() int16_t MP_Serial<templateParCall()>::getData_wait(pIn *pack, unsigned long ms) {
+  unsigned long now = millis();
+  while ((this->dataAvailable() < 1) && !(millis() > (now+ms))) {
+    updateState();
+  }
+  if((millis() > (now+ms)))
+     return -2;
+  return getData_try(pack);
+}
+
 templatePar() unsigned long MP_Serial<templateParCall()>::lastPackElapsed() {
   return micros() - lastDecodeTime; // Over Flow proof thanks the Unsigned Long type
 }
 
 templatePar() int MP_Serial<templateParCall()>::packSend_Concrete(uint8_t *stream, uint16_t len) {
   if (com.availableForWrite() + byteSend.availableSpace() < len)
-    return -2;
+    return -3;
   trySend(); // Push out the buffered byte
   uint16_t i = 0;
   while (com.availableForWrite() > 0 && len > 0) {

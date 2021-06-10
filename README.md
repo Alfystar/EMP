@@ -79,9 +79,11 @@ For more example see the `03_Test` directory, all the example are like the (2) p
 
 After linked, or copied the library in the correct position to correctly include the library you need:
 
-CmakeLists.txt:
+CmakeLists.txt (inside just outside the `EMPlibs` directory):
 
 ```cmake
+set(CMAKE_CXX_STANDARD 20)
+
 add_subdirectory(EMPlibs)
 target_link_libraries(<Executable> PUBLIC EMPlibs)
 ```
@@ -94,11 +96,11 @@ C++ main include:
 #include <MP_Uart.h>
 ```
 
-#### PlatformIo Include
+#### Platform-Io Include
 
 After linked, or copied the library in the correct position to correctly include the library you need:
 
-CmakeListsProvate.txt:
+CmakeListsPrivate.txt:
 
 ```cmake
 include_directories("${CMAKE_CURRENT_LIST_DIR}/lib/EMPlibs/src")
@@ -122,9 +124,9 @@ C++ main include:
 
 #### STM32_Cube Include
 
-**The project have to be C++ !!!** Recreate your project, in case of the old was c, and change *main.c* to *main.cpp*, more in general, every source file (*.c or *.cpp) that uses EMP objs or objs in general **MUST BE** *.cpp
+**The project have to be C++ !!!** Recreate your project, in case of the old was c, and change *`main.c`* to *`main.cpp`*, more in general, every source file (`*.c` or `*.cpp`) that uses EMP objects or objects in general **MUST BE** `*.cpp`
 
-First configure your **USB device** in the *.ioc file. 
+First configure your **USB device** in the `*.ioc` file. 
 
 After linked, or copied the library in the correct position to correctly include the library you need to do:
 

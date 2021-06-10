@@ -37,7 +37,7 @@ public:
 	~MP_ST_usb();
 
 	int16_t getData_wait(pIn *pack) override; // return the residual pack available after the remove
-
+	int16_t getData_wait(pIn *pack, unsigned long nTikc); // return the residual pack available after the remove, or -3 for timeout
 private:
 	static int8_t isrSendNotify(uint8_t *Buf, uint32_t *Len, uint8_t epnum);
 	static int8_t isrRead(uint8_t *Buf, uint32_t *Len);
@@ -52,20 +52,23 @@ public:
 };
 
 // Parametric instantiation based on the compiled template class
-templatePar()MP_ST_usb<templateParCall()> *MP_ST_usb<templateParCall()>::instance = nullptr;
+templatePar()MP_ST_usb<templateParCall()> *MP_ST_usb<templateParCall()>::instance =
+		nullptr;
 
 templatePar()
-MP_ST_usb<templateParCall()>::MP_ST_usb() : MP_ST_usb<templateParCall()>(callBacksMP()) {
+MP_ST_usb<templateParCall()>::MP_ST_usb() :
+		MP_ST_usb<templateParCall()>(callBacksMP()) {
 }
 
 templatePar()
-MP_ST_usb<templateParCall()>::MP_ST_usb(callBacksMP callBack) : MP<templateParCall()>(callBack) {
+MP_ST_usb<templateParCall()>::MP_ST_usb(callBacksMP callBack) :
+		MP<templateParCall()>(callBack) {
 	byteSend.memClean();
 	instance = this;
 	USBD_Interface_fops_FS.Receive = MP_ST_usb<templateParCall()>::isrRead;
-	USBD_Interface_fops_FS.TransmitCplt = MP_ST_usb<templateParCall()>::isrSendNotify;
+	USBD_Interface_fops_FS.TransmitCplt =
+			MP_ST_usb<templateParCall()>::isrSendNotify;
 }
-
 
 templatePar() MP_ST_usb<templateParCall()>::~MP_ST_usb() {
 }
@@ -73,6 +76,16 @@ templatePar() MP_ST_usb<templateParCall()>::~MP_ST_usb() {
 templatePar()int16_t MP_ST_usb<templateParCall()>::getData_wait(pIn *pack) {
 	while (this->dataAvailable() < 1) {
 	}
+	return this->getData_try(pack);
+}
+
+templatePar()int16_t MP_ST_usb<templateParCall()>::getData_wait(pIn *pack,
+		unsigned long nTikc) {
+	unsigned long now = HAL_GetTick();
+	while ((this->dataAvailable() < 1) && !(HAL_GetTick() > (now + nTikc))) {
+	}
+	if (HAL_GetTick() > (now + nTikc))
+		return -2;
 	return this->getData_try(pack);
 }
 
@@ -88,7 +101,8 @@ templatePar()int16_t MP_ST_usb<templateParCall()>::getData_wait(pIn *pack) {
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf, uint32_t *Len, uint8_t epnum) {
+templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf,
+		uint32_t *Len, uint8_t epnum) {
 	MP_ST_usb<templateParCall()> *inst = MP_ST_usb<templateParCall()>::instance;
 
 	if (inst->byteSend.usedSpace()) {
@@ -122,7 +136,8 @@ templatePar()int8_t MP_ST_usb<templateParCall()>::isrSendNotify(uint8_t *Buf, ui
  * @param  Len: Number of data received (in bytes)
  * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
  */
-templatePar()int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf, uint32_t *Len) {
+templatePar()int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf,
+		uint32_t *Len) {
 	MP_ST_usb<templateParCall()> *inst = MP_ST_usb<templateParCall()>::instance;
 	inst->byteRecive.putArray(Buf, *Len);
 	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
@@ -130,26 +145,14 @@ templatePar()int8_t MP_ST_usb<templateParCall()>::isrRead(uint8_t *Buf, uint32_t
 	return USBD_OK;
 }
 
-templatePar()int MP_ST_usb<templateParCall()>::packSend_Concrete(uint8_t *stream, uint16_t len) {
-	//return 0;
+templatePar()int MP_ST_usb<templateParCall()>::packSend_Concrete(
+		uint8_t *stream, uint16_t len) {
 	if (byteSend.availableSpace() < len) {
-		return -2;
+		return -3;
 	}
 	byteSend.putArray(stream, len);
 	if (isrSendNotify(nullptr, nullptr, 0) == USBD_FAIL)
-		return -3;
-	return 0;
-
-	len = byteSend.usedSpaceLinear();
-
-	uint8_t *tailPtr = byteSend.getTailPtr();
-	uint16_t tailBackUp = byteSend.getTail();
-	byteSend.tailAdd(len);
-	if (CDC_Transmit_FS(tailPtr, len) == 0) {
-		byteSend.tailSet(tailBackUp);
-		return -3;
-	}
-
+		return -4;
 	return 0;
 
 }

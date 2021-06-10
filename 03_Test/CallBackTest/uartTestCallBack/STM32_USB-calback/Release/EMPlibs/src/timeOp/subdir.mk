@@ -1,0 +1,20 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+# Toolchain: GNU Tools for STM32 (9-2020-q2-update)
+################################################################################
+
+# Add inputs and outputs from these tool invocations to the build variables 
+CPP_SRCS += \
+../EMPlibs/src/timeOp/timerSpecOp.cpp 
+
+OBJS += \
+./EMPlibs/src/timeOp/timerSpecOp.o 
+
+CPP_DEPS += \
+./EMPlibs/src/timeOp/timerSpecOp.d 
+
+
+# Each subdirectory must supply rules for building sources it contributes
+EMPlibs/src/timeOp/timerSpecOp.o: ../EMPlibs/src/timeOp/timerSpecOp.cpp EMPlibs/src/timeOp/subdir.mk
+	arm-none-eabi-g++ "$<" -mcpu=cortex-m4 -std=gnu++14 -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../USB_DEVICE/App -I../USB_DEVICE/Target -I../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc -I"/home/alfy/Documents/uniGitHub/EMP/03_Test/CallBackTest/uartTestCallBack/STM32_USB-calback/EMPlibs/src" -Os -ffunction-sections -fdata-sections -fno-exceptions -fno-rtti -fno-use-cxa-atexit -Wall -fstack-usage -MMD -MP -MF"EMPlibs/src/timeOp/timerSpecOp.d" -MT"$@" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "$@"
+

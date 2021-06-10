@@ -10,10 +10,6 @@
 
 #include "opDef.h"
 
-//#include <cstdint>
-//#include <cstdlib>
-//#include <cstring>
-
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -170,7 +166,7 @@ uint16_t CircularBuffer<T, nElem>::putArray(T *item, uint16_t nItem, uint16_t bS
 }
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Gets metod
+// Gets method
 
 template <class T, uint16_t nElem> T CircularBuffer<T, nElem>::get() {
   if (isEmpty()) {
@@ -253,7 +249,6 @@ template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::use
     return 0;
 
   return countSlotBetween(tail_, head_);
-  // return modSub(head_, tail_, real_nElem); // One Free Slot Logic
 }
 
 template <class T, uint16_t nElem> inline uint16_t CircularBuffer<T, nElem>::usedSpaceLinear() const {

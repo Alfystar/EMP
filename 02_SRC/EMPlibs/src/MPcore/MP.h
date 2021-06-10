@@ -85,20 +85,30 @@ public:
   void bufClear();
 
   /// Data Send & Get
-  // Data Send
+  // Data Send return legend
   // return 0 on success, -1 cobs error,  other wise, the error code from the packSend_Concrete
+  // ON success return 0
+  // On fail:
+  //    - return -1   :=  cobs error
+  //    - return -2   :=  bSize > sizeof(pOut)
+  //    - return -3   :=  Buffer Space insufficient to send the pack
+  //    - return -4   :=  HW specific error
   inline int packSend(pOut *pack);
-  int packSend(pOut *pack, uint16_t bSize); // Il pacchetto potrebbe avere una dimensione minore della massima
-
-  // Data get
-  uint16_t dataAvailable();
-  virtual int16_t getData_try(pIn *pack);      // return the residual pack available after the remove
-  virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
-
+  int packSend(pOut *pack, uint16_t bSize); // The Pack may can have size minor than the maximum
 protected:
   // 0 on success, other wise, error code (!=-1) and data are discard
   virtual int packSend_Concrete(uint8_t *stream, uint16_t len) = 0;
   __attribute__((always_inline)) int packSend_Concrete(uint8_t byteSend);
+
+public:
+  // Data get return legend
+  uint16_t dataAvailable();
+  // ON success return residual data available (>=0)
+  // On fail:
+  //    - return -1   :=  No data available
+  //    - return -2   :=  Time-out (only for time-out version)
+  virtual int16_t getData_try(pIn *pack);      // return the residual pack available after the remove
+  virtual int16_t getData_wait(pIn *pack) = 0; // return the residual pack available after the remove
 
   // Son have to call after the insertion inside the byteParsing buffer
   uint16_t byteParsing();             // return How many pack are found
@@ -124,14 +134,12 @@ templatePar() void MP<templateParCall()>::bufClear() {
 }
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Data Send & Get
-/*    On success return 0
- *    On fail return -1
- */
 
 templatePar() int MP<templateParCall()>::packSend(pOut *pack) { return packSend(pack, sizeof(pOut)); }
 
 templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
-
+  if(bSize > sizeof(pOut))
+    return -2;
   int ret = 0;
 
   /// ######################## Packetize With CRC8  ########################
@@ -160,6 +168,9 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
   return 0;
 }
 
+templatePar() int MP<templateParCall()>::packSend_Concrete(uint8_t byteSend) { return packSend_Concrete(&byteSend, 1); }
+
+
 templatePar() uint16_t MP<templateParCall()>::dataAvailable() { return this->packRecive.usedSpace(); }
 
 // On success: copy pack Logic, inside *pack are saved the tail data if possible,
@@ -172,7 +183,6 @@ templatePar() int16_t MP<templateParCall()>::getData_try(pIn *pack) {
   return dataAvailable();
 }
 
-templatePar() int MP<templateParCall()>::packSend_Concrete(uint8_t byteSend) { return packSend_Concrete(&byteSend, 1); }
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Byte parsing using CRC8 and COBS to

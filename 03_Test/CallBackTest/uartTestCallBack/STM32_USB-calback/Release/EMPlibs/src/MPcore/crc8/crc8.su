@@ -1,0 +1,3 @@
+crc8.cpp:34:9:uint8_t crc_math(uint8_t, uint8_t)	0	static
+crc8.cpp:87:9:uint8_t crc8_byte(uint8_t, uint8_t)	0	static
+crc8.cpp:103:9:uint8_t crc8_stream(uint8_t*, uint16_t)	16	static
