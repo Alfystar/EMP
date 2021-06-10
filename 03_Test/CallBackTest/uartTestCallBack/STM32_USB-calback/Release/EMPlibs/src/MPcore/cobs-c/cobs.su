@@ -1,2 +1,0 @@
-cobs.cpp:41:20:cobs_encode_result cobs_encode(void*, size_t, const void*, size_t)	20	static
-cobs.cpp:124:20:cobs_decode_result cobs_decode(void*, size_t, const void*, size_t)	32	static
