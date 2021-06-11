@@ -2,8 +2,8 @@
 // Created by alfy on 04/05/21.
 //
 #include <MP_Fd.h>
-#include <unistd.h>
 #include <iostream>
+#include <unistd.h>
 
 typedef struct pack_ {
   char buf[20];
@@ -19,12 +19,26 @@ typedef struct pack_ {
 int p1to2[2]; // Father to son
 int p2to1[2]; // Son to father
 
+// Son Parameter
+
+// The signature of the function HAVE TO BE consistent with the template parameter of the caller class
+// NB in general case dadCallBack have different Config parameter so the 2 call-back aren't invertible always!!!
+void sonCallBack(EMP::MP<pack, pack, LinuxMP_ConfMed(crc8En)> *instance) {
+  // there is no garancy for the calling-order with 2 different thread, this function will call form the
+  // MP_Fd readerThread, and the SO could delayed this call any-time he want.
+  std::cout << "\tSon callback data available read: " << instance->dataAvailable() << std::endl;
+}
+
 void *son(void *) {
   std::cout << "Son Start" << std::endl;
   pack dataIncoming;
-  LinuxMP_ConfMed(confNameSon,true,false);
 
-  auto *sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe]);
+  // Call Back vector definition
+  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>::callBacksMP sonClback;
+  sonClback.pkDetect = sonCallBack;
+
+  auto sonSide =
+      new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>(p1to2[readEndPipe], p2to1[writeEndPipe], sonClback);
 
   /// Son first pack test
   std::cout << "Son wait First pack" << std::endl;
@@ -45,11 +59,22 @@ void *son(void *) {
   return nullptr;
 }
 
+// The signature of the function HAVE TO BE consistent with the template parameter of the caller class
+// NB in general case sonCallBack have different Config parameter so the 2 call-back aren't invertible always!!!
+void dadCallBack(EMP::MP<pack, pack, LinuxMP_ConfMed(crc8En)> *instance) {
+  std::cout << "\tDAD callback data available read: " << instance->dataAvailable() << std::endl;
+}
+
 void *dad(void *) {
   sleep(1);
   std::cout << "dad Start" << std::endl;
-  LinuxMP_ConfMed(confNameDad,true,false);
-  auto *dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe]);
+
+  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>::callBacksMP dadClback;
+  dadClback.pkDetect = dadCallBack;
+
+  auto dadSide =
+      new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>(p2to1[readEndPipe], p1to2[writeEndPipe], dadClback);
+
   char text[] = "Dad Talk";
   pack data;
   memcpy(data.buf, text, sizeof(text));

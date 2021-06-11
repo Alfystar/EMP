@@ -82,8 +82,6 @@ After linked, or copied the library in the correct position to correctly include
 CmakeLists.txt (inside just outside the `EMPlibs` directory):
 
 ```cmake
-set(CMAKE_CXX_STANDARD 20)
-
 add_subdirectory(EMPlibs)
 target_link_libraries(<Executable> PUBLIC EMPlibs)
 ```

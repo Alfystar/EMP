@@ -20,12 +20,10 @@ int p1to2[2]; // Father to son
 int p2to1[2]; // Son to father
 
 // Son Parameter
-LinuxMP_ConfMed(confNameSon, crc8En, false); // Have to be defined before the definition of the class type!!!
-EMP::MP_Fd<pack, pack, confNameSon> *sonSide;
 
 // The signature of the function HAVE TO BE consistent with the template parameter of the caller class
-// NB for the dadCallBack, the MPConf are different, so the 2 call-back aren't invertible !!!
-void sonCallBack(EMP::MP<pack, pack, confNameSon> *instance) {
+// NB in general case dadCallBack have different Config parameter so the 2 call-back aren't invertible always!!!
+void sonCallBack(EMP::MP<pack, pack, LinuxMP_ConfMed(crc8En)> *instance) {
   // there is no garancy for the calling-order with 2 different thread, this function will call form the
   // MP_Fd readerThread, and the SO could delayed this call any-time he want.
   std::cout << "\tSon callback data available read: " << instance->dataAvailable() << std::endl;
@@ -36,10 +34,11 @@ void *son(void *) {
   pack dataIncoming;
 
   // Call Back vector definition
-  EMP::MP_Fd<pack, pack, confNameSon>::callBacksMP sonClback;
+  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>::callBacksMP sonClback;
   sonClback.pkDetect = sonCallBack;
 
-  sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe], sonClback);
+  auto sonSide =
+      new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>(p1to2[readEndPipe], p2to1[writeEndPipe], sonClback);
 
   /// Son first pack test
   std::cout << "Son wait First pack" << std::endl;
@@ -60,12 +59,9 @@ void *son(void *) {
   return nullptr;
 }
 
-LinuxMP_ConfMed(confNameDad, crc8En, false);
-EMP::MP_Fd<pack, pack, confNameDad> *dadSide;
-
 // The signature of the function HAVE TO BE consistent with the template parameter of the caller class
-// NB for the sonCallBack, the MPConf are different, so the 2 call-back aren't invertible !!!
-void dadCallBack(EMP::MP<pack, pack, confNameDad> *instance) {
+// NB in general case sonCallBack have different Config parameter so the 2 call-back aren't invertible always!!!
+void dadCallBack(EMP::MP<pack, pack, LinuxMP_ConfMed(crc8En)> *instance) {
   std::cout << "\tDAD callback data available read: " << instance->dataAvailable() << std::endl;
 }
 
@@ -73,10 +69,11 @@ void *dad(void *) {
   sleep(1);
   std::cout << "dad Start" << std::endl;
 
-  EMP::MP_Fd<pack, pack, confNameDad>::callBacksMP dadClback;
+  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>::callBacksMP dadClback;
   dadClback.pkDetect = dadCallBack;
 
-  dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe], dadClback);
+  auto dadSide =
+      new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>(p2to1[readEndPipe], p1to2[writeEndPipe], dadClback);
 
   char text[] = "Dad Talk";
   pack data;

@@ -19,10 +19,7 @@ typedef struct pack_ {
 int p1to2[2]; // Father to son
 int p2to1[2]; // Son to father
 
-LinuxMP_ConfMed(confNameSon,true,false);
-EMP::MP_Fd<pack, pack, confNameSon> *sonSide;
-
-void sonCallBack(EMP::MP<pack, pack, confNameSon> *instance){
+void sonCallBack(EMP::MP<pack, pack, LinuxMP_ConfMed(true)> *instance){
   std::cout<<"\tSon callback data available read: "<< instance->dataAvailable() <<std::endl;
 }
 
@@ -31,10 +28,10 @@ void *son(void *) {
   pack dataIncoming;
 
   // Call Back vector definition
-  EMP::MP_Fd<pack, pack, confNameSon>::callBacksMP clback;
+  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(true)>::callBacksMP clback;
   clback.pkDetect = sonCallBack;
 
-  sonSide = new EMP::MP_Fd<pack, pack, confNameSon>(p1to2[readEndPipe], p2to1[writeEndPipe],clback);
+  auto sonSide = new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(true)>(p1to2[readEndPipe], p2to1[writeEndPipe],clback);
 
   /// Son first pack test
   std::cout << "Son wait First pack" << std::endl;
@@ -58,8 +55,7 @@ void *son(void *) {
 void *dad(void *) {
   sleep(1);
   std::cout << "dad Start" << std::endl;
-  LinuxMP_ConfMed(confNameDad,true,false);
-  auto *dadSide = new EMP::MP_Fd<pack, pack, confNameDad>(p2to1[readEndPipe], p1to2[writeEndPipe]);
+  auto *dadSide = new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(true)>(p2to1[readEndPipe], p1to2[writeEndPipe]);
   char text[] = "Dad Talk";
   pack data;
   memcpy(data.buf, text, sizeof(text));

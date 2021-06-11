@@ -28,8 +28,8 @@ int main(int argc, char *argv[]) {
     cout << "Please chose the index: ";
     cin >> chose;
   }
-  LinuxMP_ConfMed(uartConf, true, false);
-  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, uartConf>(list[chose], B115200);
+
+  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, false, LinuxMP_ConfMed(true)>(list[chose], B115200);
   sleep(1); // Device can be reset after the connection
   packArd2Linux pRead;
   packLinux2Ard pWrite {0, "Hoy Arduino"};

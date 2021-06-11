@@ -22,9 +22,16 @@ using namespace std;
 #include <thread>
 #include <unistd.h>
 
+/*
 #if __cplusplus <= 201703L // superiore al C++17
 #error Please use C++20, your version is too old
 #endif
+*/
+#define templateParLinux()                                                                                                  \
+  template <typename pIn, typename pOut, bool RT_THREAD, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
+#define templateParCallLinux() pIn, pOut, RT_THREAD, CRC8_enable, cdBinStore, cbPackStore
+#define RT_THREAD_enable() RT_THREAD
+
 
 #define printf_STD(Level, str, ...)                                                                                    \
   do {                                                                                                                 \
@@ -85,7 +92,7 @@ public:
  * Concrete son have to readyReader.unlock(), to signal the finish of the constructor
  */
 
-templatePar() class MP_Fd : public MP<templateParCall()> {
+templateParLinux() class MP_Fd : public MP<templateParCall()> {
 public:
   typedef typename MP<templateParCall()>::callBacksMP callBacksMP;
 
@@ -124,24 +131,24 @@ public:
   unsigned long lastPackElapsed() override;
 
 private:
-  static void readerFDTh(MP_Fd<templateParCall()> &mpFd);
+  static void readerFDTh(MP_Fd<templateParCallLinux()> &mpFd);
   static void packReciveAdd(MP<templateParCall()> *mpFd);
 };
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide)
-    : MP_Fd<templateParCall()>(fdReadSide, fdWriteSide, callBacksMP()) {}
+templateParLinux() MP_Fd<templateParCallLinux()>::MP_Fd(int fdReadSide, int fdWriteSide)
+    : MP_Fd<templateParCallLinux()>(fdReadSide, fdWriteSide, callBacksMP()) {}
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide, callBacksMP clback)
-    : MP_Fd<templateParCall()>(clback) {
+templateParLinux() MP_Fd<templateParCallLinux()>::MP_Fd(int fdReadSide, int fdWriteSide, callBacksMP clback)
+    : MP_Fd<templateParCallLinux()>(clback) {
   mpFd_db("[MP_Fd]: Creating MP_Fd object with, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
   readyReader.unlock();
 }
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd() : MP_Fd<templateParCall()>(callBacksMP()) {}
+templateParLinux() MP_Fd<templateParCallLinux()>::MP_Fd() : MP_Fd<templateParCallLinux()>(callBacksMP()) {}
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(callBacksMP clback) : MP<templateParCall()>(clback) {
+templateParLinux() MP_Fd<templateParCallLinux()>::MP_Fd(callBacksMP clback) : MP<templateParCall()>(clback) {
   // User callback override:
   userCallback = clback;
   this->clback.pkDetect = packReciveAdd;
@@ -150,7 +157,7 @@ templatePar() MP_Fd<templateParCall()>::MP_Fd(callBacksMP clback) : MP<templateP
   sem_init(&receivedPackToken, 0, 0);
   readyReader.try_lock();
   readerTh = new std::thread(this->readerFDTh, std::ref(*this));
-  if (conf.RT_THREAD) {
+  if (RT_THREAD_enable()) {
     // encrease priority
     sched_param sch{};
     int policy;
@@ -162,7 +169,7 @@ templatePar() MP_Fd<templateParCall()>::MP_Fd(callBacksMP clback) : MP<templateP
   }
 }
 
-templatePar() MP_Fd<templateParCall()>::~MP_Fd() {
+templateParLinux() MP_Fd<templateParCallLinux()>::~MP_Fd() {
   mpFd_db("[MP_Fd]test Destructor\n");
   mpFd_db("Getting handler readerTh ...\n");
   pthread_t tid = readerTh->native_handle();
@@ -174,7 +181,7 @@ templatePar() MP_Fd<templateParCall()>::~MP_Fd() {
   sem_destroy(&receivedPackToken);
 }
 
-templatePar() int16_t MP_Fd<templateParCall()>::getData_try(pIn *pack) {
+templateParLinux() int16_t MP_Fd<templateParCallLinux()>::getData_try(pIn *pack) {
 retry:
   if (sem_trywait(&receivedPackToken) == -1) {
     switch (errno) {
@@ -188,7 +195,7 @@ retry:
   }
   return MP<templateParCall()>::getData_try(pack);
 }
-templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack) {
+templateParLinux() int16_t MP_Fd<templateParCallLinux()>::getData_wait(pIn *pack) {
   retry:
   if (sem_wait(&receivedPackToken) == -1) {
     switch (errno) {
@@ -202,7 +209,7 @@ templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack) {
 }
 
 //todo: Create return index value
-templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack, u_long ns) {
+templateParLinux() int16_t MP_Fd<templateParCallLinux()>::getData_wait(pIn *pack, u_long ns) {
   timespec now,add, timeOut;
   clock_gettime(CLOCK_REALTIME, &now);
   timeSpecSet(add,0,ns);
@@ -223,7 +230,7 @@ retry:
 }
 
 
-templatePar() int MP_Fd<templateParCall()>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
+templateParLinux() int MP_Fd<templateParCallLinux()>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
   size_t i = 0;
   size_t bWrite;
   while (len > 0) {
@@ -236,7 +243,7 @@ templatePar() int MP_Fd<templateParCall()>::packSend_Concrete(u_int8_t *stream, 
   }
   return 0;
 }
-templatePar() void MP_Fd<templateParCall()>::readerFDTh(MP_Fd<templateParCall()> &mpFd) {
+templateParLinux() void MP_Fd<templateParCallLinux()>::readerFDTh(MP_Fd<templateParCallLinux()> &mpFd) {
   mpFd.readyReader.lock();
   usleep(500 * 1000U); // Grace time to end the configuration
   mpFd_db("[MP_Fd::readerFDTh] ReaderPipe Thread start\n");
@@ -266,16 +273,17 @@ templatePar() void MP_Fd<templateParCall()>::readerFDTh(MP_Fd<templateParCall()>
   }
 }
 
-templatePar() void MP_Fd<templateParCall()>::packReciveAdd(MP<templateParCall()> *mp) {
+templateParLinux() void MP_Fd<templateParCallLinux()>::packReciveAdd(MP<templateParCall()> *mp) {
   mpFd_db("[MP_Fd::packReciveAdd] callBack inside class start\n");
-  MP_Fd<templateParCall()> *mpFd = (MP_Fd<templateParCall()> *)(mp); // is for sure my-self, see constructor
+  MP_Fd<templateParCallLinux()> *mpFd = (MP_Fd<templateParCallLinux()> *)(mp); // is for sure my-self, see constructor
   sem_post(&mpFd->receivedPackToken);
   if (mpFd->userCallback.pkDetect)
     mpFd->userCallback.pkDetect(mp);
 }
 
-templatePar() void MP_Fd<templateParCall()>::packTimeRefresh() { clock_gettime(CLOCK_MONOTONIC_RAW, &lastDecodeTime); }
-templatePar() unsigned long MP_Fd<templateParCall()>::lastPackElapsed() {
+templateParLinux() void MP_Fd<templateParCallLinux()>::packTimeRefresh() { clock_gettime(CLOCK_MONOTONIC_RAW, &lastDecodeTime); }
+
+templateParLinux() unsigned long MP_Fd<templateParCallLinux()>::lastPackElapsed() {
   struct timespec now, res;
   clock_gettime(CLOCK_MONOTONIC_RAW, &now);
   timeSpecSub(now, lastDecodeTime, res);

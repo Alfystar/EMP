@@ -14,6 +14,7 @@
 
 #define Kib (1024)
 
+/*
 #if __cplusplus > 201703L // superiore al C++17
 #define templatePar() template <typename pIn, typename pOut, MPConf conf>
 #define templateParCall() pIn, pOut, conf
@@ -21,8 +22,8 @@
 #define CRC8_enable() conf.CRC8_enable
 #define cdBinStore() conf.cdBinStore
 #define cbPackStore() conf.cbPackStore
-
-#else
+*/
+//#else
 #define templatePar()                                                                                                  \
   template <typename pIn, typename pOut, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
 #define templateParCall() pIn, pOut, CRC8_enable, cdBinStore, cbPackStore
@@ -31,7 +32,7 @@
 #define cdBinStore() cdBinStore
 #define cbPackStore() cbPackStore
 
-#endif
+//#endif
 
 namespace EMP {
 /* The class MP (Message Pack) perform a GENERAL and PLATFORM AGNOSTIC Data Pack Transfer
