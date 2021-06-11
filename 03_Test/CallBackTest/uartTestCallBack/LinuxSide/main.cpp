@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   else {
     cout << "Possible device detected:" << endl;
     for (int i = 0; i < list.size(); i++) {
-      cout << "[" << i << "] = " << list[i] << endl;
+      cout << "[" << i << "] = " << list[i] << "\t{" << EMP::UartDeviceInfo(list[i]) << "}" << endl;
     }
 
     cout << "Please chose the index: ";

@@ -40,6 +40,7 @@ public:
 }; // class MP_UartExept
 
 vector<string> UartDeviceList();
+string UartDeviceInfo(string path);
 
 templateParLinux() class MP_Uart : public MP_Fd<templateParCallLinux()> {
   struct termios uartConf;

@@ -4,6 +4,7 @@
 
 #include "MP_Uart.h"
 #ifdef CMAKE_COMPILING
+
 /*
  * Common names are:
  * /dev/ttyACM0 - ACM stands for the ACM modem on the USB bus. Arduino UNOs (and similar) will appear using this name.
@@ -22,8 +23,7 @@ vector<string> EMP::UartDeviceList() {
   fp = popen("realpath /dev/serial/by-id/* -q -e   2>/dev/null", "r"); // shoul be more general
 
   if (fp == NULL) {
-    printf("Failed to run command\n");
-    exit(-1);
+    throw MP_UartExept("[UartDeviceList]: Find realpath get error in popen");
   }
   // Read the output one line at time - output it.
   vector<string> devList;
@@ -44,6 +44,31 @@ vector<string> EMP::UartDeviceList() {
   pclose(fp);
 
   return devList;
+}
+
+string EMP::UartDeviceInfo(string path){
+  // \K := non show the mach
+  // .* := Rest of the line
+  string cmd = "udevadm info --query=all --name="+ path +" | grep -Po 'ID_MODEL=\\K.*'";
+  FILE *fp = popen(cmd.c_str(), "r"); // shoul be more general
+  if (fp == NULL) {
+    throw MP_UartExept("[UartDeviceInfo]: Find udev-info get error in popen");
+  }
+  string info;
+  char line[4096];
+  if(fgets(line, sizeof(line), fp) == NULL)
+    throw MP_UartExept("[UartDeviceInfo]: impossible get information");
+
+  // remove new line from return
+  for (char *i = line; *i != 0; ++i) {
+    if (*i == '\n') {
+      *i = 0;
+      break;
+    }
+  }
+  info = line;
+  pclose(fp);
+  return info;
 }
 
 #endif // CMAKE_COMPILING
