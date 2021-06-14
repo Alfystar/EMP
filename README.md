@@ -83,7 +83,7 @@ CmakeLists.txt (inside just outside the `EMPlibs` directory):
 
 ```cmake
 add_subdirectory(EMPlibs)
-target_link_libraries(<Executable> PUBLIC EMPlibs)
+target_link_libraries(<Executable> PUBLIC EMPlibs) # in ROS2, PUBLIC could create problem
 ```
 
 C++ main include:

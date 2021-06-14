@@ -22,8 +22,6 @@
 
 #include "crc8.h"
 
-// Global CRC variable
-;
 
 // Lets external code initialise the CRC variable, required if
 // callers use crc8_byte

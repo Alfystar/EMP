@@ -79,7 +79,7 @@ public:
   MP_FDexept(const string &msg) : MP_FDexept(msg, 0){};
 
   virtual const char *what() const noexcept override { return ret.c_str(); }
-  virtual const int errNum() const noexcept { return _errCode; }
+  virtual int errNum() const noexcept { return _errCode; }
 }; // class MP_exept
 
 /* This class, extend the MP to the linux OS, it perform the operation at the File-Descriptor abstraction level,
