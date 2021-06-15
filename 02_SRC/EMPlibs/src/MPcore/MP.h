@@ -63,7 +63,7 @@ protected:
 
   /// Call back function define ## FOR the specific template Class##
   /// (Pay attention here!!! Differente template class need different callback function with a DIFFERENT object pointer)
-  typedef void (*packDetectCallBack)(MP<templateParCall()> *myInstance);  // Call every times a pack are detected
+  typedef void (*packDetectCallBack)(MP<templateParCall()> *myInstance); // Call every times a pack are detected
 
   typedef struct _callBacks {
     packDetectCallBack pkDetect = nullptr;
@@ -79,10 +79,17 @@ private:
   // Successfully pack received
   CircularBuffer<pIn, cbPackStore()> packRecive;
 
+  // Sending buffer
+  uint8_t packBuf[MAXPackOUTsize];         // CRC8 may add 1 byte
+  uint8_t sendBuf[1 + MAXPackOUTsize + 1]; // Cobs-start byte + MSG_cobsEnc(may have CRC8) + '\0'
+  // Decode buffer
+  uint8_t COBSEncoded[1 + MAXPackOUTsize + 1]; // Cobs-start byte + MSG_cobsEnc(may have CRC8) + '\0'
+  uint8_t COBSDecode[MAXPackINsize];           // CRC8 may add 1 byte
 public:
   // Instance operation
   MP();
   MP(callBacksMP clback_);
+  virtual ~MP();
   void bufClear();
 
   /// Data Send & Get
@@ -125,6 +132,9 @@ templatePar() MP<templateParCall()>::MP() : MP(callBacksMP()) {}
 
 templatePar() MP<templateParCall()>::MP(callBacksMP clback_) : clback(clback_) { bufClear(); }
 
+template <typename pIn, typename pOut, bool CRC8_enable, uint16_t cdBinStore, uint16_t cbPackStore>
+MP<pIn, pOut, CRC8_enable, cdBinStore, cbPackStore>::~MP() {}
+
 templatePar() void MP<templateParCall()>::bufClear() {
   // If error are reach, the usedSpace of the byteRecive is realy HIGH, should reduce "cdBinStore" inside conf.h,
   // or comment this line instead if is fine
@@ -139,13 +149,12 @@ templatePar() void MP<templateParCall()>::bufClear() {
 templatePar() int MP<templateParCall()>::packSend(pOut *pack) { return packSend(pack, sizeof(pOut)); }
 
 templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
-  if(bSize > sizeof(pOut))
+  if (bSize > sizeof(pOut))
     return -2;
-  int ret = 0;
 
   /// ######################## Packetize With CRC8  ########################
   uint16_t packSize = bSize + CRC8_enable();
-  uint8_t packBuf[packSize]; // CRC8 may add 1 byte
+  // uint8_t packBuf[packSize]; // CRC8 may add 1 byte
   memcpy(packBuf, pack, bSize);
 
   if (CRC8_enable()) {
@@ -153,9 +162,9 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
   }
 
   /// ###################### Encoding pack with COBS  ######################
-  uint16_t sendSize = packSize + 1; // Cobs add 1 byte
+  uint16_t sendSize = packSize + 1; // Cobs add 1 byte at start
 
-  uint8_t sendBuf[sendSize + 1]; // +1 for the final 0
+  // uint8_t sendBuf[sendSize + 1]; // +1 for the final 0
 
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
@@ -163,14 +172,14 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
 
   sendBuf[sendSize] = '\0';
   // Send complete pack anyway, the concrete sub-system have to bufferize the pack
+  int ret = 0;
   if ((ret = packSend_Concrete(sendBuf, sendSize + 1)) != 0)
-    return ret;
+    return ret; // return the error
 
   return 0;
 }
 
 templatePar() int MP<templateParCall()>::packSend_Concrete(uint8_t byteSend) { return packSend_Concrete(&byteSend, 1); }
-
 
 templatePar() uint16_t MP<templateParCall()>::dataAvailable() { return this->packRecive.usedSpace(); }
 
@@ -183,7 +192,6 @@ templatePar() int16_t MP<templateParCall()>::getData_try(pIn *pack) {
   memcpy(pack, packRecive.getPtr(), sizeof(pIn));
   return dataAvailable();
 }
-
 
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /// Byte parsing using CRC8 and COBS to
@@ -209,9 +217,9 @@ templatePar() uint16_t MP<templateParCall()>::byteParsing() {
       continue;
     }
     // Fill the buffer for the decoding
-    uint8_t COBSEncoded[COBSsrcSize];
+    // uint8_t COBSEncoded[COBSsrcSize];
     byteRecive.memcpyCb(COBSEncoded, lastStartIndex, COBSsrcSize);
-    uint8_t COBSDecode[MAXPackINsize];
+    // uint8_t COBSDecode[MAXPackINsize];
 
     cobs_decode_result res = cobs_decode(COBSDecode, MAXPackINsize, COBSEncoded, COBSsrcSize);
     lastStartIndex = datoId + 1; // From now, in any case, datoId are the new lastStartIndex

@@ -34,11 +34,11 @@ void *son(void *) {
   pack dataIncoming;
 
   // Call Back vector definition
-  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>::callBacksMP sonClback;
+  EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>::callBacksMP sonClback;
   sonClback.pkDetect = sonCallBack;
 
   auto sonSide =
-      new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>(p1to2[readEndPipe], p2to1[writeEndPipe], sonClback);
+      new EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>(p1to2[readEndPipe], p2to1[writeEndPipe], false, sonClback);
 
   /// Son first pack test
   std::cout << "Son wait First pack" << std::endl;
@@ -69,11 +69,11 @@ void *dad(void *) {
   sleep(1);
   std::cout << "dad Start" << std::endl;
 
-  EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>::callBacksMP dadClback;
+  EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>::callBacksMP dadClback;
   dadClback.pkDetect = dadCallBack;
 
   auto dadSide =
-      new EMP::MP_Fd<pack, pack, false, LinuxMP_ConfMed(crc8En)>(p2to1[readEndPipe], p1to2[writeEndPipe], dadClback);
+      new EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>(p2to1[readEndPipe], p1to2[writeEndPipe],false, dadClback);
 
   char text[] = "Dad Talk";
   pack data;
