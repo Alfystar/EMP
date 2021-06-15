@@ -111,11 +111,11 @@ templatePar() int16_t MP_Serial<templateParCall()>::getData_wait(pIn *pack) {
 
 templatePar() int16_t MP_Serial<templateParCall()>::getData_wait(pIn *pack, unsigned long ms) {
   unsigned long now = millis();
-  while ((this->dataAvailable() < 1) && !(millis() > (now+ms))) {
+  while ((this->dataAvailable() < 1) && !(millis() > (now + ms))) {
     updateState();
   }
-  if((millis() > (now+ms)))
-     return -2;
+  if ((millis() > (now + ms)))
+    return -2;
   return getData_try(pack);
 }
 

@@ -154,7 +154,6 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
 
   /// ######################## Packetize With CRC8  ########################
   uint16_t packSize = bSize + CRC8_enable();
-  // uint8_t packBuf[packSize]; // CRC8 may add 1 byte
   memcpy(packBuf, pack, bSize);
 
   if (CRC8_enable()) {
@@ -163,9 +162,6 @@ templatePar() int MP<templateParCall()>::packSend(pOut *pack, uint16_t bSize) {
 
   /// ###################### Encoding pack with COBS  ######################
   uint16_t sendSize = packSize + 1; // Cobs add 1 byte at start
-
-  // uint8_t sendBuf[sendSize + 1]; // +1 for the final 0
-
   cobs_encode_result res = cobs_encode(sendBuf, sendSize, packBuf, packSize);
   if (res.status != COBS_ENCODE_OK)
     return -1;
@@ -217,9 +213,7 @@ templatePar() uint16_t MP<templateParCall()>::byteParsing() {
       continue;
     }
     // Fill the buffer for the decoding
-    // uint8_t COBSEncoded[COBSsrcSize];
     byteRecive.memcpyCb(COBSEncoded, lastStartIndex, COBSsrcSize);
-    // uint8_t COBSDecode[MAXPackINsize];
 
     cobs_decode_result res = cobs_decode(COBSDecode, MAXPackINsize, COBSEncoded, COBSsrcSize);
     lastStartIndex = datoId + 1; // From now, in any case, datoId are the new lastStartIndex

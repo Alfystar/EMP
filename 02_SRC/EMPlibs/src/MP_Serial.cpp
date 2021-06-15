@@ -6,5 +6,4 @@
 
 #ifdef ARDUINO
 
-
-#endif //ARDUINO
+#endif // ARDUINO

@@ -6,11 +6,9 @@
  */
 
 #include "MP_ST_usb.h"
-#ifdef STM32F407xx		//todo: Found more general define for STM32 family
+#ifdef STM32F407xx
 using namespace EMP;
 
-
 /* namespace EMP */
-
 
 #endif //#ifdef STM32F407xx

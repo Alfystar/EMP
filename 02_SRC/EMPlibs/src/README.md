@@ -2,9 +2,11 @@
 
 The library are written to be compiled directly from the linux companion and the arduino compiler.
 
-The linux side have his CmakeFile.txt, and inside him are defined `CMAKE_COMPILING`, if you using something else, be carrefour to define this define, are used to avoi error form arduino builder.
+The linux side have his CmakeFile.txt, and inside him are defined `CMAKE_COMPILING`, if you using something else, be
+carrefour to define this define, are used to avoi error form arduino builder.
 
 ## Message Pack system
+
 This UML diagram explain HOW the class are related:
 
 <p align="center">
@@ -16,4 +18,5 @@ This task are perform equals thanks MPcore package, all the logic work are do th
 Obiviusly The pIn and pOut need to be equal and swappet form the 2 side.
 
 Attention!!
-Linux side need to be compiled using C++20, to enable the compiling time optimization, unfortunately, for now, arduino framework work with C++14, and for this reason in MPcore, are used some define to maintain the compatibility
+Linux side need to be compiled using C++20, to enable the compiling time optimization, unfortunately, for now, arduino
+framework work with C++14, and for this reason in MPcore, are used some define to maintain the compatibility

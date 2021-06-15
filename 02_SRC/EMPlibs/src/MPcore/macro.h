@@ -9,7 +9,7 @@
 
 #define _codeActive(x, level) if (x <= level)
 
-//Used at compile time to detect extreme Large Buffer
+// Used at compile time to detect extreme Large Buffer
 #define BUILD_BUG_ON(condition) ((void)sizeof(char[1 - 2 * !!(condition)]))
 
 #include "circularBuffer/opDef.h"

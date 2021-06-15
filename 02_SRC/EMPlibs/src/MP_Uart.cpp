@@ -46,17 +46,17 @@ vector<string> EMP::UartDeviceList() {
   return devList;
 }
 
-string EMP::UartDeviceInfo(string path){
+string EMP::UartDeviceInfo(string path) {
   // \K := non show the mach
   // .* := Rest of the line
-  string cmd = "udevadm info --query=all --name="+ path +" | grep -Po 'ID_MODEL=\\K.*'";
+  string cmd = "udevadm info --query=all --name=" + path + " | grep -Po 'ID_MODEL=\\K.*'";
   FILE *fp = popen(cmd.c_str(), "r"); // shoul be more general
   if (fp == NULL) {
     throw MP_UartExept("[UartDeviceInfo]: Find udev-info get error in popen");
   }
   string info;
   char line[4096];
-  if(fgets(line, sizeof(line), fp) == NULL)
+  if (fgets(line, sizeof(line), fp) == NULL)
     throw MP_UartExept("[UartDeviceInfo]: impossible get information");
 
   // remove new line from return

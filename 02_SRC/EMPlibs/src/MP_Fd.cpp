@@ -5,5 +5,4 @@
 #include "MP_Fd.h"
 #ifdef CMAKE_COMPILING
 
-
-#endif //CMAKE_COMPILING
+#endif // CMAKE_COMPILING

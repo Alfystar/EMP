@@ -50,8 +50,8 @@ public:
   ~MP_Uart();
 };
 
-templatePar()
-MP_Uart<templateParCall()>::MP_Uart(string device, unsigned long vel, bool RT_THREAD) : MP_Fd<templateParCall()>(RT_THREAD) {
+templatePar() MP_Uart<templateParCall()>::MP_Uart(string device, unsigned long vel, bool RT_THREAD)
+    : MP_Fd<templateParCall()>(RT_THREAD) {
   mpUart_db("[MP_Uart] Opening pipe...\n");
   int fd = open(device.c_str(), O_RDWR | O_NOCTTY);
 

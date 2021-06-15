@@ -123,7 +123,8 @@ public:
 
   int16_t getData_try(pIn *pack);  // return the residual pack available after the remove
   int16_t getData_wait(pIn *pack); // return the residual pack available after the remove
-  int16_t getData_wait(pIn *pack, u_long ns); // return the residual pack available after the remove, of fail if timeOut reach
+  int16_t getData_wait(pIn *pack,
+                       u_long ns); // return the residual pack available after the remove, of fail if timeOut reach
 
 protected:
   int packSend_Concrete(u_int8_t *stream, u_int16_t len) override;
@@ -198,7 +199,7 @@ retry:
   return MP<templateParCall()>::getData_try(pack);
 }
 templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack) {
-  retry:
+retry:
   if (sem_wait(&receivedPackToken) == -1) {
     switch (errno) {
     case EINTR:
@@ -211,10 +212,10 @@ templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack) {
 }
 
 templatePar() int16_t MP_Fd<templateParCall()>::getData_wait(pIn *pack, u_long ns) {
-  timespec now,add, timeOut;
+  timespec now, add, timeOut;
   clock_gettime(CLOCK_REALTIME, &now);
-  timeSpecSet(add,0,ns);
-  timeSpecAdd(timeOut,now,add);
+  timeSpecSet(add, 0, ns);
+  timeSpecAdd(timeOut, now, add);
 
 retry:
   if (sem_timedwait(&receivedPackToken, &timeOut) == -1) {
@@ -229,7 +230,6 @@ retry:
   }
   return MP<templateParCall()>::getData_try(pack);
 }
-
 
 templatePar() int MP_Fd<templateParCall()>::packSend_Concrete(u_int8_t *stream, u_int16_t len) {
   size_t i = 0;

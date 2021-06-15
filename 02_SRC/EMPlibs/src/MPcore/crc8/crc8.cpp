@@ -22,7 +22,6 @@
 
 #include "crc8.h"
 
-
 // Lets external code initialise the CRC variable, required if
 // callers use crc8_byte
 
@@ -105,4 +104,3 @@ uint8_t crc8_stream(uint8_t *data, uint16_t length) {
   }
   return crc;
 }
-
