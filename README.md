@@ -50,19 +50,42 @@ To include the source in your code there are 2 different way:
 
 1.  Download this repository and copy  `EMP/02_SRC/EMPlibs` directory in the lib-directory of your project. (static download, no update)
 
-2.  Clone this repository as submodule of your repository, any where you want, and add a *symbolic link* in in the lib-directory of your project of the `EMP/02_SRC/EMPlibs` directory.
+2.  Clone this repository in your PC or add as submodule of your repository, and add a *symbolic link* in in the lib-directory of your project of the `EMP/02_SRC/EMPlibs` directory.
 
-##### Clone and link
+##### Clone in File System
 
    To clone this repository you need to use:
 
    ```bash
-   cd <path_to_clone> #Path where the project will clone
+   cd <path_to_clone> #Path where the project will clone in File-System
    git clone https://github.com/Automatione-Tor-Vergata/EMP.git --recurse-submodules
-   cd <lib-direcotry>
-   ln -s <EMP/02_SRC/EMPlibs path> -f # Create symbolink link and override precedent if present
    ```
+##### Add-submodule inside *`your Repository`*
+
+   To add as submodule this repository you need to use:
+
+   ```bash
+cd <path_to_clone> #Path where the project will clone INSIDE your Repository
+git submodule add https://github.com/Automatione-Tor-Vergata/EMP.git
+   ```
+
+To make effective this submodule, you also need to commit and push the local repository.
+
+##### Link the directory
+
+  After the download/clone/submodule
+
+   ```bash
+cd <lib-direcotry>
+ln -s <EMP/02_SRC/EMPlibs path> -f # Create symbolink link and override precedent if present
+   ```
+
+`<EMP/02_SRC/EMPlibs path>` is **strongly** recommended  use **RELATIVE PATH** for better compatibility in different computer with different file system organization 
+
+##### Future Update
+
 To update the code in the future, now you need to type:
+
    ```bash
    git pull --recurse-submodules
    ```
