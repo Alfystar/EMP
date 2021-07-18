@@ -83,7 +83,7 @@ private:
   uint8_t packBuf[MAXPackOUTsize];         // CRC8 may add 1 byte
   uint8_t sendBuf[1 + MAXPackOUTsize + 1]; // Cobs-start byte + MSG_cobsEnc(may have CRC8) + '\0'
   // Decode buffer
-  uint8_t COBSEncoded[1 + MAXPackOUTsize + 1]; // Cobs-start byte + MSG_cobsEnc(may have CRC8) + '\0'
+  uint8_t COBSEncoded[1 + MAXPackINsize + 1]; // Cobs-start byte + MSG_cobsEnc(may have CRC8) + '\0'
   uint8_t COBSDecode[MAXPackINsize];           // CRC8 may add 1 byte
 public:
   // Instance operation
