@@ -28,7 +28,7 @@ Now the receive device read this stream, and on the first `\0` receive the libra
 
 
 
-![Message Pack Sending Flow](\01_DOC\img\Message Pack Sending Flow.png)
+![Message Pack Sending Flow](/01_DOC/img/Message Pack Sending Flow.png)
 
 ## COBS-Encoding
 
@@ -111,7 +111,5 @@ If for you, standardize packed are a MUST, our team suggest this 2 product, adap
 
 ---
 
-Tor-Vergata Automation Department
-
-[HOME](/README.md)
+Tor-Vergata Automation Department [HOME](/README.md)
 

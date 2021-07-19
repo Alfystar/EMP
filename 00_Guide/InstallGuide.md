@@ -129,7 +129,5 @@ C++ main include:
 
 ---
 
-Tor-Vergata Automation Department
-
-[HOME](/README.md)
+Tor-Vergata Automation Department [HOME](/README.md)
 

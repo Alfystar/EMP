@@ -1,11 +1,13 @@
 # EMP
-<img src="00_Guide\EMP-Logo-Background.png" alt="EMP-Logo-Background" style="zoom:33%;" />
+<img src="00_Guide/EMP-Logo-Background.png" alt="EMP-Logo-Background" style="zoom:33%;" />
 
 ### Embedded Message Pack
 
 This is a C++ library to perform the  send/receive data between any platform (Arduino, Unix, etc...) with any type of data pack using asynchronous byte streams.
 
 The key feature are the possibility to transmit between 2 different machine, without any necessity to have the same type device on the other hand.
+
+If you want learn more about the protocol used, [see here](/00_Guide/packProtocoll.md)
 
 #### Supported Device form the library NOW
 
@@ -39,9 +41,9 @@ But we are confident for the correctly of the library, because the source file a
 
 # Include in your Project
 
-To include the source in your code please follow [ours guide](00_Guide\InstallGuide.md) for your IDE.
+To include the source in your code please follow [ours guide](00_Guide/InstallGuide.md) for your IDE.
 
-![EMP-Hierarchy](\01_DOC\img\EMP-Hierarchy.png)
+![EMP-Hierarchy](/01_DOC/img/EMP-Hierarchy.png)
 
 ---
 Tor-Vergata Automation Department
