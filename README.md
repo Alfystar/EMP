@@ -41,7 +41,7 @@ But we are confident for the correctly of the library, because the source file a
 
 # Include in your Project
 
-To include the source in your code please follow [ours guide](00_Guide/InstallGuide.md) for your IDE.
+To include the source in your code please follow [ours guide](/00_Guide/InstallGuide.md) for your IDE.
 
 ![EMP-Hierarchy](/01_DOC/img/EMP-Hierarchy.png)
 

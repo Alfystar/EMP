@@ -28,7 +28,7 @@ Now the receive device read this stream, and on the first `\0` receive the libra
 
 
 
-![Message Pack Sending Flow](/01_DOC/img/Message Pack Sending Flow.png)
+![Message Pack Sending Flow](/01_DOC/img/Message%20Pack%20Sending%20Flow.png)
 
 ## COBS-Encoding
 
