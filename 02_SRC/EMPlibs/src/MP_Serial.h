@@ -71,7 +71,7 @@ public:
 templatePar() MP_Serial<templateParCall()>::MP_Serial(HardwareSerial &serial) : MP<templateParCall()>(), com(serial) {
   mpSerial_db("[MP_Serial] beginning...");
   mpSerial_db("[MP_Serial] byteSend cleaning...");
-  this.lastDecodeTime = 0;
+  lastDecodeTime = 0;
   byteSend.memClean();
 }
 
