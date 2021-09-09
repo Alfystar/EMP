@@ -10,9 +10,6 @@
 
 #ifdef HAVE_HWSERIAL1
 #define DBserial Serial1
-#else
-#define DBserial Serial
-#endif
 #define print_STD(Level, text)                                                                                         \
   do {                                                                                                                 \
     Level {                                                                                                            \
@@ -20,13 +17,18 @@
       DBserial.print(text);                                                                                            \
     }                                                                                                                  \
   } while (0)
+#else
+// Serial0 (default) can't be used for debug if there aren't nothing else
+#define print_STD(Level, text) ;
+#endif
+
 
 // Level 0 := No Message
 // Level 1 := Error msg
 // Level 2 := Notice msg
 // Level 3 := Info msg
 // Level 4 := DB msg
-#define MP_SERIAL_VervoseLevel 5
+#define MP_SERIAL_VervoseLevel 0
 #define MP_SERIAL_err _codeActive(1, MP_SERIAL_VervoseLevel)
 #define MP_SERIAL_notice _codeActive(2, MP_SERIAL_VervoseLevel)
 #define MP_SERIAL_info _codeActive(3, MP_SERIAL_VervoseLevel)
