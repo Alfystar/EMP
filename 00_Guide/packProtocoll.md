@@ -1,11 +1,11 @@
 ## Pack Protocol info
 
-The magic trick behind the library are the protocol used to encode/decode and send the packs use this elements:
+The magic trick behind the library is the protocol used to encode/decode and send the packs use this element:
 
 - [COBS codification](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing) to transform any data-pack in **self ended pack data**, different data-pack haven't the necessity to have the same size.
 - [CRC8](https://en.wikipedia.org/wiki/Cyclic_redundancy_check) to and minimal security check of the pack transmission (This feature can be disable, but here are suppose always active).
 
-This elements permit to the library the Send/Receive operation not only for 1 type of message, but **any number of different pack** all in the same stream and with the same library.
+This elements permit to the library the Send/Receive operation not only for 1 type of message, but **any number of different packs** all in the same stream and with the same library.
 
 ## Algorithm Flow
 #### Send Procedure
@@ -14,17 +14,17 @@ This elements permit to the library the Send/Receive operation not only for 1 ty
 
 Library now start:
 
-2. The sending stream is used to calculate his CRC8
-3. The CRC8 calculated are append at the and of the stream
-4. The new data-stream are COBS-Encoded
+2. The sending stream is used to calculate his **CRC8**
+3. The **CRC8** calculated are append at the and of the stream
+4. The new data-stream are **COBS-Encoded**
 5. The result byte-string are send to the outputting device with  `\0`  byte at the end
 
 #### Receive Procedure
 Now the receive device read this stream, and on the first `\0` receive the library start parsing procedure:
-6. The byte stream between this new  `\0`  and the last-one are COBS-decoded
-7. The CRC8 of the first `n-1`byte are calculate and compared with the CRC8 send
+6. The byte stream between this new  `\0`  and the last-one are **COBS-decoded**
+7. The CRC8 of the first `n-1`byte are calculate and compared with the **CRC8** send
    - [Compare Success] Pack are store and wait to be read
-   - [Compare Fail] Pack is discard and unambiguous pack problem is solve for sure, the only solution is wait new pack incoming.
+   - [Compare Fail] Pack is discarded, and unambiguous pack problem is solve for sure, the only solution is wait new pack incoming.
 
 
 
@@ -32,7 +32,7 @@ Now the receive device read this stream, and on the first `\0` receive the libra
 
 ## COBS-Encoding
 
-![Cobs_encoding_with_example](Cobs_encoding_with_example.png)
+![Cobs_encoding_with_example](Cobs_encoding_with_example-dist.png)
 
 For more info [see on Wikipedia](https://en.wikipedia.org/wiki/Consistent_Overhead_Byte_Stuffing)
 
