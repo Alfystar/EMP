@@ -164,12 +164,55 @@ templatePar() MP_Fd<templateParCall()>::MP_Fd(bool RT_THREAD, callBacksMP clback
     // encrease priority
     sched_param sch{};
     int policy;
+
+    int32_t  priorityClassNumber=3u;
+/*
+    switch (priorityClass) {
+            case UnknownPriorityClass:
+                priorityClassNumber = 0u;
+                break;
+            case IdlePriorityClass:
+                priorityClassNumber = 1u;
+                break;
+            case NormalPriorityClass:
+                priorityClassNumber = 2u;
+                break;
+            case RealTimePriorityClass:
+                priorityClassNumber = 3u;
+                break;
+    }*/
+    uint32_t priorityLevelToAssign = 28u * priorityClassNumber;
+    /*
+     * In linux the priority will vary between 0, i.e. priorityClass = Unknown
+     * and priorityLevel = 0 and 99, i.e. priorityClass = RealTime
+     * and priorityLevel = 15
+   */
+    priorityLevelToAssign += (static_cast<uint32_t>(15u));
+    policy = 0;
     pthread_getschedparam(this->readerTh->native_handle(), &policy, &sch);
     sch.sched_priority = sched_get_priority_max(SCHED_FIFO);
+    sch.sched_priority = static_cast<int32_t>(priorityLevelToAssign);
     if (pthread_setschedparam(this->readerTh->native_handle(), SCHED_FIFO, &sch)) {
-      throw MP_FDexept("Failed to pthread_setschedparam", errno);
+      throw MP_FDexept("Failed to pthread_setschedparam...try as root", errno);
     }
-  }
+
+    cpu_set_t processorCpuSet;
+    int32_t processorMask = 0x08;
+    CPU_ZERO(&processorCpuSet);
+    uint32_t j;
+
+    for (j = 0u; (j < (sizeof(processorMask) * 8u)) && (j < static_cast<uint32_t>(CPU_SETSIZE)); j++) {
+        if (((processorMask >> j) & 0x1u) == 0x1u) {
+                 CPU_SET(static_cast<int32_t>(j), &processorCpuSet);
+            }
+     }
+     bool ok = (pthread_setaffinity_np(this->readerTh->native_handle(), sizeof(processorCpuSet), &processorCpuSet) == 0);
+     if(!ok){
+
+	    throw MP_FDexept("Cannot se Affinity", errno);
+
+     }
+   }
 }
 
 templatePar() MP_Fd<templateParCall()>::~MP_Fd() {
