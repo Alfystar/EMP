@@ -159,7 +159,7 @@ templatePar() MP_Fd<templateParCall()>::MP_Fd(bool RT_THREAD, callBacksMP clback
   packTimeRefresh();
   sem_init(&receivedPackToken, 0, 0);
   readyReader.try_lock();
-  readerTh = new std::thread(this->readerFDTh, std::ref(*this));
+  readerTh = new std::thread(MP_Fd<templateParCall()>::readerFDTh, std::ref(*this));
   if (RT_THREAD) {
     // encrease priority
     sched_param sch{};
