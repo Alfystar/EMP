@@ -111,7 +111,7 @@ protected:
 public:
   // Data get return legend
   uint16_t dataAvailable();
-  // ON success return residual data available (>=0)
+  // ON success return residual data available (==0 mean last queue pack)(>0 other pack to read)
   // On fail:
   //    - return -1   :=  No data available
   //    - return -2   :=  Time-out (only for time-out version)
