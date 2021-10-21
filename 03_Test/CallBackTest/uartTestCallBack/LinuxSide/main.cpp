@@ -29,7 +29,8 @@ int main(int argc, char *argv[]) {
     cout << "Please chose the index: ";
     cin >> chose;
   }
-  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, LinuxMP_ConfMed(true)>(list[chose], B115200, false);
+  EMP::threadSetup thSet{}; // Default Config
+  auto *uart = new EMP::MP_Uart<packArd2Linux, packLinux2Ard, LinuxMP_ConfMed(true)>(list[chose], B115200, thSet);
   sleep(1); // Device can be reset after the connection
   packArd2Linux pRead;
   packLinux2Ard pWrite {0, "Hoy Arduino"};

@@ -84,6 +84,14 @@ public:
   virtual int errNum() const noexcept { return _errCode; }
 }; // class MP_exept
 
+enum priorityClass : uint8_t { UnknownPriorityClass, IdlePriorityClass, NormalPriorityClass, RealTimePriorityClass };
+
+struct threadSetup_ {
+  priorityClass priority = UnknownPriorityClass; // Not change priority (Default)
+  int32_t processorMask = 0u;                    // Not change Affynity (Default)
+};
+typedef threadSetup_ threadSetup;
+
 /* This class, extend the MP to the linux OS, it perform the operation at the File-Descriptor abstraction level,
  * big part of the device have their pseudo-file in /dev/, so this solution should be very general.
  *
@@ -111,12 +119,12 @@ private:
   struct timespec lastDecodeTime;
 
 public:
-  MP_Fd(int fdReadSide, int fdWriteSide, bool RT_THREAD);
-  MP_Fd(int fdReadSide, int fdWriteSide, bool RT_THREAD, callBacksMP clback);
+  MP_Fd(int fdReadSide, int fdWriteSide, threadSetup &ThreadSet);
+  MP_Fd(int fdReadSide, int fdWriteSide, threadSetup &ThreadSet, callBacksMP clback);
 
 protected:
-  MP_Fd(bool RT_THREAD);
-  MP_Fd(bool RT_THREAD, callBacksMP clback);
+  MP_Fd(threadSetup &ThreadSet);
+  MP_Fd(threadSetup &ThreadSet, callBacksMP clback);
 
 public:
   ~MP_Fd();
@@ -138,20 +146,23 @@ private:
   static void packReciveAdd(MP<templateParCall()> *mpFd);
 };
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide, bool RT_THREAD)
-    : MP_Fd<templateParCall()>(fdReadSide, fdWriteSide, RT_THREAD, callBacksMP()) {}
+templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide, threadSetup &ThreadSet)
+    : MP_Fd<templateParCall()>(fdReadSide, fdWriteSide, ThreadSet, callBacksMP()) {}
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide, bool RT_THREAD, callBacksMP clback)
-    : MP_Fd<templateParCall()>(RT_THREAD, clback) {
+templatePar() MP_Fd<templateParCall()>::MP_Fd(int fdReadSide, int fdWriteSide, threadSetup &ThreadSet,
+                                              callBacksMP clback)
+    : MP_Fd<templateParCall()>(ThreadSet, clback) {
   mpFd_db("[MP_Fd]: Creating MP_Fd object with, fdRead %d, fdWrite %d\n", fdReadSide, fdWriteSide);
   fdR = fdReadSide;
   fdW = fdWriteSide;
   readyReader.unlock();
 }
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(bool RT_THREAD) : MP_Fd<templateParCall()>(RT_THREAD, callBacksMP()) {}
+templatePar() MP_Fd<templateParCall()>::MP_Fd(threadSetup &ThreadSet)
+    : MP_Fd<templateParCall()>(ThreadSet, callBacksMP()) {}
 
-templatePar() MP_Fd<templateParCall()>::MP_Fd(bool RT_THREAD, callBacksMP clback) : MP<templateParCall()>(clback) {
+templatePar() MP_Fd<templateParCall()>::MP_Fd(threadSetup &ThreadSet, callBacksMP clback)
+    : MP<templateParCall()>(clback) {
   // User callback override:
   userCallback = clback;
   this->clback.pkDetect = packReciveAdd;
@@ -160,59 +171,41 @@ templatePar() MP_Fd<templateParCall()>::MP_Fd(bool RT_THREAD, callBacksMP clback
   sem_init(&receivedPackToken, 0, 0);
   readyReader.try_lock();
   readerTh = new std::thread(MP_Fd<templateParCall()>::readerFDTh, std::ref(*this));
-  if (RT_THREAD) {
-    // encrease priority
-    sched_param sch{};
-    int policy;
-
-    int32_t  priorityClassNumber=3u;
-/*
-    switch (priorityClass) {
-            case UnknownPriorityClass:
-                priorityClassNumber = 0u;
-                break;
-            case IdlePriorityClass:
-                priorityClassNumber = 1u;
-                break;
-            case NormalPriorityClass:
-                priorityClassNumber = 2u;
-                break;
-            case RealTimePriorityClass:
-                priorityClassNumber = 3u;
-                break;
-    }*/
-    uint32_t priorityLevelToAssign = 28u * priorityClassNumber;
+  if (ThreadSet.priority != UnknownPriorityClass) {
+    // Modify priority only if asked
+    uint32_t priorityLevelToAssign = 28u * ThreadSet.priority;
     /*
      * In linux the priority will vary between 0, i.e. priorityClass = Unknown
      * and priorityLevel = 0 and 99, i.e. priorityClass = RealTime
      * and priorityLevel = 15
-   */
+     */
     priorityLevelToAssign += (static_cast<uint32_t>(15u));
-    policy = 0;
+    int policy = 0;
+    sched_param sch{};
     pthread_getschedparam(this->readerTh->native_handle(), &policy, &sch);
     sch.sched_priority = sched_get_priority_max(SCHED_FIFO);
     sch.sched_priority = static_cast<int32_t>(priorityLevelToAssign);
     if (pthread_setschedparam(this->readerTh->native_handle(), SCHED_FIFO, &sch)) {
       throw MP_FDexept("Failed to pthread_setschedparam...try as root", errno);
     }
+  }
 
+  // CPU set Affinity
+  if (ThreadSet.processorMask != 0) {
     cpu_set_t processorCpuSet;
-    int32_t processorMask = 0x08;
     CPU_ZERO(&processorCpuSet);
     uint32_t j;
 
-    for (j = 0u; (j < (sizeof(processorMask) * 8u)) && (j < static_cast<uint32_t>(CPU_SETSIZE)); j++) {
-        if (((processorMask >> j) & 0x1u) == 0x1u) {
-                 CPU_SET(static_cast<int32_t>(j), &processorCpuSet);
-            }
-     }
-     bool ok = (pthread_setaffinity_np(this->readerTh->native_handle(), sizeof(processorCpuSet), &processorCpuSet) == 0);
-     if(!ok){
-
-	    throw MP_FDexept("Cannot se Affinity", errno);
-
-     }
-   }
+    for (j = 0u; (j < (sizeof(ThreadSet.processorMask) * 8u)) && (j < static_cast<uint32_t>(CPU_SETSIZE)); j++) {
+      if (((ThreadSet.processorMask >> j) & 0x1u) == 0x1u) {
+        CPU_SET(static_cast<int32_t>(j), &processorCpuSet);
+      }
+    }
+    bool ok = (pthread_setaffinity_np(this->readerTh->native_handle(), sizeof(processorCpuSet), &processorCpuSet) == 0);
+    if (!ok) {
+      throw MP_FDexept("Cannot se Affinity", errno);
+    }
+  }
 }
 
 templatePar() MP_Fd<templateParCall()>::~MP_Fd() {

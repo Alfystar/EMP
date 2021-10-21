@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
       <config projectName="EMP-Lib" targetName="src" />
@@ -12,16 +15,20 @@
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
     <configurations>
-      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" ENABLED="true" />
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
     </configurations>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0776910c-128a-4ee8-b78a-3dc096c50b86" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/src/MP_Fd.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/src/MP_Fd.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/src/MP_Uart.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/src/MP_Uart.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/02_SRC/EMPlibs/src/MPcore/MP.h" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/EMPlibs/src/MPcore/MP.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/02_SRC/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/02_SRC/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/03_Test/CallBackTest/pipeTestCallback/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/CallBackTest/pipeTestCallback/main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/pipeTest/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/03_Test/uartTest/LinuxSide/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/03_Test/uartTest/LinuxSide/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +37,11 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -66,6 +78,7 @@
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -77,38 +90,38 @@
       <recent name="$PROJECT_DIR$/02_SRC/EMPlibs/MPcore" />
     </key>
   </component>
-  <component name="RunManager" selected="CMake Application.demoMain">
+  <component name="RunManager" selected="CMake Application.uartDemoMain">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="EMPlibs" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="EMPlibs" CONFIG_NAME="Debug">
+    <configuration name="EMPlibs" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" TARGET_NAME="EMPlibs" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MPcore" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="MPcore" CONFIG_NAME="Debug">
+    <configuration name="MPcore" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" TARGET_NAME="MPcore" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="circularBuffer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="circularBuffer" CONFIG_NAME="Debug">
+    <configuration name="circularBuffer" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" TARGET_NAME="circularBuffer" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="demoMain" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="demoMain" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="EMP-Lib" RUN_TARGET_NAME="demoMain">
+    <configuration name="src" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" TARGET_NAME="src" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="src" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="src" CONFIG_NAME="Debug">
+    <configuration name="timeOp" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" TARGET_NAME="timeOp" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="timeOp" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib" TARGET_NAME="timeOp" CONFIG_NAME="Debug">
+    <configuration name="uartDemoMain" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" TARGET_NAME="uartDemoMain" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="EMP-Lib_UART_DEMO-callBack" RUN_TARGET_NAME="uartDemoMain">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -119,7 +132,7 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake Application.demoMain" />
+      <item itemvalue="CMake Application.uartDemoMain" />
       <item itemvalue="CMake Application.EMPlibs" />
       <item itemvalue="CMake Application.src" />
       <item itemvalue="CMake Application.MPcore" />
@@ -143,6 +156,7 @@
       <workItem from="1620736130438" duration="2173000" />
       <workItem from="1620812896826" duration="17268000" />
       <workItem from="1623741886762" duration="318000" />
+      <workItem from="1633645326744" duration="86000" />
     </task>
     <task id="LOCAL-00001" summary="Circular buffer logic update and math check for One Free Slot logic">
       <created>1620297613815</created>

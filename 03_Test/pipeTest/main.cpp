@@ -23,9 +23,9 @@ int p2to1[2]; // Son to father
 void *son(void *) {
   std::cout << "Son Start" << std::endl;
   pack dataIncoming;
-
+  EMP::threadSetup thSet{}; // Default Config
   auto sonSide =
-      new EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>(p1to2[readEndPipe], p2to1[writeEndPipe], false);
+      new EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>(p1to2[readEndPipe], p2to1[writeEndPipe], thSet);
 
   /// Son first pack test
   std::cout << "Son wait First pack" << std::endl;
@@ -49,9 +49,9 @@ void *son(void *) {
 void *dad(void *) {
   sleep(1);
   std::cout << "dad Start" << std::endl;
-
+  EMP::threadSetup thSet{}; // Default Config
   auto dadSide =
-      new EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>(p2to1[readEndPipe], p1to2[writeEndPipe],false);
+      new EMP::MP_Fd<pack, pack, LinuxMP_ConfMed(crc8En)>(p2to1[readEndPipe], p1to2[writeEndPipe],thSet);
 
   char text[] = "Dad Talk";
   pack data;
